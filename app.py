@@ -31,6 +31,9 @@ from linebot.models import (
     UnfollowEvent, FollowEvent, JoinEvent, LeaveEvent, BeaconEvent
 )
 
+import wikipedia
+
+
 app = Flask(__name__)
 
 # Get channel_secret and channel_access_token from environment variable
@@ -184,6 +187,26 @@ def handle_text_message(event):
 
     elif text == 'imagemap':
         pass
+
+    elif text[0] == '!':
+        if text.lstrip('!').lower().startswith('wiki'):
+            keyword = text.lstrip('!wiki').strip()
+            try:
+                wiki_result = wikipedia.summary(keyword)
+
+            except wikipedia.exceptions.DisambiguationError:
+                wiki_articles = wikipedia.search(keyword)
+                wiki_result = ''
+                for article in wiki_articles:
+                    wiki_result += article + '\n'
+
+            except wikipedia.exceptions.PageError:
+                wiki_result = "{} not found!".format(keyword)
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=wiki_result)
+                )
 
     else:
         line_bot_api.reply_message(

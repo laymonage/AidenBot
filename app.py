@@ -193,13 +193,15 @@ def handle_text_message(event):
         if command.lower().startswith('wiki '):
             keyword = command[5:].strip()
             try:
-                wiki_result = wikipedia.summary(keyword)
+                wiki_result = wikipedia.summary(keyword)[:2000]
+                if not wiki_result.endswith('.'):
+                    wiki_result = wiki_result[:wiki_result.rfind('.')+1]
 
             except wikipedia.exceptions.DisambiguationError:
                 wiki_articles = wikipedia.search(keyword)
-                wiki_result = ''
+                wiki_result = "{} disambiguation:\n".format(keyword)
                 for article in wiki_articles:
-                    wiki_result += article + '\n'
+                    wiki_result += "{}\n".format(article)
 
             except wikipedia.exceptions.PageError:
                 wiki_result = "{} not found!".format(keyword)

@@ -189,8 +189,9 @@ def handle_text_message(event):
         pass
 
     elif text[0] == '!':
-        if text.lstrip('!').lower().startswith('wiki'):
-            keyword = text.lstrip('!wiki').strip()
+        command = text.lstrip('!')
+        if command.lower().startswith('wiki '):
+            keyword = command[5:].strip()
             try:
                 wiki_result = wikipedia.summary(keyword)
 
@@ -208,7 +209,7 @@ def handle_text_message(event):
                 TextSendMessage(text=wiki_result)
                 )
 
-        elif text.lstrip('!').lower().startswith('echo'):
+        elif command.lower().startswith('echo '):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=event.message.text[5:])

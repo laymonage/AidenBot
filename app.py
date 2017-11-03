@@ -98,21 +98,27 @@ def handle_text_message(event):
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextMessage(text="Bot can't use profile API without user ID"))
+                TextMessage(text="Bot can't use profile API without user ID")
+            )
 
     elif text == '/bye':
         if isinstance(event.source, SourceGroup):
             line_bot_api.reply_message(
-                event.reply_token, TextMessage(text='Leaving group'))
+                event.reply_token,
+                TextMessage(text='Leaving group...')
+            )
             line_bot_api.leave_group(event.source.group_id)
         elif isinstance(event.source, SourceRoom):
             line_bot_api.reply_message(
-                event.reply_token, TextMessage(text='Leaving group'))
+                event.reply_token,
+                TextMessage(text='Leaving room...')
+            )
             line_bot_api.leave_room(event.source.room_id)
         else:
             line_bot_api.reply_message(
                 event.reply_token,
-                TextMessage(text="Bot can't leave from 1:1 chat"))
+                TextMessage(text="Bot can't leave from 1:1 chat")
+            )
 
     elif text[0] == '/':
         command = text[1:]
@@ -135,7 +141,7 @@ def handle_text_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=wiki_result)
-                )
+            )
 
         elif command.lower().startswith('wikilang '):
             lang = command[len('wikilang '):].strip().lower()
@@ -153,13 +159,14 @@ def handle_text_message(event):
                     event.reply_token, [
                         TextSendMessage(text=langlist_1),
                         TextSendMessage(text=langlist_2)
-                    ])
+                    ]
+                )
 
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=command[len('echo '):])
-                )
+            )
 
 
 @handler.add(MessageEvent, message=FileMessage)
@@ -179,10 +186,10 @@ def handle_file_message(event):
     os.rename(tempfile_path, dist_path)
 
     line_bot_api.reply_message(
-        event.reply_token, [
-            TextSendMessage(text="Mirror: " + request.host_url +
-                            os.path.join('static', 'tmp', dist_name))
-        ])
+        event.reply_token,
+        TextSendMessage(text="Mirror: " + request.host_url +
+                        os.path.join('static', 'tmp', dist_name))
+    )
 
 
 @handler.add(UnfollowEvent)

@@ -208,9 +208,11 @@ def handle_text_message(event):
                 TextSendMessage(text=wiki_result)
                 )
 
-    else:
-        line_bot_api.reply_message(
-            event.reply_token, TextSendMessage(text=event.message.text))
+        elif text.lstrip('!').lower().startswith('echo'):
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=event.message.text[5:])
+                )
 
 
 @handler.add(MessageEvent, message=LocationMessage)

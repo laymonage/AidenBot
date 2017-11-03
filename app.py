@@ -188,10 +188,10 @@ def handle_text_message(event):
     elif text == 'imagemap':
         pass
 
-    elif text[0] == '!':
-        command = text.lstrip('!')
+    elif text[0] == '/':
+        command = text[1:]
         if command.lower().startswith('wiki '):
-            keyword = command[5:].strip()
+            keyword = command[len('wiki '):].strip()
             try:
                 wiki_result = wikipedia.summary(keyword)[:2000]
                 if not wiki_result.endswith('.'):
@@ -228,7 +228,7 @@ def handle_text_message(event):
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text=event.message.text[5:])
+                TextSendMessage(text=command[len('echo '):])
                 )
 
 

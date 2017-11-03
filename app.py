@@ -143,18 +143,22 @@ def handle_text_message(event):
                 )
 
         elif command.lower().startswith('wikilang '):
-            lang = command.lower()[len('wikilang '):]
+            lang = command[len('wikilang '):].strip().lower()
             if lang in list(wikipedia.languages().keys()):
                 wikipedia.set_lang(lang)
             else:
                 langlist = ("{} not available!\nList of available languages:\n"
                             .format(lang))
                 for available in list(wikipedia.languages().keys()):
-                    langlist += "{}\n".format(available)
+                    langlist += "{}, ".format(available)
+                langlist_1 = langlist[:2000]
+                langlist_1 = langlist_1[:langlist_1.rfind(' ')]
+                langlist_2 = langlist.replace(langlist_1, '').strip(', ')
                 line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(text=langlist)
-                    )
+                    event.reply_token, [
+                        TextSendMessage(text=langlist_1),
+                        TextSendMessage(text=langlist_2)
+                    ])
 
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(

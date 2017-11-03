@@ -26,6 +26,7 @@ from linebot.models import (
 )
 
 import wikipedia
+import urbandictionary as ud
 
 
 app = Flask(__name__)
@@ -161,6 +162,18 @@ def handle_text_message(event):
                         TextSendMessage(text=langlist_2)
                     ]
                 )
+
+        elif command.lower().startswith('urban '):
+            keyword = command[len('urban '):].strip()
+            item = ud.define(keyword)
+            if item == []:
+                result = "{} not found in urbandictionary.".format(keyword)
+            else:
+                result = "{}:\n{}".format(item[0].word, item[0].definition)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=result)
+            )
 
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(

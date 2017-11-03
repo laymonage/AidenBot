@@ -87,8 +87,8 @@ def handle_text_message(event):
     '''
     text = event.message.text
 
-    if text == 'profile':
-        if isinstance(event.source, SourceUser):
+    if text == '/profile':
+        if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
                 event.reply_token, [
@@ -105,7 +105,7 @@ def handle_text_message(event):
                 event.reply_token,
                 TextMessage(text="Bot can't use profile API without user ID"))
 
-    elif text == 'bye':
+    elif text == '/bye':
         if isinstance(event.source, SourceGroup):
             line_bot_api.reply_message(
                 event.reply_token, TextMessage(text='Leaving group'))

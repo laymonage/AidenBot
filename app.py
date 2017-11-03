@@ -91,14 +91,9 @@ def handle_text_message(event):
         if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
             profile = line_bot_api.get_profile(event.source.user_id)
             line_bot_api.reply_message(
-                event.reply_token, [
-                    TextSendMessage(
-                        text='Display name: ' + profile.display_name
-                    ),
-                    TextSendMessage(
-                        text='Status message: ' + profile.status_message
-                    )
-                ]
+                event.reply_token,
+                TextSendMessage(text='Display name: ' + profile.display_name +
+                                '\nStatus message: ' + profile.status_message)
             )
         else:
             line_bot_api.reply_message(

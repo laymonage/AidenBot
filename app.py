@@ -211,6 +211,20 @@ def handle_text_message(event):
                 TextSendMessage(text=wiki_result)
                 )
 
+        elif command.lower().startswith('wikilang '):
+            lang = command.lower()[len('wikilang '):]
+            if lang in list(wikipedia.languages().keys()):
+                wikipedia.set_lang(lang)
+            else:
+                langlist = ("{} not available!\nList of available languages:\n"
+                            .format(lang))
+                for available in list(wikipedia.languages().keys()):
+                    langlist += "{}\n".format(available)
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(text=langlist)
+                    )
+
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(
                 event.reply_token,

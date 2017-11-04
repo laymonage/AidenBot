@@ -222,9 +222,20 @@ def handle_text_message(event):
         elif command.lower().startswith('slap '):
             target = command[len('slap '):].strip()
             subject = line_bot_api.get_profile(event.source.user_id)
-            slap_msg = ("{} slapped {} with a {}."
-                        .format(subject.display_name, target,
-                                random.choice(slap_items)))
+            subject = subject.display_name
+            if "Aiden" in target.title():
+                slap_msg = ("I slapped {} with a {} for trying to slap me."
+                            .format(subject, random.choice(slap_items)))
+
+            elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
+                  or "myself" in target.lower()):
+                slap_msg = ("I slapped {} with a {} at their request."
+                            .format(subject, random.choice(slap_items)))
+
+            else:
+                slap_msg = ("{} slapped {} with a {}."
+                            .format(subject, target,
+                                    random.choice(slap_items)))
 
             line_bot_api.reply_message(
                 event.reply_token,

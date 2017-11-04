@@ -200,6 +200,12 @@ def handle_text_message(event):
                 TextSendMessage(text=result)
             )
 
+        elif command.lower().startswith('shout '):
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=command[len('shout '):].upper())
+            )
+
         elif command.lower().startswith('echo '):
             line_bot_api.reply_message(
                 event.reply_token,

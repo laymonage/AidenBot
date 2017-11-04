@@ -9,6 +9,7 @@ import errno
 import os
 import sys
 import tempfile
+import random
 from argparse import ArgumentParser
 
 from flask import Flask, request, abort
@@ -28,7 +29,6 @@ from linebot.models import (
 import wikipedia
 import urbandictionary as ud
 import praw, prawcore
-import random
 
 
 app = Flask(__name__)
@@ -108,6 +108,7 @@ def handle_text_message(event):
                 TextSendMessage(text='Display name: ' + profile.display_name +
                                 '\nStatus message: ' + profile.status_message)
             )
+
         else:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -121,12 +122,14 @@ def handle_text_message(event):
                 TextMessage(text='Leaving group...')
             )
             line_bot_api.leave_group(event.source.group_id)
+
         elif isinstance(event.source, SourceRoom):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextMessage(text='Leaving room...')
             )
             line_bot_api.leave_room(event.source.room_id)
+
         else:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -160,6 +163,7 @@ def handle_text_message(event):
             lang = command[len('wikilang '):].strip().lower()
             if lang in list(wikipedia.languages().keys()):
                 wikipedia.set_lang(lang)
+
             else:
                 langlist = ("{} not available!\nList of available languages:\n"
                             .format(lang))
@@ -168,6 +172,7 @@ def handle_text_message(event):
                 langlist_1 = langlist[:2000]
                 langlist_1 = langlist_1[:langlist_1.rfind(' ')]
                 langlist_2 = langlist.replace(langlist_1, '').strip(', ')
+
                 line_bot_api.reply_message(
                     event.reply_token, [
                         TextSendMessage(text=langlist_1),
@@ -180,8 +185,10 @@ def handle_text_message(event):
             item = ud.define(keyword)
             if item == []:
                 result = "{} not found in urbandictionary.".format(keyword)
+
             else:
                 result = "{}:\n{}".format(item[0].word, item[0].definition)
+
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=result)

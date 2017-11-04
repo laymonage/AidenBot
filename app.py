@@ -28,6 +28,7 @@ from linebot.models import (
 import wikipedia
 import urbandictionary as ud
 import praw, prawcore
+import random
 
 
 app = Flask(__name__)
@@ -52,6 +53,10 @@ line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
+
+slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
+              "wooden stick", "nightstick", "golf club", "katana", "hand",
+              "laptop", "book", "drawing book", "mouse", "keyboard"]
 
 
 def make_static_tmp_dir():
@@ -198,6 +203,18 @@ def handle_text_message(event):
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=result)
+            )
+
+        elif command.lower().startswith('slap '):
+            target = command[len('slap '):].strip()
+            subject = line_bot_api.get_profile(event.source.user_id)
+            slap_msg = ("{} slapped {} with a {}."
+                        .format(subject.display_name, target,
+                                random.choice(slap_items)))
+
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=slap_msg)
             )
 
         elif command.lower().startswith('shout '):

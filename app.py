@@ -163,6 +163,13 @@ def handle_text_message(event):
             lang = command[len('wikilang '):].strip().lower()
             if lang in list(wikipedia.languages().keys()):
                 wikipedia.set_lang(lang)
+                line_bot_api.reply_message(
+                    event.reply_token,
+                    TextSendMessage(
+                        text=("Language has been changed to {} successfully."
+                              .format(lang))
+                    )
+                )
 
             else:
                 langlist = ("{} not available!\nList of available languages:\n"

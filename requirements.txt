@@ -2,3 +2,4 @@ flask
 line-bot-sdk
 wikipedia
 urbandictionary
+praw

@@ -27,6 +27,7 @@ from linebot.models import (
 
 import wikipedia
 import urbandictionary as ud
+import praw, prawcore
 
 
 app = Flask(__name__)
@@ -40,6 +41,12 @@ if channel_secret is None:
 if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
+
+reddit_client = os.getenv('REDDIT_CLIENT_ID', None)
+reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
+reddit = praw.Reddit(client_id=reddit_client,
+                     client_secret=reddit_secret,
+                     user_agent='AidenBot-line')
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
@@ -170,6 +177,24 @@ def handle_text_message(event):
                 result = "{} not found in urbandictionary.".format(keyword)
             else:
                 result = "{}:\n{}".format(item[0].word, item[0].definition)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text=result)
+            )
+
+        elif command.lower().startswith('reddit '):
+            keyword = command[len('reddit '):].strip()
+            sub = reddit.subreddit(keyword).hot(limit=5)
+            try:
+                i = 1
+                result = "Top 5 posts in /r/{}:\n".format(keyword)
+                for posts in sub:
+                    result += "{}. {}\n".format(i, posts.title)
+                    i += 1
+
+            except prawcore.exceptions.Redirect:
+                result = "{} subreddit not found.".format(keyword)
+
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text=result)

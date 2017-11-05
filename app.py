@@ -1,6 +1,6 @@
 '''
 AidenBot
-Early test 2: kitchensink
+Early test 3: indev
 '''
 
 from __future__ import unicode_literals
@@ -28,7 +28,8 @@ from linebot.models import (
 
 import wikipedia
 import urbandictionary as ud
-import praw, prawcore
+import praw
+import prawcore
 
 
 app = Flask(__name__)
@@ -45,9 +46,9 @@ if channel_access_token is None:
 
 reddit_client = os.getenv('REDDIT_CLIENT_ID', None)
 reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
-reddit = praw.Reddit(client_id=reddit_client,
-                     client_secret=reddit_secret,
-                     user_agent='AidenBot-line')
+reddit_object = praw.Reddit(client_id=reddit_client,
+                            client_secret=reddit_secret,
+                            user_agent='AidenBot-line')
 
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
@@ -100,7 +101,34 @@ def handle_text_message(event):
     '''
     text = event.message.text
 
-    if text == '/profile':
+    def quickreply(msg):
+        '''
+        Reply a message with msg as reply content.
+        '''
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text=msg)
+        )
+
+    def bye():
+        '''
+        Leave a chat room.
+        '''
+        if isinstance(event.source, SourceGroup):
+            quickreply("Leaving group...")
+            line_bot_api.leave_group(event.source.group_id)
+
+        elif isinstance(event.source, SourceRoom):
+            quickreply("Leaving room...")
+            line_bot_api.leave_room(event.source.room_id)
+
+        else:
+            quickreply("Bot can't leave from 1:1 chat")
+
+    def getprofile():
+        '''
+        Send display name and status message of a user.
+        '''
         if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
             profile = line_bot_api.get_profile(event.source.user_id)
             if profile.status_message:
@@ -108,156 +136,147 @@ def handle_text_message(event):
             else:
                 status = ""
 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text='Display name: ' + profile.display_name +
-                                '\nStatus message: ' + status)
-            )
+            quickreply("Display name: " + profile.display_name +
+                       "\nStatus message: " + status)
 
         else:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextMessage(text="Bot can't use profile API without user ID")
-            )
+            quickreply("Bot can't use profile API without user ID")
 
-    elif text == '/bye':
-        if isinstance(event.source, SourceGroup):
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextMessage(text='Leaving group...')
-            )
-            line_bot_api.leave_group(event.source.group_id)
+    def reddit(subname):
+        '''
+        Send top 5 posts' titles in a subreddit.
+        '''
+        sub = reddit_object.subreddit(subname).hot(limit=5)
+        try:
+            i = 1
+            result = "Top 5 posts in /r/{}:\n".format(keyword)
+            for posts in sub:
+                result += "{}. {}\n".format(i, posts.title)
+                i += 1
 
-        elif isinstance(event.source, SourceRoom):
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextMessage(text='Leaving room...')
-            )
-            line_bot_api.leave_room(event.source.room_id)
+        except prawcore.exceptions.Redirect:
+            result = "{} subreddit not found.".format(keyword)
+
+        quickreply(result.strip())
+
+    def slap(subject, target):
+        '''
+        Send a message stating "Subject slapped target with a random object."
+        '''
+        if "Aiden" in target.title():
+            slap_msg = ("I slapped {} with a {} for trying to slap me."
+                        .format(subject, random.choice(slap_items)))
+
+        elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
+              or "myself" in target.lower()):
+            slap_msg = ("I slapped {} with a {} at their request."
+                        .format(subject, random.choice(slap_items)))
 
         else:
+            slap_msg = ("{} slapped {} with a {}."
+                        .format(subject, target,
+                                random.choice(slap_items)))
+
+        quickreply(slap_msg)
+
+    def urban(keyword):
+        '''
+        Send the top definition of keyword in Urban Dictionary.
+        '''
+        item = ud.define(keyword)
+        if item == []:
+            result = "{} not found in urbandictionary.".format(keyword)
+
+        else:
+            result = "{}:\n{}".format(item[0].word, item[0].definition)
+
+        quickreply(result)
+
+    def wiki(keyword):
+        '''
+        Send a summary of a wikipedia article with keyword as the title,
+        or send a list of titles in the disambiguation page.
+
+        '''
+        try:
+            result = wikipedia.summary(keyword)[:2000]
+            if not result.endswith('.'):
+                result = result[:result.rfind('.')+1]
+
+        except wikipedia.exceptions.DisambiguationError:
+            articles = wikipedia.search(keyword)
+            result = "{} disambiguation:\n".format(keyword)
+            for item in articles:
+                result += "{}\n".format(item)
+
+        except wikipedia.exceptions.PageError:
+            result = "{} not found!".format(keyword)
+
+        quickreply(result)
+
+    def wikilang(lang):
+        '''
+        Change wikipedia language.
+        '''
+        if lang in list(wikipedia.languages().keys()):
+            wikipedia.set_lang(lang)
+            quickreply(("Language has been changed to {} successfully."
+                        .format(lang)))
+
+        else:
+            langlist = ("{} not available!\nList of available languages:\n"
+                        .format(lang))
+            for available in list(wikipedia.languages().keys()):
+                langlist += "{}, ".format(available)
+            langlist_1 = langlist[:2000]
+            langlist_1 = langlist_1[:langlist_1.rfind(' ')]
+            langlist_2 = langlist.replace(langlist_1, '').strip(', ')
+
             line_bot_api.reply_message(
-                event.reply_token,
-                TextMessage(text="Bot can't leave from 1:1 chat")
+                event.reply_token, [
+                    TextSendMessage(text=langlist_1),
+                    TextSendMessage(text=langlist_2)
+                ]
             )
 
-    elif text[0] == '/':
+    if text[0] == '/':
         command = text[1:]
-        if command.lower().startswith('wiki '):
-            keyword = command[len('wiki '):].strip()
-            try:
-                wiki_result = wikipedia.summary(keyword)[:2000]
-                if not wiki_result.endswith('.'):
-                    wiki_result = wiki_result[:wiki_result.rfind('.')+1]
 
-            except wikipedia.exceptions.DisambiguationError:
-                wiki_articles = wikipedia.search(keyword)
-                wiki_result = "{} disambiguation:\n".format(keyword)
-                for article in wiki_articles:
-                    wiki_result += "{}\n".format(article)
+        if command.lower().strip().startswith('bye'):
+            bye()
 
-            except wikipedia.exceptions.PageError:
-                wiki_result = "{} not found!".format(keyword)
+        if command.lower().startswith('echo '):
+            echo_msg = command[len('echo '):]
+            quickreply(echo_msg)
 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=wiki_result)
-            )
+        if command.lower().strip().startswith('profile'):
+            getprofile()
 
-        elif command.lower().startswith('wikilang '):
-            lang = command[len('wikilang '):].strip().lower()
-            if lang in list(wikipedia.languages().keys()):
-                wikipedia.set_lang(lang)
-                line_bot_api.reply_message(
-                    event.reply_token,
-                    TextSendMessage(
-                        text=("Language has been changed to {} successfully."
-                              .format(lang))
-                    )
-                )
-
-            else:
-                langlist = ("{} not available!\nList of available languages:\n"
-                            .format(lang))
-                for available in list(wikipedia.languages().keys()):
-                    langlist += "{}, ".format(available)
-                langlist_1 = langlist[:2000]
-                langlist_1 = langlist_1[:langlist_1.rfind(' ')]
-                langlist_2 = langlist.replace(langlist_1, '').strip(', ')
-
-                line_bot_api.reply_message(
-                    event.reply_token, [
-                        TextSendMessage(text=langlist_1),
-                        TextSendMessage(text=langlist_2)
-                    ]
-                )
-
-        elif command.lower().startswith('urban '):
-            keyword = command[len('urban '):].strip()
-            item = ud.define(keyword)
-            if item == []:
-                result = "{} not found in urbandictionary.".format(keyword)
-
-            else:
-                result = "{}:\n{}".format(item[0].word, item[0].definition)
-
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=result)
-            )
-
-        elif command.lower().startswith('reddit '):
+        if command.lower().startswith('reddit '):
             keyword = command[len('reddit '):].strip()
-            sub = reddit.subreddit(keyword).hot(limit=5)
-            try:
-                i = 1
-                result = "Top 5 posts in /r/{}:\n".format(keyword)
-                for posts in sub:
-                    result += "{}. {}\n".format(i, posts.title)
-                    i += 1
+            reddit(keyword)
 
-            except prawcore.exceptions.Redirect:
-                result = "{} subreddit not found.".format(keyword)
+        if command.lower().startswith('shout '):
+            shout_msg = command[len('shout '):].upper()
+            quickreply(shout_msg)
 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=result.strip())
-            )
-
-        elif command.lower().startswith('slap '):
+        if command.lower().startswith('slap '):
             target = command[len('slap '):].strip()
             subject = line_bot_api.get_profile(event.source.user_id)
             subject = subject.display_name
-            if "Aiden" in target.title():
-                slap_msg = ("I slapped {} with a {} for trying to slap me."
-                            .format(subject, random.choice(slap_items)))
+            slap(subject, target)
 
-            elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
-                  or "myself" in target.lower()):
-                slap_msg = ("I slapped {} with a {} at their request."
-                            .format(subject, random.choice(slap_items)))
+        if command.lower().startswith('urban '):
+            keyword = command[len('urban '):].strip()
+            urban(keyword)
 
-            else:
-                slap_msg = ("{} slapped {} with a {}."
-                            .format(subject, target,
-                                    random.choice(slap_items)))
+        if command.lower().startswith('wiki '):
+            keyword = command[len('wiki '):].strip()
+            wiki(keyword)
 
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=slap_msg)
-            )
-
-        elif command.lower().startswith('shout '):
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=command[len('shout '):].upper())
-            )
-
-        elif command.lower().startswith('echo '):
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=command[len('echo '):])
-            )
+        if command.lower().startswith('wikilang '):
+            keyword = command[len('wikilang '):].strip().lower()
+            wikilang(keyword)
 
 
 @handler.add(MessageEvent, message=FileMessage)

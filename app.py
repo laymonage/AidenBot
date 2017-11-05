@@ -59,9 +59,6 @@ slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
 
-kka = ["Ya.", "Tidak.", "Mungkin suatu hari.", "Coba tanya lagi."]
-mcs = ["Yes.", "No.", "Maybe someday.", "Try asking again."]
-
 help_msg = ("These commands will instruct me to:\n\n\n"
             "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
@@ -128,14 +125,41 @@ def handle_text_message(event):
             TextSendMessage(text=msg)
         )
 
-    def ask(lang=None):
+    def ask(question, lang=None):
         '''
         Send something a magic conch shell would say.
         '''
+        kka = ["Ya.", "Tidak."]
+        mcs = ["Yes.", "No."]
+
+        if "Akan" in question.title():
+            kka.append("Mungkin suatu hari.")
+        elif "Will " in question.title():
+            mcs.append("Maybe someday.")
+
+        if ("Belum" in question.title() or
+                "Sudah" in question.title() or
+                "Belom" in question.title() or
+                "Udah" in question.title() or
+                "Udeh" in question.title()):
+            kka.remove("Ya.")
+            kka.remove("Tidak.")
+            kka.append("Sudah.")
+            kka.append("Belum.")
+
         if lang == 'id':
             say = random.choice(kka)
         else:
             say = random.choice(mcs)
+
+        if "jawab" in question.lower() and "lain" in question.lower():
+            say = "Coba tanya lagi."
+        if (("say" in question.lower() or
+             "answer" in question.lower() or
+             "reply" in question.lower()) and
+                ("anything else" in question.lower() or
+                 "other than" in question.lower())):
+            say = "Try asking again."
 
         quickreply(say)
 
@@ -276,7 +300,8 @@ def handle_text_message(event):
         command = text[1:]
 
         if command.lower().strip().startswith('ask '):
-            ask('id')
+            question = command[len('ask '):]
+            ask(question, 'id')
 
         if command.lower().strip().startswith('bye'):
             bye()
@@ -289,7 +314,8 @@ def handle_text_message(event):
             quickreply(help_msg)
 
         if command.lower().strip().startswith('mcs '):
-            ask()
+            question = command[len('mcs '):]
+            ask(question)
 
         if command.lower().strip().startswith('profile'):
             getprofile()

@@ -50,7 +50,7 @@ reddit_object = praw.Reddit(client_id=reddit_client,
                             client_secret=reddit_secret,
                             user_agent='AidenBot-line')
 
-line_bot_api = LineBotApi(channel_access_token)
+AidenBot = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
@@ -118,7 +118,7 @@ def handle_text_message(event):
         '''
         Reply a message with msg as reply content.
         '''
-        line_bot_api.reply_message(
+        AidenBot.reply_message(
             event.reply_token,
             TextSendMessage(text=msg)
         )
@@ -129,11 +129,11 @@ def handle_text_message(event):
         '''
         if isinstance(event.source, SourceGroup):
             quickreply("Leaving group...")
-            line_bot_api.leave_group(event.source.group_id)
+            AidenBot.leave_group(event.source.group_id)
 
         elif isinstance(event.source, SourceRoom):
             quickreply("Leaving room...")
-            line_bot_api.leave_room(event.source.room_id)
+            AidenBot.leave_room(event.source.room_id)
 
         else:
             quickreply("Bot can't leave from 1:1 chat")
@@ -143,7 +143,7 @@ def handle_text_message(event):
         Send display name and status message of a user.
         '''
         if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
-            profile = line_bot_api.get_profile(event.source.user_id)
+            profile = AidenBot.get_profile(event.source.user_id)
             if profile.status_message:
                 status = profile.status_message
             else:
@@ -245,7 +245,7 @@ def handle_text_message(event):
             langlist_1 = langlist_1[:langlist_1.rfind(' ')]
             langlist_2 = langlist.replace(langlist_1, '').strip(', ')
 
-            line_bot_api.reply_message(
+            AidenBot.reply_message(
                 event.reply_token, [
                     TextSendMessage(text=langlist_1),
                     TextSendMessage(text=langlist_2)
@@ -278,7 +278,7 @@ def handle_text_message(event):
 
         if command.lower().startswith('slap '):
             target = command[len('slap '):].strip()
-            subject = line_bot_api.get_profile(event.source.user_id)
+            subject = AidenBot.get_profile(event.source.user_id)
             subject = subject.display_name
             slap(subject, target)
 
@@ -300,7 +300,7 @@ def handle_file_message(event):
     '''
     File message handler
     '''
-    message_content = line_bot_api.get_message_content(event.message.id)
+    message_content = AidenBot.get_message_content(event.message.id)
     with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-',
                                      delete=False) as tf:
         for chunk in message_content.iter_content():
@@ -311,7 +311,7 @@ def handle_file_message(event):
     dist_name = os.path.basename(dist_path)
     os.rename(tempfile_path, dist_path)
 
-    line_bot_api.reply_message(
+    AidenBot.reply_message(
         event.reply_token,
         TextSendMessage(text="Mirror: " + request.host_url +
                         os.path.join('static', 'tmp', dist_name))

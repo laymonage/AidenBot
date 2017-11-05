@@ -136,7 +136,7 @@ def handle_text_message(event):
             AidenBot.leave_room(event.source.room_id)
 
         else:
-            quickreply("Bot can't leave from 1:1 chat")
+            quickreply("I can't leave a 1:1 chat.")
 
     def getprofile():
         '''
@@ -202,7 +202,7 @@ def handle_text_message(event):
             item = ud.define(keyword)[0]
 
         if item == []:
-            result = "{} not found in urbandictionary.".format(keyword)
+            result = "{} not found in UrbanDictionary.".format(keyword)
 
         else:
             result = "{}:\n{}".format(item.word, item.definition)
@@ -318,7 +318,8 @@ def handle_file_message(event):
     AidenBot.reply_message(
         event.reply_token,
         TextSendMessage(text="Mirror: " + request.host_url +
-                        os.path.join('static', 'tmp', dist_name))
+                        (os.path.join('static', 'tmp', dist_name)
+                         .replace(' ', '%20')))
     )
 
 

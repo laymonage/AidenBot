@@ -59,6 +59,19 @@ slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
 
+help_msg = ("These commands will instruct me to:\n\n\n"
+            "/bye : leave this chat room\n\n"
+            "/echo <message> : send <message>\n\n"
+            "/help : send this help message\n\n"
+            "/profile : send your display name and your status message\n\n"
+            "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
+            "/shout <message> : SEND <MESSAGE>\n\n"
+            "/slap <someone> : slap <someone> with a random object\n\n"
+            "/urban <something> : send the top definition of <something> "
+            "in UrbanDictionary\n\n"
+            "/wiki <article> : send the summary of a wiki <article>\n\n"
+            "/wikilang <language> : change /wiki language")
+
 
 def make_static_tmp_dir():
     '''
@@ -248,6 +261,9 @@ def handle_text_message(event):
         if command.lower().startswith('echo '):
             echo_msg = command[len('echo '):]
             quickreply(echo_msg)
+
+        if command.lower().strip().startswith('help'):
+            quickreply(help_msg)
 
         if command.lower().strip().startswith('profile'):
             getprofile()

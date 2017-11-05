@@ -59,10 +59,15 @@ slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
 
+kka = ["Ya.", "Tidak.", "Mungkin suatu hari.", "Coba tanya lagi."]
+mcs = ["Yes.", "No.", "Maybe someday.", "Try asking again."]
+
 help_msg = ("These commands will instruct me to:\n\n\n"
+            "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
             "/echo <message> : send <message>\n\n"
             "/help : send this help message\n\n"
+            "/mcs <question> : like /ask, but in English\n\n"
             "/profile : send your display name and your status message\n\n"
             "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
@@ -122,6 +127,17 @@ def handle_text_message(event):
             event.reply_token,
             TextSendMessage(text=msg)
         )
+
+    def ask(lang=None):
+        '''
+        Send something a magic conch shell would say.
+        '''
+        if lang == 'id':
+            say = random.choice(kka)
+        else:
+            say = random.choice(mcs)
+
+        quickreply(say)
 
     def bye():
         '''
@@ -259,6 +275,9 @@ def handle_text_message(event):
     if text[0] == '/':
         command = text[1:]
 
+        if command.lower().strip().startswith('ask '):
+            ask('id')
+
         if command.lower().strip().startswith('bye'):
             bye()
 
@@ -268,6 +287,9 @@ def handle_text_message(event):
 
         if command.lower().strip().startswith('help'):
             quickreply(help_msg)
+
+        if command.lower().strip().startswith('mcs '):
+            ask()
 
         if command.lower().strip().startswith('profile'):
             getprofile()

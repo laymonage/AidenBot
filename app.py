@@ -103,10 +103,15 @@ def handle_text_message(event):
     if text == '/profile':
         if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
             profile = line_bot_api.get_profile(event.source.user_id)
+            if profile.status_message:
+                status = profile.status_message
+            else:
+                status = ""
+
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text='Display name: ' + profile.display_name +
-                                '\nStatus message: ' + profile.status_message)
+                                '\nStatus message: ' + status)
             )
 
         else:

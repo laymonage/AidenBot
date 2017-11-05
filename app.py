@@ -196,12 +196,16 @@ def handle_text_message(event):
         '''
         Send the top definition of keyword in Urban Dictionary.
         '''
-        item = ud.define(keyword)
+        if keyword.lower() == 'sage':
+            item = ud.define(keyword)[5]
+        else:
+            item = ud.define(keyword)[0]
+
         if item == []:
             result = "{} not found in urbandictionary.".format(keyword)
 
         else:
-            result = "{}:\n{}".format(item[0].word, item[0].definition)
+            result = "{}:\n{}".format(item.word, item.definition)
 
         quickreply(result)
 

@@ -44,6 +44,8 @@ if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
 
+my_id = os.getenv('MY_USER_ID', None)
+
 reddit_client = os.getenv('REDDIT_CLIENT_ID', None)
 reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
 reddit_object = praw.Reddit(client_id=reddit_client,
@@ -216,9 +218,16 @@ def handle_text_message(event):
         '''
         Send a message stating "Subject slapped target with a random object."
         '''
+        subject_name = subject.display_name
+
         if "Aiden" in target.title():
-            slap_msg = ("I slapped {} with a {} for trying to slap me."
-                        .format(subject, random.choice(slap_items)))
+            if subject.user_id == my_id:
+                slap_msg = ("{} gently slapped me.\n"
+                            "Sorry :("
+                            .format(subject_name))
+            else:
+                slap_msg = ("I slapped {} with a {} for trying to slap me."
+                            .format(subject, random.choice(slap_items)))
 
         elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
               or "myself" in target.lower()):
@@ -331,7 +340,6 @@ def handle_text_message(event):
         if command.lower().startswith('slap '):
             target = command[len('slap '):].strip()
             subject = AidenBot.get_profile(event.source.user_id)
-            subject = subject.display_name
             slap(subject, target)
 
         if command.lower().startswith('urban '):

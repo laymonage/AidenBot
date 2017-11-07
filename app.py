@@ -248,8 +248,7 @@ def handle_text_message(event):
                 slap_msg = ("I slapped {} with a {} for trying to slap me."
                             .format(s_name, random.choice(slap_items)))
 
-        elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
-              or "myself" in target.lower()):
+        elif ''.join(c for c in target.lower() if c.isalpha()) == "me":
             if itsme:
                 slap_msg = ("Sorry, {}, but I can't bring myself to "
                             "slap you :("
@@ -261,6 +260,22 @@ def handle_text_message(event):
             else:
                 slap_msg = ("I slapped {} with a {} at their request."
                             .format(s_name, random.choice(slap_items)))
+
+        elif "myself" in target.lower():
+            if itsme:
+                slap_msg = ("Sorry, {}, but I can't let you slap yourself :("
+                            .format(s_name))
+
+            elif has_my_name:
+                slap_msg = slap_msg[:-1] + " AND wanted to slap yourself."
+
+            else:
+                slap_msg = ("{} slapped themself with a {}."
+                            .format(s_name, random.choice(slap_items)))
+
+        elif me.display_name.title() in target.title():
+            slap_msg = ("You shouldn't include my creator's name in your "
+                        "slapping target.")
 
         else:
             slap_msg = ("{} slapped {} with a {}."

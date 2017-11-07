@@ -218,26 +218,53 @@ def handle_text_message(event):
         '''
         Send a message stating "Subject slapped target with a random object."
         '''
-        subject_name = subject.display_name
+        s_name = subject.display_name
+        me = AidenBot.get_profile(my_id)
+        itsme = subject == me
+        has_my_name = not itsme and me.display_name.title() in s_name.title()
+
+        if has_my_name:
+            if me.display_name.lower() == s_name.lower():
+                slap_msg = ("IMPERSONATOR! >:(\n"
+                            "I slapped you back and forth with a {} "
+                            "for impersonating my creator."
+                            .format(random.choice(slap_items)))
+            else:
+                slap_msg = ("NOT FUNNY! >:("
+                            "I slapped you back and forth with a {} "
+                            "for making fun of my creator."
+                            .format(random.choice(slap_items)))
 
         if "Aiden" in target.title():
-            if subject.user_id == my_id:
+            if itsme:
                 slap_msg = ("{} gently slapped me.\n"
-                            "Sorry :("
-                            .format(subject_name))
+                            "Sorry, {} :("
+                            .format(s_name, s_name))
+
+            elif has_my_name:
+                slap_msg = slap_msg[:-1] + " AND trying to slap me."
+
             else:
                 slap_msg = ("I slapped {} with a {} for trying to slap me."
-                            .format(subject, random.choice(slap_items)))
+                            .format(s_name, random.choice(slap_items)))
 
         elif (''.join(c for c in target.lower() if c.isalpha()) == "me"
               or "myself" in target.lower()):
-            slap_msg = ("I slapped {} with a {} at their request."
-                        .format(subject, random.choice(slap_items)))
+            if itsme:
+                slap_msg = ("Sorry, {}, but I can't bring myself to "
+                            "slap you :("
+                            .format(s_name))
+
+            elif has_my_name:
+                slap_msg = slap_msg[:-1] + " AND asking me to slap you."
+
+            else:
+                slap_msg = ("I slapped {} with a {} at their request."
+                            .format(s_name, random.choice(slap_items)))
 
         else:
             slap_msg = ("{} slapped {} with a {}."
-                        .format(subject, target,
-                                random.choice(slap_items)))
+                        .format(s_name, target, random.choice(slap_items)))
 
         quickreply(slap_msg)
 

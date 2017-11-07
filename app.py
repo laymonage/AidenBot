@@ -70,6 +70,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/profile : send your display name and your status message\n\n"
             "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
+            "/shrug : send ¯\\_(ツ)_/¯\n\n"
             "/slap <someone> : slap <someone> with a random object\n\n"
             "/urban <something> : send the top definition of <something> "
             "in UrbanDictionary\n\n"
@@ -378,6 +379,9 @@ def handle_text_message(event):
         if command.lower().startswith('shout '):
             shout_msg = command[len('shout '):].upper()
             quickreply(shout_msg)
+
+        if command.lower().strip().startswith('shrug'):
+            quickreply('¯\\_(ツ)_/¯')
 
         if command.lower().startswith('slap '):
             target = command[len('slap '):].strip()

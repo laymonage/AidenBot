@@ -67,6 +67,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/echo <message> : send <message>\n\n"
             "/help : send this help message\n\n"
             "/mcs <question> : like /ask, but in English\n\n"
+            "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
             "/profile : send your display name and your status message\n\n"
             "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
@@ -368,6 +369,9 @@ def handle_text_message(event):
         if command.lower().strip().startswith('mcs '):
             question = command[len('mcs '):]
             ask(question)
+
+        if command.lower().strip().startswith('lenny'):
+            quickreply('( ͡° ͜ʖ ͡°)')
 
         if command.lower().strip().startswith('profile'):
             getprofile()

@@ -61,6 +61,8 @@ slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
 
+note_items = {}
+
 help_msg = ("These commands will instruct me to:\n\n\n"
             "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
@@ -68,6 +70,9 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/help : send this help message\n\n"
             "/mcs <question> : like /ask, but in English\n\n"
             "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
+            "/notes : send your notes\n\n"
+            "/noteadd <something> : save <something> in your notes\n\n"
+            "/noterem <number> : remove note <number> from your notes\n\n"
             "/profile : send your display name and your status message\n\n"
             "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
@@ -198,6 +203,53 @@ def handle_text_message(event):
 
         else:
             quickreply("Bot can't use profile API without user ID")
+
+    def note_add(user_id, item):
+        '''
+        Save notes for a particular user.
+        '''
+        if user_id not in note_items.keys():
+            note_items[user_id] = []
+
+        if item in note_items[user_id]:
+            quickreply("Note already exists.")
+
+        elif len('num. \n'.join(note_items[user_id] + [item])) > 2000:
+            quickreply(("Your notepad is full. "
+                        "Please remove some of your notes."))
+        else:
+            note_items[user_id].append(item)
+            quickreply("Saved.")
+
+    def note_get(user_id):
+        '''
+        Send notes of a particular user.
+        '''
+        if user_id not in note_items.keys():
+            quickreply("You haven't saved any notes.")
+        elif not note_items[user_id]:
+            quickreply("Your notepad is empty.")
+        else:
+            notes = "Your notes:\n"
+            for num, items in enumerate(note_items[user_id]):
+                notes = "{}. {}\n".format(num+1, items)
+            quickreply(notes[:-1])
+
+    def note_rem(user_id, num):
+        '''
+        Remove an item from a user's notes.
+        '''
+        if user_id not in note_items.keys():
+            quickreply("You haven't saved any notes.")
+        elif not note_items[user_id]:
+            quickreply("Your notepad is empty.")
+        else:
+            try:
+                del note_items[user_id][num-1]
+                quickreply(("Item [{}] has been removed from your notes."
+                            .format(num)))
+            except IndexError:
+                quickreply("Item [{}] is not in your notes.".format(num))
 
     def reddit(subname):
         '''
@@ -372,6 +424,17 @@ def handle_text_message(event):
 
         if command.lower().strip().startswith('lenny'):
             quickreply('( ͡° ͜ʖ ͡°)')
+
+        if command.lower().strip().startswith('notes'):
+            note_get(event.source.user_id)
+
+        if command.lower().startswith('noteadd '):
+            item = command[len('noteadd '):]
+            note_add(event.source.user_id, item)
+
+        if command.lower().strip().startswith('noterem '):
+            item = int(command[len('noterem ')])
+            note_rem(event.source.user_id, item)
 
         if command.lower().strip().startswith('profile'):
             getprofile()

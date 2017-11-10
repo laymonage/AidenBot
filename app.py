@@ -54,6 +54,8 @@ reddit_object = praw.Reddit(client_id=reddit_client,
                             client_secret=reddit_secret,
                             user_agent='AidenBot-line')
 
+wunder_key = os.getenv('WUNDERGROUND_API_KEY', None)
+
 AidenBot = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
@@ -84,6 +86,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/slap <someone> : slap <someone> with a random object\n\n"
             "/urban <something> : send the top definition of <something> "
             "in UrbanDictionary\n\n"
+            "/weather <location> : send current weather in <location>, "
+            "obtained from weather.com\n\n"
             "/wiki <article> : send the summary of a wiki <article>\n\n"
             "/wikilang <language> : change /wiki language")
 
@@ -395,6 +399,33 @@ def handle_text_message(event):
 
         quickreply(result)
 
+    def weather(keyword):
+        '''
+        Send current weather condition of a location, obtained from
+        Weather Underground.
+        '''
+        url = ('http://api.wunderground.com/api/{}/conditions/q/{}.json'
+               .format(wunder_key, keyword).replace(' ', '%20'))
+        data = requests.get(url).json()
+        if 'results' in data['response'].keys():
+            locID = data['response']['results'][0]['l']
+            url = url[:url.find('/q/')] + locID + '.json'
+            data = requests.get(url).json()
+
+        try:
+            data = data['current_observation']
+            result = ("Weather in {}:\n"
+                      "{}\n"
+                      "Temperature: {}°C ({}°F)\n"
+                      "Feels like: {}°C ({}°F)"
+                      .format(data['display_location']['full'],
+                              data['weather'],
+                              data['temp_c'], data['temp_f'],
+                              data['feelslike_c'], data['feelslike_f']))
+        except KeyError:
+            result = "Location is not found or not specific enough."
+        quickreply(result)
+
     def wiki(keyword):
         '''
         Send a summary of a wikipedia article with keyword as the title,
@@ -507,6 +538,10 @@ def handle_text_message(event):
         if command.lower().startswith('urban '):
             keyword = command[len('urban '):].strip()
             urban(keyword)
+
+        if command.lower().startswith('weather '):
+            keyword = command[len('weather '):].strip()
+            weather(keyword)
 
         if command.lower().startswith('wiki '):
             keyword = command[len('wiki '):].strip()

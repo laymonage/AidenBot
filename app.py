@@ -11,6 +11,7 @@ import sys
 import tempfile
 import random
 from argparse import ArgumentParser
+from urllib.parse import urlparse
 
 from flask import Flask, request, abort
 
@@ -30,6 +31,7 @@ import wikipedia
 import urbandictionary as ud
 import praw
 import prawcore
+import requests
 
 
 app = Flask(__name__)
@@ -68,6 +70,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/bye : leave this chat room\n\n"
             "/echo <message> : send <message>\n\n"
             "/help : send this help message\n\n"
+            "/isup <website> : check <website>'s status\n\n"
+            "/isupd <website> : like /isup, but more detailed\n\n"
             "/mcs <question> : like /ask, but in English\n\n"
             "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
             "/notes : send your notes\n\n"
@@ -203,6 +207,43 @@ def handle_text_message(event):
 
         else:
             quickreply("Bot can't use profile API without user ID")
+
+    def isup(site, mode='simple'):
+        '''
+        Send site status received from https://isitup.org
+        '''
+        if not site.startswith('http'):
+            url = 'http://{}'.format(site)
+        else:
+            url = site
+        domain = urlparse(url).netloc
+        api_url = 'https://isitup.org/{}.txt'.format(domain)
+
+        try:
+            data = requests.get(api_url).text
+            data = data.split(', ')
+            status_code = int(data[2])
+        except requests.exceptions.ConnectionError:
+            status_code = 4
+
+        if status_code == 1:
+            result = "{} is up.".format(site)
+        elif status_code == 2:
+            result = "{} seems to be down.".format(site)
+        elif status_code == 3:
+            result = "{} is not a valid domain.".format(site)
+        elif status_code == 4:
+            result = "Sorry, the isitup.org service seems to be down."
+        else:
+            result = "Sorry, I encountered an error in the API."
+
+        if mode == 'detailed' and status_code == 1:
+            result += ("\nIP: {}"
+                       "\nResponse code: {}"
+                       "\nResponse time: {} ms"
+                       .format(data[3], data[4], float(data[5])*1000))
+
+        quickreply(result)
 
     def note_add(user_id, item):
         '''
@@ -417,6 +458,14 @@ def handle_text_message(event):
 
         if command.lower().strip().startswith('help'):
             quickreply(help_msg)
+
+        if command.lower().startswith('isup '):
+            site = command[len('isup '):]
+            isup(site)
+
+        if command.lower().startswith('isupd '):
+            site = command[len('isupd '):]
+            isup(site, 'detailed')
 
         if command.lower().strip().startswith('mcs '):
             question = command[len('mcs '):]

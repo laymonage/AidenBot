@@ -22,7 +22,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, ImageSendMessage,
     SourceUser, SourceGroup, SourceRoom, FileMessage,
     UnfollowEvent, LeaveEvent
 )
@@ -53,6 +53,8 @@ reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
 reddit_object = praw.Reddit(client_id=reddit_client,
                             client_secret=reddit_secret,
                             user_agent='AidenBot-line')
+
+wolfram_appid = os.getenv('WOLFRAMALPHA_APPID', None)
 
 wunder_key = os.getenv('WUNDERGROUND_API_KEY', None)
 
@@ -89,7 +91,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/weather <location> : send current weather in <location>, "
             "obtained from weather.com\n\n"
             "/wiki <article> : send the summary of a wiki <article>\n\n"
-            "/wikilang <language> : change /wiki language")
+            "/wikilang <language> : change /wiki language\n\n"
+            "/wolfram <something> : ask WolframAlpha about <something>")
 
 
 def make_static_tmp_dir():
@@ -473,6 +476,20 @@ def handle_text_message(event):
                 ]
             )
 
+    def wolfram(query):
+        '''
+        Get answer from WolframAlpha.
+        '''
+        url = ('https://api.wolframalpha.com/v1/simple?i={}&appid={}'
+               .format(quote(query), wolfram_appid))
+        AidenBot.reply_message(
+            event.reply_token,
+            ImageSendMessage(
+                original_content_url=url,
+                preview_image_url=url
+            )
+        )
+
     if text[0] == '/':
         command = text[1:]
 
@@ -550,6 +567,10 @@ def handle_text_message(event):
         if command.lower().startswith('wikilang '):
             keyword = command[len('wikilang '):].strip().lower()
             wikilang(keyword)
+
+        if command.lower().startswith('wolfram '):
+            query = command[len('wolfram '):].strip()
+            wolfram(query)
 
 
 @handler.add(MessageEvent, message=FileMessage)

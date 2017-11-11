@@ -92,7 +92,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "obtained from weather.com\n\n"
             "/wiki <article> : send the summary of a wiki <article>\n\n"
             "/wikilang <language> : change /wiki language\n\n"
-            "/wolfram <something> : ask WolframAlpha about <something>")
+            "/wolfram <something> : ask WolframAlpha about <something>\n\n"
+            "/wolframs <something> : short answer version of /wolfram")
 
 
 def make_static_tmp_dir():
@@ -476,19 +477,22 @@ def handle_text_message(event):
                 ]
             )
 
-    def wolfram(query):
+    def wolfram(query, mode='simple'):
         '''
         Get answer from WolframAlpha.
         '''
-        url = ('https://api.wolframalpha.com/v1/simple?i={}&appid={}'
-               .format(quote(query), wolfram_appid))
-        AidenBot.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=url,
-                preview_image_url=url
+        url = ('https://api.wolframalpha.com/v1/{}?i={}&appid={}'
+               .format(mode, quote(query), wolfram_appid))
+        if mode == 'simple':
+            AidenBot.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url=url,
+                    preview_image_url=url
+                )
             )
-        )
+        if mode == 'result':
+            quickreply(requests.get(url).text)
 
     if text[0] == '/':
         command = text[1:]
@@ -571,6 +575,10 @@ def handle_text_message(event):
         if command.lower().startswith('wolfram '):
             query = command[len('wolfram '):].strip()
             wolfram(query)
+
+        if command.lower().startswith('wolframs '):
+            query = command[len('wolframs '):].strip()
+            wolfram(query, 'result')
 
 
 @handler.add(MessageEvent, message=FileMessage)

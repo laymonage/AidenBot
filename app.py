@@ -11,7 +11,7 @@ import sys
 import tempfile
 import random
 from argparse import ArgumentParser
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 
 from flask import Flask, request, abort
 
@@ -405,7 +405,7 @@ def handle_text_message(event):
         Weather Underground.
         '''
         url = ('http://api.wunderground.com/api/{}/conditions/q/{}.json'
-               .format(wunder_key, keyword).replace(' ', '%20'))
+               .format(wunder_key, quote(keyword)))
         data = requests.get(url).json()
         if 'results' in data['response'].keys():
             locID = data['response']['results'][0]['l']
@@ -571,8 +571,7 @@ def handle_file_message(event):
     AidenBot.reply_message(
         event.reply_token,
         TextSendMessage(text="Mirror: " + request.host_url +
-                        (os.path.join('static', 'tmp', dist_name)
-                         .replace(' ', '%20')))
+                        quote((os.path.join('static', 'tmp', dist_name))))
     )
 
 

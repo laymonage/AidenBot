@@ -48,6 +48,9 @@ if channel_access_token is None:
 
 my_id = os.getenv('MY_USER_ID', None)
 
+oxdict_appid = os.getenv('OXFORD_DICT_APPID', None)
+oxdict_key = os.getenv('OXFORD_DICT_APPKEY', None)
+
 reddit_client = os.getenv('REDDIT_CLIENT_ID', None)
 reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
 reddit_object = praw.Reddit(client_id=reddit_client,
@@ -72,6 +75,7 @@ note_items = {}
 help_msg = ("These commands will instruct me to:\n\n\n"
             "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
+            "/define <word> : send definition(s) of <word>\n\n"
             "/echo <message> : send <message>\n\n"
             "/help : send this help message\n\n"
             "/isup <website> : check <website>'s status\n\n"
@@ -198,6 +202,27 @@ def handle_text_message(event):
 
         else:
             quickreply("I can't leave a 1:1 chat.")
+
+    def define(word):
+        '''
+        Send word definition from oxforddictionaries.com
+        '''
+        word = quote(word)
+        url = ('https://od-api.oxforddictionaries.com:443/api/v1/entries/en/{}'
+               .format(word))
+        req = requests.get(url, headers={'app_id': oxdict_appid,
+                                         'app_key': oxdict_key})
+        if "No entry available" in req.text:
+            quickreply('No entry available for "{}".'.format(word))
+            return
+        req = req.json()
+        senses = req['results'][0]['lexicalEntries'][0]['entries'][0]['senses']
+        result = 'Definition(s) of {}:'.format(word)
+        i = 1
+        for each in senses:
+            result += '\n{}. {}'.format(i, each['definitions'][0])
+            i += 1
+        quickreply(result)
 
     def getprofile():
         '''
@@ -503,6 +528,10 @@ def handle_text_message(event):
 
         if command.lower().strip().startswith('bye'):
             bye()
+
+        if command.lower().strip().startswith('define '):
+            word = command[len('define '):]
+            define(word)
 
         if command.lower().startswith('echo '):
             echo_msg = command[len('echo '):]

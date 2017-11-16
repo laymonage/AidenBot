@@ -216,18 +216,19 @@ def handle_text_message(event):
             quickreply('No entry available for "{}".'.format(word))
             return
         req = req.json()
-        lexEntries = req['results'][0]['lexicalEntries']
         result = 'Definition(s) of {}:'.format(word)
         i = 1
-        for each_entry in lexEntries:
-            for each_sense in each_entry['entries'][0]['senses']:
-                if 'crossReferenceMarkers' in each_sense:
-                    search = 'crossReferenceMarkers'
-                else:
-                    search = 'definitions'
-                for each_def in each_sense[search]:
-                    result += '\n{}. {}'.format(i, each_def)
-                    i += 1
+        for each_result in req['results']:
+            for each_lexEntry in each_result['lexicalEntries']:
+                for each_entry in each_lexEntry['entries']:
+                    for each_sense in each_entry['senses']:
+                        if 'crossReferenceMarkers' in each_sense:
+                            search = 'crossReferenceMarkers'
+                        else:
+                            search = 'definitions'
+                        for each_def in each_sense[search]:
+                            result += '\n{}. {}'.format(i, each_def)
+                            i += 1
         quickreply(result)
 
     def getprofile():

@@ -216,8 +216,8 @@ def handle_text_message(event):
             quickreply('No entry available for "{}".'.format(word))
             return
         req = req.json()
-        result = 'Definition(s) of {}:'.format(word)
-        i = 1
+        result = ''
+        i = 0
         for each_result in req['results']:
             for each_lexEntry in each_result['lexicalEntries']:
                 for each_entry in each_lexEntry['entries']:
@@ -227,8 +227,13 @@ def handle_text_message(event):
                         else:
                             search = 'definitions'
                         for each_def in each_sense[search]:
-                            result += '\n{}. {}'.format(i, each_def)
                             i += 1
+                            result += '\n{}. {}'.format(i, each_def)
+
+        if i == 1:
+            result = 'Definition of {}:\n'.format(word) + result[4:]
+        else:
+            result = 'Definitions of {}:'.format(word) + result
         quickreply(result)
 
     def getprofile():

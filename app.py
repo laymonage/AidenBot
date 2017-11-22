@@ -75,6 +75,7 @@ note_items = {}
 help_msg = ("These commands will instruct me to:\n\n\n"
             "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
+            "/cat : send a random cat image from thecatapi.com\n\n"
             "/define <word> : send definition(s) of <word>\n\n"
             "/echo <message> : send <message>\n\n"
             "/help : send this help message\n\n"
@@ -208,11 +209,12 @@ def handle_text_message(event):
         Send a random cat pic from thecatapi.com
         '''
         url = 'http://thecatapi.com/api/images/get'
+        r = requests.get(url)
         AidenBot.reply_message(
             event.reply_token,
             ImageSendMessage(
-                original_content_url=url,
-                preview_image_url=url
+                original_content_url=r.url,
+                preview_image_url=r.url
             )
         )
 

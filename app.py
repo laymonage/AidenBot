@@ -203,6 +203,19 @@ def handle_text_message(event):
         else:
             quickreply("I can't leave a 1:1 chat.")
 
+    def cat():
+        '''
+        Send a random cat pic from thecatapi.com
+        '''
+        url = 'http://thecatapi.com/api/images/get'
+        AidenBot.reply_message(
+            event.reply_token,
+            ImageSendMessage(
+                original_content_url=url,
+                preview_image_url=url
+            )
+        )
+
     def define(word):
         '''
         Send word definition from oxforddictionaries.com
@@ -540,6 +553,9 @@ def handle_text_message(event):
 
         if command.lower().strip().startswith('bye'):
             bye()
+
+        if command.lower().strip().startswith('cat'):
+            cat()
 
         if command.lower().strip().startswith('define '):
             word = command[len('define '):]

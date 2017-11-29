@@ -91,6 +91,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
             "/shrug : send ¯\\_(ツ)_/¯\n\n"
             "/slap <someone> : slap <someone> with a random object\n\n"
+            "/stalkig <username> : send a random image taken from username's "
+            "instagram profile.\n\n"
             "/urban <something> : send the top definition of <something> "
             "in UrbanDictionary\n\n"
             "/weather <location> : send current weather in <location>, "
@@ -437,6 +439,29 @@ def handle_text_message(event):
 
         quickreply(slap_msg)
 
+    def stalkig(username):
+        '''
+        Send a random image taken from username's instagram profile.
+        '''
+        url = 'https://www.instagram.com/{}/?__a=1'.format(username)
+        req = requests.get(url)
+        if req.status_code == 404:
+            quickreply("@{} not found!".format(username))
+        else:
+            req = req.json()
+            if req['user']['is_private']:
+                quickreply("@{} is a private account.".format(username))
+            else:
+                nodes = req['user']['media']['nodes']
+                image = random.choice(nodes)['display_src']
+                AidenBot.reply_message(
+                    event.reply_token,
+                    ImageSendMessage(
+                        original_content_url=image,
+                        preview_image_url=image
+                    )
+                )
+
     def urban(keyword):
         '''
         Send the top definition of keyword in Urban Dictionary.
@@ -613,6 +638,10 @@ def handle_text_message(event):
             target = command[len('slap '):].strip()
             subject = AidenBot.get_profile(event.source.user_id)
             slap(subject, target)
+
+        if command.lower().startswith('stalkig '):
+            username = command[len('stalkig '):].strip()
+            stalkig(username)
 
         if command.lower().startswith('urban '):
             keyword = command[len('urban '):].strip()

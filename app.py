@@ -259,11 +259,11 @@ def handle_text_message(event):
             )
         )
 
-    def define(word):
+    def define(keyword):
         '''
         Send word definition from oxforddictionaries.com
         '''
-        word = quote(word)
+        word = quote(keyword)
         url = ('https://od-api.oxforddictionaries.com:443/api/v1/entries/en/{}'
                .format(word))
         req = requests.get(url, headers={'app_id': oxdict_appid,
@@ -287,9 +287,9 @@ def handle_text_message(event):
                             result += '\n{}. {}'.format(i, each_def)
 
         if i == 1:
-            result = 'Definition of {}:\n'.format(word) + result[4:]
+            result = 'Definition of {}:\n'.format(keyword) + result[4:]
         else:
-            result = 'Definitions of {}:'.format(word) + result
+            result = 'Definitions of {}:'.format(keyword) + result
         quickreply(result)
 
     def getprofile():

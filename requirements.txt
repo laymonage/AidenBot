@@ -1,5 +1,6 @@
 flask
 line-bot-sdk
-wikipedia
-urbandictionary
+kbbi
 praw
+urbandictionary_top
+wikipedia

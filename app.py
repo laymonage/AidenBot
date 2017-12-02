@@ -27,11 +27,12 @@ from linebot.models import (
     UnfollowEvent, LeaveEvent
 )
 
-import wikipedia
-import urbandictionary as ud
+import requests
 import praw
 import prawcore
-import requests
+import wikipedia
+from kbbi import KBBI
+from urbandictionary_top import udtop
 
 from bencoin import AkunBenCoin
 
@@ -86,8 +87,10 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/help : send this help message\n\n"
             "/isup <website> : check <website>'s status\n\n"
             "/isupd <website> : like /isup, but more detailed\n\n"
-            "/mcs <question> : like /ask, but in English\n\n"
+            "/kbbi <something> : send an entry of <something> in KBBI\n\n"
+            "/kbbix <something> : like /kbbi, but with examples (if any)\n\n"
             "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
+            "/mcs <question> : like /ask, but in English\n\n"
             "/notes : send your notes\n\n"
             "/noteadd <something> : save <something> in your notes\n\n"
             "/noterem <number> : remove note <number> from your notes\n\n"
@@ -100,6 +103,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "<username>'s instagram profile.\n\n"
             "/urban <something> : send the top definition of <something> "
             "in UrbanDictionary\n\n"
+            "/urbanx <something> : like /urban, but with examples (if any)\n\n"
             "/weather <location> : send current weather in <location>, "
             "obtained from weather.com\n\n"
             "/wiki <article> : send the summary of a wiki <article>\n\n"
@@ -346,6 +350,19 @@ def handle_text_message(event):
 
         quickreply(result)
 
+    def kbbi_def(keyword, ex=False):
+        '''
+        Send an entry of keyword in KBBI.
+        '''
+        try:
+            result = KBBI(keyword)
+            if ex:
+                result = '\n'.join(result.arti_contoh)
+            result = "Definisi {}:\n{}".format(keyword, result)
+        except KBBI.TidakDitemukan:
+            result = "{} tidak ditemukan dalam KBBI.".format(keyword)
+        quickreply(result)
+
     def note_add(user_id, item):
         '''
         Save notes for a particular user.
@@ -502,21 +519,18 @@ def handle_text_message(event):
                     )
                 )
 
-    def urban(keyword):
+    def urban(keyword, ex=False):
         '''
         Send the top definition of keyword in Urban Dictionary.
         '''
-        if keyword.lower() == 'sage':
-            item = ud.define(keyword)[5]
-        else:
-            item = ud.define(keyword)[0]
-
-        if item == []:
+        try:
+            result = udtop(keyword)
+            if not ex:
+                result = result.definition
+            else:
+                result = str(result)
+        except udtop.TermNotFound:
             result = "{} not found in UrbanDictionary.".format(keyword)
-
-        else:
-            result = "{}:\n{}".format(item.word, item.definition)
-
         quickreply(result)
 
     def weather(keyword):
@@ -627,7 +641,7 @@ def handle_text_message(event):
             cat()
 
         if command.lower().strip().startswith('define '):
-            word = command[len('define '):]
+            word = command[len('define '):].strip()
             define(word)
 
         if command.lower().startswith('echo '):
@@ -638,19 +652,27 @@ def handle_text_message(event):
             quickreply(help_msg)
 
         if command.lower().startswith('isup '):
-            site = command[len('isup '):]
+            site = command[len('isup '):].strip()
             isup(site)
 
         if command.lower().startswith('isupd '):
-            site = command[len('isupd '):]
+            site = command[len('isupd '):].strip()
             isup(site, 'detailed')
+
+        if command.lower().startswith('kbbi '):
+            keyword = command[len('kbbi '):].strip()
+            kbbi_def(keyword)
+
+        if command.lower().startswith('kbbix '):
+            keyword = command[len('kbbix '):].strip()
+            kbbi_def(keyword, ex=True)
+
+        if command.lower().strip().startswith('lenny'):
+            quickreply('( ͡° ͜ʖ ͡°)')
 
         if command.lower().strip().startswith('mcs '):
             question = command[len('mcs '):]
             ask(question)
-
-        if command.lower().strip().startswith('lenny'):
-            quickreply('( ͡° ͜ʖ ͡°)')
 
         if command.lower().strip().startswith('notes'):
             note_get(event.source.user_id)
@@ -689,6 +711,10 @@ def handle_text_message(event):
         if command.lower().startswith('urban '):
             keyword = command[len('urban '):].strip()
             urban(keyword)
+
+        if command.lower().startswith('urbanx '):
+            keyword = command[len('urbanx '):].strip()
+            urban(keyword, ex=True)
 
         if command.lower().startswith('weather '):
             keyword = command[len('weather '):].strip()

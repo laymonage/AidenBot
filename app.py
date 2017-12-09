@@ -51,6 +51,9 @@ if channel_access_token is None:
 
 my_id = os.getenv('MY_USER_ID', None)
 
+imgur_client = os.getenv('IMGUR_CLIENT_ID', None)
+surprise_album = os.getenv('SURPRISE_ALBUM_HASH', None)
+
 oxdict_appid = os.getenv('OXFORD_DICT_APPID', None)
 oxdict_key = os.getenv('OXFORD_DICT_APPKEY', None)
 
@@ -72,6 +75,14 @@ static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
+
+surprises = [image['link']
+             for image in
+             requests.get('https://api.imgur.com/3/album/{}'
+                          .format(surprise_album),
+                          headers={'authorization':
+                                   'Client-ID {}'.format(imgur_client)}).json()
+             ['data']['images']]
 
 tickets = []
 
@@ -98,6 +109,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/slap <someone> : slap <someone> with a random object\n\n"
             "/stalkig <username> : send a random image taken from "
             "<username>'s instagram profile.\n\n"
+            "/surprise : ?\n\n"
             "/ticket <something> : send <something> as a suggestion or bug "
             "report to the developer\n\n"
             "/urban <something> : send the top definition of <something> "
@@ -471,6 +483,22 @@ def handle_text_message(event):
                     )
                 )
 
+    def surprise():
+        '''
+        ?
+        '''
+        orig_url = random.choice(surprises)
+        prev_url = 'http://thecatapi.com/api/images/get'
+        prev_url = requests.get(prev_url)
+        prev_url = prev_url.url.replace('http://', 'https://')
+        AidenBot.reply_message(
+            event.reply_token,
+            ImageSendMessage(
+                original_content_url=orig_url,
+                preview_image_url=prev_url
+            )
+        )
+
     def ticket_add(item):
         '''
         Add a ticket.
@@ -694,6 +722,9 @@ def handle_text_message(event):
         if command.lower().startswith('stalkig '):
             username = command[len('stalkig '):].strip()
             stalkig(username)
+
+        if command.lower().strip().startswith('surprise'):
+            surprise()
 
         if command.lower().startswith('ticket '):
             item = command[len('ticket '):]

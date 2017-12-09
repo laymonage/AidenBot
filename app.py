@@ -73,7 +73,7 @@ slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
 
-note_items = {}
+tickets = []
 
 akun = {}
 
@@ -91,9 +91,6 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/kbbix <something> : like /kbbi, but with examples (if any)\n\n"
             "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
             "/mcs <question> : like /ask, but in English\n\n"
-            "/notes : send your notes\n\n"
-            "/noteadd <something> : save <something> in your notes\n\n"
-            "/noterem <number> : remove note <number> from your notes\n\n"
             "/profile : send your display name and your status message\n\n"
             "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
             "/shout <message> : SEND <MESSAGE>\n\n"
@@ -101,6 +98,8 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/slap <someone> : slap <someone> with a random object\n\n"
             "/stalkig <username> : send a random image taken from "
             "<username>'s instagram profile.\n\n"
+            "/ticket <something> : send <something> as a suggestion or bug "
+            "report to the developer\n\n"
             "/urban <something> : send the top definition of <something> "
             "in UrbanDictionary\n\n"
             "/urbanx <something> : like /urban, but with examples (if any)\n\n"
@@ -363,53 +362,6 @@ def handle_text_message(event):
             result = "{} tidak ditemukan dalam KBBI.".format(keyword)
         quickreply(result)
 
-    def note_add(user_id, item):
-        '''
-        Save notes for a particular user.
-        '''
-        if user_id not in note_items.keys():
-            note_items[user_id] = []
-
-        if item in note_items[user_id]:
-            quickreply("Note already exists.")
-
-        elif len('num. \n'.join(note_items[user_id] + [item])) > 2000:
-            quickreply(("Your notepad is full. "
-                        "Please remove some of your notes."))
-        else:
-            note_items[user_id].append(item)
-            quickreply("Saved.")
-
-    def note_get(user_id):
-        '''
-        Send notes of a particular user.
-        '''
-        if user_id not in note_items.keys():
-            quickreply("You haven't saved any notes.")
-        elif not note_items[user_id]:
-            quickreply("Your notepad is empty.")
-        else:
-            notes = "Your notes:\n"
-            for num, items in enumerate(note_items[user_id]):
-                notes = "{}. {}\n".format(num+1, items)
-            quickreply(notes[:-1])
-
-    def note_rem(user_id, num):
-        '''
-        Remove an item from a user's notes.
-        '''
-        if user_id not in note_items.keys():
-            quickreply("You haven't saved any notes.")
-        elif not note_items[user_id]:
-            quickreply("Your notepad is empty.")
-        else:
-            try:
-                del note_items[user_id][num-1]
-                quickreply(("Item [{}] has been removed from your notes."
-                            .format(num)))
-            except IndexError:
-                quickreply("Item [{}] is not in your notes.".format(num))
-
     def reddit(subname):
         '''
         Send top 5 posts' titles in a subreddit.
@@ -518,6 +470,52 @@ def handle_text_message(event):
                         preview_image_url=image
                     )
                 )
+
+    def ticket_add(item):
+        '''
+        Add a ticket.
+        '''
+        if item in tickets:
+            quickreply("Ticket already exists.")
+
+        elif len('num. \n'.join(tickets + [item])) > 2000:
+            quickreply(("There are currently too many tickets.\n"
+                        "Please wait until the developer deletes "
+                        "some of them."))
+        else:
+            tickets.append(item)
+            quickreply("Ticket sent!")
+
+    def ticket_get():
+        '''
+        Send current tickets.
+        '''
+        if not tickets:
+            quickreply("No tickets.")
+        else:
+            current_tickets = "Tickets:"
+            for num, items in enumerate(tickets):
+                current_tickets += "\n{}. {}".format(num+1, items)
+            quickreply(current_tickets)
+
+    def ticket_rem(num):
+        '''
+        Remove an item from a user's notes.
+        '''
+        if not tickets:
+            quickreply("No tickets.")
+        elif num == 'all':
+            del tickets[:]
+            quickreply("Ticket list has been emptied")
+        else:
+            try:
+                num = int(num)
+                del tickets[num-1]
+                quickreply("Ticket [{}] has been removed.".format(num))
+            except IndexError:
+                quickreply("Ticket [{}] is not available.".format(num))
+            except ValueError:
+                quickreply("Wrong format.")
 
     def urban(keyword, ex=False):
         '''
@@ -674,17 +672,6 @@ def handle_text_message(event):
             question = command[len('mcs '):]
             ask(question)
 
-        if command.lower().strip().startswith('notes'):
-            note_get(event.source.user_id)
-
-        if command.lower().startswith('noteadd '):
-            item = command[len('noteadd '):]
-            note_add(event.source.user_id, item)
-
-        if command.lower().strip().startswith('noterem '):
-            item = int(command[len('noterem ')])
-            note_rem(event.source.user_id, item)
-
         if command.lower().strip().startswith('profile'):
             getprofile()
 
@@ -707,6 +694,19 @@ def handle_text_message(event):
         if command.lower().startswith('stalkig '):
             username = command[len('stalkig '):].strip()
             stalkig(username)
+
+        if command.lower().startswith('ticket '):
+            item = command[len('ticket '):]
+            ticket_add(item)
+
+        if command.lower().strip().startswith('tix'):
+            if event.source.user_id == my_id:
+                ticket_get()
+
+        if command.lower().strip().startswith('rtix '):
+            if event.source.user_id == my_id:
+                item = command[len('rtix '):]
+                ticket_rem(item)
 
         if command.lower().startswith('urban '):
             keyword = command[len('urban '):].strip()

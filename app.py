@@ -87,6 +87,9 @@ surprises = [image['link']
              ['data']['images']]
 
 tickets = []
+
+wiki_settings = {}
+
 # Items end
 
 help_msg = ("These commands will instruct me to:\n\n\n"
@@ -164,6 +167,12 @@ def handle_text_message(event):
     Text message handler
     '''
     text = event.message.text
+    if isinstance(event.source, SourceGroup):
+        set_id = event.source.group_id
+    elif isinstance(event.source, SourceRoom):
+        set_id = event.source.room_id
+    else:
+        set_id = event.source.user_id
 
     def quickreply(msg):
         '''
@@ -565,6 +574,11 @@ def handle_text_message(event):
         or send a list of titles in the disambiguation page.
         '''
         try:
+            wikipedia.set_lang(wiki_settings[set_id])
+        except KeyError:
+            wikipedia.set_lang('en')
+
+        try:
             result = wikipedia.summary(keyword)[:2000]
 
         except wikipedia.exceptions.DisambiguationError:
@@ -585,7 +599,7 @@ def handle_text_message(event):
         Change wikipedia language.
         '''
         if lang in list(wikipedia.languages().keys()):
-            wikipedia.set_lang(lang)
+            wiki_settings[set_id] = lang
             quickreply(("Language has been changed to {} successfully."
                         .format(lang)))
             return

@@ -10,7 +10,6 @@ import os
 import sys
 import tempfile
 import random
-from argparse import ArgumentParser
 from urllib.parse import urlparse, quote
 
 from flask import Flask, request, abort
@@ -72,6 +71,9 @@ handler = WebhookHandler(channel_secret)
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
+# Items begin
+akun = {}
+
 slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
               "wooden stick", "nightstick", "golf club", "katana", "hand",
               "laptop", "book", "drawing book", "mouse", "keyboard"]
@@ -81,17 +83,16 @@ surprises = [image['link']
              requests.get('https://api.imgur.com/3/album/{}'
                           .format(surprise_album),
                           headers={'authorization':
-                                   'Client-ID {}'.format(imgur_client)}).json()
+                                   'Client-ID ' + imgur_client}).json()
              ['data']['images']]
 
 tickets = []
-
-akun = {}
+# Items end
 
 help_msg = ("These commands will instruct me to:\n\n\n"
             "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
             "/bye : leave this chat room\n\n"
-            "/bencoin: send bencoin app's help message\n\n"
+            "/bencoin: [Fasilkom UI 2017 joke] send bencoin help message\n\n"
             "/cat : send a random cat image from thecatapi.com\n\n"
             "/define <word> : send definition(s) of <word>\n\n"
             "/echo <message> : send <message>\n\n"
@@ -117,7 +118,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
             "/urbanx <something> : like /urban, but with examples (if any)\n\n"
             "/weather <location> : send current weather in <location>, "
             "obtained from weather.com\n\n"
-            "/wiki <article> : send the summary of a wiki <article>\n\n"
+            "/wiki <article> : send the summary of a Wikipedia <article>\n\n"
             "/wikilang <language> : change /wiki language\n\n"
             "/wolfram <something> : ask WolframAlpha about <something>\n\n"
             "/wolframs <something> : short answer version of /wolfram")
@@ -163,39 +164,6 @@ def handle_text_message(event):
     Text message handler
     '''
     text = event.message.text
-
-    # BenCoin begin
-    def daftar(Nama, Jenis):
-        '''
-        Mendaftarkan akun baru di BenCoin dengan nama nasabah
-        dan jenis tabungan yang telah ditentukan.
-        '''
-        if Nama in akun:
-            return "Akun atas nama {} sudah ada dalam sistem!".format(Nama)
-        if Jenis in AkunBenCoin.spek:
-            akun[Nama] = AkunBenCoin(Nama, Jenis)
-            return ("Akun atas nama {} telah terdaftar dengan paket {}."
-                    .format(Nama, Jenis))
-        return "Jenis tabungan salah."
-
-    def perbarui_kurs(mata_uang, kurs, mode):
-        '''
-        Memperbarui daftar kurs valuta asing dengan menambah
-        atau mengubah nilai tukar suatu mata uang dengan kurs
-        yang ditentukan.
-        '''
-        if kurs <= 0:
-            return "Rate mata uang harus > 0."
-
-        if mata_uang not in AkunBenCoin.valas and mode == 'ubah':
-            return "Mata uang {} belum terdaftar!".format(mata_uang)
-        AkunBenCoin.valas[mata_uang] = kurs
-        if mode == 'ubah':
-            return ("Rate mata uang {} berubah menjadi {} per BenCoin."
-                    .format(mata_uang, kurs))
-        return ("Mata uang {} telah ditambahkan dengan rate {} per BenCoin."
-                .format(mata_uang, kurs))
-    # BenCoin end
 
     def quickreply(msg):
         '''
@@ -286,6 +254,7 @@ def handle_text_message(event):
         if "No entry available" in req.text:
             quickreply('No entry available for "{}".'.format(word))
             return
+
         req = req.json()
         result = ''
         i = 0
@@ -367,11 +336,12 @@ def handle_text_message(event):
         '''
         try:
             result = KBBI(keyword)
+        except KBBI.TidakDitemukan:
+            result = "{} tidak ditemukan dalam KBBI.".format(keyword)
+        else:
             if ex:
                 result = '\n'.join(result.arti_contoh)
             result = "Definisi {}:\n{}".format(keyword, result)
-        except KBBI.TidakDitemukan:
-            result = "{} tidak ditemukan dalam KBBI.".format(keyword)
         quickreply(result)
 
     def reddit(subname):
@@ -381,15 +351,13 @@ def handle_text_message(event):
         sub = reddit_object.subreddit(subname).hot(limit=5)
         try:
             i = 1
-            result = "Top 5 posts in /r/{}:\n".format(keyword)
+            result = "Top 5 posts in /r/{}:".format(keyword)
             for posts in sub:
-                result += "{}. {}\n".format(i, posts.title)
+                result += "\n{}. {}".format(i, posts.title)
                 i += 1
-
         except prawcore.exceptions.Redirect:
             result = "{} subreddit not found.".format(keyword)
-
-        quickreply(result.strip())
+        quickreply(result)
 
     def slap(subject, target):
         '''
@@ -417,10 +385,8 @@ def handle_text_message(event):
                 slap_msg = ("{} gently slapped me.\n"
                             "Sorry, {} :("
                             .format(s_name, s_name))
-
             elif has_my_name:
                 slap_msg = slap_msg[:-1] + " AND trying to slap me."
-
             else:
                 slap_msg = ("I slapped {} with a {} for trying to slap me."
                             .format(s_name, random.choice(slap_items)))
@@ -430,10 +396,8 @@ def handle_text_message(event):
                 slap_msg = ("Sorry, {}, but I can't bring myself to "
                             "slap you :("
                             .format(s_name))
-
             elif has_my_name:
                 slap_msg = slap_msg[:-1] + " AND asking me to slap you."
-
             else:
                 slap_msg = ("I slapped {} with a {} at their request."
                             .format(s_name, random.choice(slap_items)))
@@ -442,10 +406,8 @@ def handle_text_message(event):
             if itsme:
                 slap_msg = ("Sorry, {}, but I can't let you slap yourself :("
                             .format(s_name))
-
             elif has_my_name:
                 slap_msg = slap_msg[:-1] + " AND wanted to slap yourself."
-
             else:
                 slap_msg = ("{} slapped themself with a {}."
                             .format(s_name, random.choice(slap_items)))
@@ -468,20 +430,22 @@ def handle_text_message(event):
         req = requests.get(url)
         if req.status_code == 404:
             quickreply("@{} not found!".format(username))
-        else:
-            req = req.json()
-            if req['user']['is_private']:
-                quickreply("@{} is a private account.".format(username))
-            else:
-                nodes = req['user']['media']['nodes']
-                image = random.choice(nodes)['display_src']
-                AidenBot.reply_message(
-                    event.reply_token,
-                    ImageSendMessage(
-                        original_content_url=image,
-                        preview_image_url=image
-                    )
-                )
+            return
+
+        req = req.json()
+        if req['user']['is_private']:
+            quickreply("@{} is a private account.".format(username))
+            return
+
+        nodes = req['user']['media']['nodes']
+        image = random.choice(nodes)['display_src']
+        AidenBot.reply_message(
+            event.reply_token,
+            ImageSendMessage(
+                original_content_url=image,
+                preview_image_url=image
+            )
+        )
 
     def surprise():
         '''
@@ -505,14 +469,15 @@ def handle_text_message(event):
         '''
         if item in tickets:
             quickreply("Ticket already exists.")
-
-        elif len('num. \n'.join(tickets + [item])) > 2000:
+            return
+        if len('num. \n'.join(tickets + [item])) > 2000:
             quickreply(("There are currently too many tickets.\n"
                         "Please wait until the developer deletes "
                         "some of them."))
-        else:
-            tickets.append(item)
-            quickreply("Ticket sent!")
+            return
+
+        tickets.append(item)
+        quickreply("Ticket sent!")
 
     def ticket_get():
         '''
@@ -520,11 +485,12 @@ def handle_text_message(event):
         '''
         if not tickets:
             quickreply("No tickets.")
-        else:
-            current_tickets = "Tickets:"
-            for num, items in enumerate(tickets):
-                current_tickets += "\n{}. {}".format(num+1, items)
-            quickreply(current_tickets)
+            return
+
+        current_tickets = "Tickets:"
+        for num, items in enumerate(tickets):
+            current_tickets += "\n{}. {}".format(num+1, items)
+        quickreply(current_tickets)
 
     def ticket_rem(num):
         '''
@@ -532,18 +498,21 @@ def handle_text_message(event):
         '''
         if not tickets:
             quickreply("No tickets.")
-        elif num == 'all':
+            return
+        if num == 'all':
             del tickets[:]
             quickreply("Ticket list has been emptied")
+            return
+
+        try:
+            num = int(num)
+            del tickets[num-1]
+        except IndexError:
+            quickreply("Ticket [{}] is not available.".format(num))
+        except ValueError:
+            quickreply("Wrong format.")
         else:
-            try:
-                num = int(num)
-                del tickets[num-1]
-                quickreply("Ticket [{}] has been removed.".format(num))
-            except IndexError:
-                quickreply("Ticket [{}] is not available.".format(num))
-            except ValueError:
-                quickreply("Wrong format.")
+            quickreply("Ticket [{}] has been removed.".format(num))
 
     def urban(keyword, ex=False):
         '''
@@ -551,12 +520,13 @@ def handle_text_message(event):
         '''
         try:
             result = udtop(keyword)
+        except udtop.TermNotFound:
+            result = "{} not found in UrbanDictionary.".format(keyword)
+        else:
             if not ex:
                 result = result.definition
             else:
                 result = str(result)
-        except udtop.TermNotFound:
-            result = "{} not found in UrbanDictionary.".format(keyword)
         quickreply(result)
 
     def weather(keyword):
@@ -567,8 +537,11 @@ def handle_text_message(event):
         url = ('http://api.wunderground.com/api/{}/conditions/q/{}.json'
                .format(wunder_key, quote(keyword)))
         data = requests.get(url).json()
-        if 'results' in data['response'].keys():
+        try:
             locID = data['response']['results'][0]['l']
+        except KeyError:
+            pass
+        else:
             url = url[:url.find('/q/')] + locID + '.json'
             data = requests.get(url).json()
 
@@ -590,22 +563,21 @@ def handle_text_message(event):
         '''
         Send a summary of a wikipedia article with keyword as the title,
         or send a list of titles in the disambiguation page.
-
         '''
         try:
             result = wikipedia.summary(keyword)[:2000]
-            if not result.endswith('.'):
-                result = result[:result.rfind('.')+1]
 
         except wikipedia.exceptions.DisambiguationError:
             articles = wikipedia.search(keyword)
-            result = "{} disambiguation:\n".format(keyword)
+            result = "{} disambiguation:".format(keyword)
             for item in articles:
-                result += "{}\n".format(item)
-
+                result += "\n{}".format(item)
         except wikipedia.exceptions.PageError:
             result = "{} not found!".format(keyword)
 
+        else:
+            if not result.endswith('.'):
+                result = result[:result.rfind('.')+1]
         quickreply(result)
 
     def wikilang(lang):
@@ -616,22 +588,22 @@ def handle_text_message(event):
             wikipedia.set_lang(lang)
             quickreply(("Language has been changed to {} successfully."
                         .format(lang)))
+            return
 
-        else:
-            langlist = ("{} not available!\nList of available languages:\n"
-                        .format(lang))
-            for available in list(wikipedia.languages().keys()):
-                langlist += "{}, ".format(available)
-            langlist_1 = langlist[:2000]
-            langlist_1 = langlist_1[:langlist_1.rfind(' ')]
-            langlist_2 = langlist.replace(langlist_1, '').strip(', ')
+        langlist = ("{} not available!\nList of available languages:\n"
+                    .format(lang))
+        for available in list(wikipedia.languages().keys()):
+            langlist += "{}, ".format(available)
+        langlist_1 = langlist[:2000]
+        langlist_1 = langlist_1[:langlist_1.rfind(' ')]
+        langlist_2 = langlist.replace(langlist_1, '').strip(', ')
 
-            AidenBot.reply_message(
-                event.reply_token, [
-                    TextSendMessage(text=langlist_1),
-                    TextSendMessage(text=langlist_2)
-                ]
-            )
+        AidenBot.reply_message(
+            event.reply_token, [
+                TextSendMessage(text=langlist_1),
+                TextSendMessage(text=langlist_2)
+            ]
+        )
 
     def wolfram(query, mode='simple'):
         '''
@@ -649,6 +621,39 @@ def handle_text_message(event):
             )
         if mode == 'result':
             quickreply(requests.get(url).text)
+
+    # BenCoin begin
+    def daftar(Nama, Jenis):
+        '''
+        Mendaftarkan akun baru di BenCoin dengan nama nasabah
+        dan jenis tabungan yang telah ditentukan.
+        '''
+        if Nama in akun:
+            return "Akun atas nama {} sudah ada dalam sistem!".format(Nama)
+        if Jenis in AkunBenCoin.spek:
+            akun[Nama] = AkunBenCoin(Nama, Jenis)
+            return ("Akun atas nama {} telah terdaftar dengan paket {}."
+                    .format(Nama, Jenis))
+        return "Jenis tabungan salah."
+
+    def perbarui_kurs(mata_uang, kurs, mode):
+        '''
+        Memperbarui daftar kurs valuta asing dengan menambah
+        atau mengubah nilai tukar suatu mata uang dengan kurs
+        yang ditentukan.
+        '''
+        if kurs <= 0:
+            return "Rate mata uang harus > 0."
+
+        if mata_uang not in AkunBenCoin.valas and mode == 'ubah':
+            return "Mata uang {} belum terdaftar!".format(mata_uang)
+        AkunBenCoin.valas[mata_uang] = kurs
+        if mode == 'ubah':
+            return ("Rate mata uang {} berubah menjadi {} per BenCoin."
+                    .format(mata_uang, kurs))
+        return ("Mata uang {} telah ditambahkan dengan rate {} per BenCoin."
+                .format(mata_uang, kurs))
+    # BenCoin end
 
     if text[0] == '/':
         command = text[1:]
@@ -860,15 +865,8 @@ def handle_leave():
 
 
 if __name__ == "__main__":
-    arg_parser = ArgumentParser(
-        usage='Usage: python ' + __file__ + ' [--port <port>] [--help]'
-    )
-    arg_parser.add_argument('-p', '--port', default=8000, help='port')
-    arg_parser.add_argument('-d', '--debug', default=False, help='debug')
-    options = arg_parser.parse_args()
-
     # Create temporary directory for download content
     make_static_tmp_dir()
-    port = int(os.environ.get('PORT', 5000))
 
-    app.run(host='0.0.0.0', debug=options.debug, port=port)
+    port = int(os.getenv('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

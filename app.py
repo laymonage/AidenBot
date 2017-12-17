@@ -6,6 +6,7 @@ Early test 3: indev
 from __future__ import unicode_literals
 
 import errno
+import json
 import os
 import sys
 import tempfile
@@ -26,6 +27,7 @@ from linebot.models import (
     UnfollowEvent, LeaveEvent
 )
 
+import dropbox
 import requests
 import praw
 import prawcore
@@ -49,6 +51,10 @@ if channel_access_token is None:
     sys.exit(1)
 
 my_id = os.getenv('MY_USER_ID', None)
+
+dropbox_access_token = os.getenv('DROPBOX_ACCESS_TOKEN', None)
+dbx = dropbox.Dropbox(dropbox_access_token)
+tickets_path = os.getenv('TICKETS_FILE_PATH', None)
 
 imgur_client = os.getenv('IMGUR_CLIENT_ID', None)
 surprise_album = os.getenv('SURPRISE_ALBUM_HASH', None)
@@ -85,8 +91,6 @@ surprises = [image['link']
                           headers={'authorization':
                                    'Client-ID ' + imgur_client}).json()
              ['data']['images']]
-
-tickets = []
 
 wiki_settings = {}
 
@@ -476,6 +480,8 @@ def handle_text_message(event):
         '''
         Add a ticket.
         '''
+        tickets = json.loads(dbx.files_download(tickets_path)[1]
+                             .content.decode('utf-8'))
         if item in tickets:
             quickreply("Ticket already exists.")
             return
@@ -486,12 +492,16 @@ def handle_text_message(event):
             return
 
         tickets.append(item)
+        dbx.files_upload(json.dumps(tickets).encode('utf-8'), tickets_path,
+                         dropbox.files.WriteMode.overwrite)
         quickreply("Ticket sent!")
 
     def ticket_get():
         '''
         Send current tickets.
         '''
+        tickets = json.loads(dbx.files_download(tickets_path)[1]
+                             .content.decode('utf-8'))
         if not tickets:
             quickreply("No tickets.")
             return
@@ -505,23 +515,26 @@ def handle_text_message(event):
         '''
         Remove an item from a user's notes.
         '''
+        tickets = json.loads(dbx.files_download(tickets_path)[1]
+                             .content.decode('utf-8'))
         if not tickets:
             quickreply("No tickets.")
             return
         if num == 'all':
             del tickets[:]
-            quickreply("Ticket list has been emptied")
-            return
-
-        try:
-            num = int(num)
-            del tickets[num-1]
-        except IndexError:
-            quickreply("Ticket [{}] is not available.".format(num))
-        except ValueError:
-            quickreply("Wrong format.")
+            quickreply("Ticket list has been emptied.")
         else:
-            quickreply("Ticket [{}] has been removed.".format(num))
+            try:
+                num = int(num)
+                del tickets[num-1]
+            except IndexError:
+                quickreply("Ticket [{}] is not available.".format(num))
+            except ValueError:
+                quickreply("Wrong format.")
+            else:
+                quickreply("Ticket [{}] has been removed.".format(num))
+        dbx.files_upload(json.dumps(tickets).encode('utf-8'), tickets_path,
+                         dropbox.files.WriteMode.overwrite)
 
     def urban(keyword, ex=False):
         '''

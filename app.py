@@ -349,8 +349,8 @@ def handle_text_message(event):
         '''
         try:
             result = KBBI(keyword)
-        except KBBI.TidakDitemukan:
-            result = "{} tidak ditemukan dalam KBBI.".format(keyword)
+        except KBBI.TidakDitemukan as e:
+            result = str(e)
         else:
             if ex:
                 result = '\n'.join(result.arti_contoh)
@@ -542,8 +542,8 @@ def handle_text_message(event):
         '''
         try:
             result = udtop(keyword)
-        except udtop.TermNotFound:
-            result = "{} not found in UrbanDictionary.".format(keyword)
+        except udtop.TermNotFound as e:
+            result = str(e)
         else:
             if not ex:
                 result = result.definition

@@ -169,7 +169,7 @@ def handle_text_message(event):
 
     elif text.split()[0] in ('DAFTAR', 'TAMBAH', 'UBAH', 'SETOR',
                              'INFO', 'TRANSFER', 'TARIK', 'BANTUAN'):
-        penangan_operasi(event.source.user_id, text.strip())
+        quickreply(penangan_operasi(event.source.user_id, text.strip()))
 
 
 @handler.add(MessageEvent, message=FileMessage)

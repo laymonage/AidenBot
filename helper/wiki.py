@@ -48,8 +48,7 @@ def wiki_lang(lang, set_id):
     '''
     if lang in list(wikipedia.languages().keys()):
         wiki_settings[set_id] = lang
-        return (True, "Language has been changed to {} successfully."
-                .format(lang))
+        return "Language has been changed to {} successfully.".format(lang)
 
     langlist = ("{} not available!\nList of available languages:\n"
                 .format(lang))
@@ -59,4 +58,4 @@ def wiki_lang(lang, set_id):
     langlist_1 = langlist_1[:langlist_1.rfind(' ')]
     langlist_2 = langlist.replace(langlist_1, '').strip(', ')
 
-    return (False, langlist_1, langlist_2)
+    return (langlist_1, langlist_2)

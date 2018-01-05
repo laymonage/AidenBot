@@ -104,7 +104,10 @@ def handle_text_message(event):
         content = []
         for idx, msg in enumerate(msgs):
             if mode[idx] == 'text':
-                content.append(TextSendMessage(text=msg))
+                if isinstance(msg, tuple):
+                    content = [TextSendMessage(text=item) for item in msg]
+                else:
+                    content.append(TextSendMessage(text=msg))
             elif mode[idx] == 'image':
                 content.append(ImageSendMessage(original_content_url=msg,
                                                 preview_image_url=msg))

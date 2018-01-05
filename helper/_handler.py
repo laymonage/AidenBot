@@ -56,7 +56,6 @@ single_arg_commands = {'define': define,
                        'mcs': ask,
                        'mock': mock,
                        'palindrome': is_palindrome,
-                       'reddit': reddit_hot,
                        'shout': shout,
                        'ticket': ticket_add,
                        'urban': urban,
@@ -115,5 +114,9 @@ def command_handler(text, user, me, set_id):
     elif cmd[0] == 'cat':
         result = cat()
         result = ('image', result)
+
+    elif cmd[0] == 'reddit':
+        command = command[1].split()
+        result = ('text', reddit_hot(command[0], command[-1]))
 
     return result

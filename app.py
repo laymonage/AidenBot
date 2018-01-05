@@ -1,17 +1,13 @@
 '''
 AidenBot
-Early test 3: indev
+v0.9: modular
 '''
 
-from __future__ import unicode_literals
-
 import errno
-import json
 import os
 import sys
 import tempfile
-import random
-from urllib.parse import urlparse, quote
+from urllib.parse import quote
 
 from flask import Flask, request, abort
 
@@ -27,15 +23,8 @@ from linebot.models import (
     UnfollowEvent, LeaveEvent
 )
 
-import dropbox
-import requests
-import praw
-import prawcore
-import wikipedia
-from kbbi import KBBI
-from urbandictionary_top import udtop
-
-from bencoin import AkunBenCoin
+from helper._handler import command_handler
+from helper.bencoin import penangan_operasi
 
 
 app = Flask(__name__)
@@ -50,85 +39,13 @@ if channel_access_token is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
 
-my_id = os.getenv('MY_USER_ID', None)
-
-dropbox_access_token = os.getenv('DROPBOX_ACCESS_TOKEN', None)
-dbx = dropbox.Dropbox(dropbox_access_token)
-tickets_path = os.getenv('TICKETS_FILE_PATH', None)
-
-imgur_client = os.getenv('IMGUR_CLIENT_ID', None)
-surprise_album = os.getenv('SURPRISE_ALBUM_HASH', None)
-
-oxdict_appid = os.getenv('OXFORD_DICT_APPID', None)
-oxdict_key = os.getenv('OXFORD_DICT_APPKEY', None)
-
-reddit_client = os.getenv('REDDIT_CLIENT_ID', None)
-reddit_secret = os.getenv('REDDIT_CLIENT_SECRET', None)
-reddit_object = praw.Reddit(client_id=reddit_client,
-                            client_secret=reddit_secret,
-                            user_agent='AidenBot-line')
-
-wolfram_appid = os.getenv('WOLFRAMALPHA_APPID', None)
-
-wunder_key = os.getenv('WUNDERGROUND_API_KEY', None)
-
 AidenBot = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
-# Items begin
-akun = {}
-
-slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar", "crowbar",
-              "wooden stick", "nightstick", "golf club", "katana", "hand",
-              "laptop", "book", "drawing book", "mouse", "keyboard"]
-
-surprises = [image['link']
-             for image in
-             requests.get('https://api.imgur.com/3/album/{}'
-                          .format(surprise_album),
-                          headers={'authorization':
-                                   'Client-ID ' + imgur_client}).json()
-             ['data']['images']]
-
-wiki_settings = {}
-
-# Items end
-
-help_msg = ("These commands will instruct me to:\n\n\n"
-            "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
-            "/bye : leave this chat room\n\n"
-            "/bencoin: [Fasilkom UI 2017 joke] send bencoin help message\n\n"
-            "/cat : send a random cat image from thecatapi.com\n\n"
-            "/define <word> : send definition(s) of <word>\n\n"
-            "/echo <message> : send <message>\n\n"
-            "/help : send this help message\n\n"
-            "/isup <website> : check <website>'s status\n\n"
-            "/isupd <website> : like /isup, but more detailed\n\n"
-            "/kbbi <something> : send an entry of <something> in KBBI\n\n"
-            "/kbbix <something> : like /kbbi, but with examples (if any)\n\n"
-            "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
-            "/mcs <question> : like /ask, but in English\n\n"
-            "/profile : send your display name and your status message\n\n"
-            "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
-            "/shout <message> : SEND <MESSAGE>\n\n"
-            "/shrug : send ¯\\_(ツ)_/¯\n\n"
-            "/slap <someone> : slap <someone> with a random object\n\n"
-            "/stalkig <username> : send a random image taken from "
-            "<username>'s instagram profile.\n\n"
-            "/surprise : ?\n\n"
-            "/ticket <something> : send <something> as a suggestion or bug "
-            "report to the developer\n\n"
-            "/urban <something> : send the top definition of <something> "
-            "in UrbanDictionary\n\n"
-            "/urbanx <something> : like /urban, but with examples (if any)\n\n"
-            "/weather <location> : send current weather in <location>, "
-            "obtained from weather.com\n\n"
-            "/wiki <article> : send the summary of a Wikipedia <article>\n\n"
-            "/wikilang <language> : change /wiki language\n\n"
-            "/wolfram <something> : ask WolframAlpha about <something>\n\n"
-            "/wolframs <something> : short answer version of /wolfram")
+my_id = os.getenv('MY_USER_ID', None)
+me = AidenBot.get_profile(my_id)
 
 
 def make_static_tmp_dir():
@@ -154,7 +71,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    app.logger.info(("Request body: ", body))
 
     # handle webhook body
     try:
@@ -171,6 +88,7 @@ def handle_text_message(event):
     Text message handler
     '''
     text = event.message.text
+    subject = AidenBot.get_profile(event.source.user_id)
     if isinstance(event.source, SourceGroup):
         set_id = event.source.group_id
     elif isinstance(event.source, SourceRoom):
@@ -178,52 +96,24 @@ def handle_text_message(event):
     else:
         set_id = event.source.user_id
 
-    def quickreply(msg):
+    def quickreply(*msgs, mode=('text',)*5):
         '''
         Reply a message with msg as reply content.
         '''
+        msgs = msgs[:5]
+        content = []
+        for idx, msg in enumerate(msgs):
+            if mode[idx] == 'text':
+                content.append(TextSendMessage(text=msg))
+            elif mode[idx] == 'image':
+                content.append(ImageSendMessage(original_content_url=msg,
+                                                preview_image_url=msg))
+            elif mode[idx] == 'custimg':
+                content.append(ImageSendMessage(original_content_url=msg[0],
+                                                preview_image_url=msg[1]))
         AidenBot.reply_message(
-            event.reply_token,
-            TextSendMessage(text=msg)
+            event.reply_token, content
         )
-
-    def ask(question, lang=None):
-        '''
-        Send something a magic conch shell would say.
-        '''
-        kka = ["Ya.", "Tidak."]
-        mcs = ["Yes.", "No."]
-
-        if "Akan" in question.title():
-            kka.append("Mungkin suatu hari.")
-        elif "Will " in question.title():
-            mcs.append("Maybe someday.")
-
-        if ("Belum" in question.title() or
-                "Sudah" in question.title() or
-                "Belom" in question.title() or
-                "Udah" in question.title() or
-                "Udeh" in question.title()):
-            kka.remove("Ya.")
-            kka.remove("Tidak.")
-            kka.append("Sudah.")
-            kka.append("Belum.")
-
-        if lang == 'id':
-            say = random.choice(kka)
-        else:
-            say = random.choice(mcs)
-
-        if "jawab" in question.lower() and "lain" in question.lower():
-            say = "Coba tanya lagi."
-        if (("say" in question.lower() or
-             "answer" in question.lower() or
-             "reply" in question.lower()) and
-                ("anything else" in question.lower() or
-                 "other than" in question.lower())):
-            say = "Try asking again."
-
-        quickreply(say)
 
     def bye():
         '''
@@ -239,55 +129,6 @@ def handle_text_message(event):
 
         else:
             quickreply("I can't leave a 1:1 chat.")
-
-    def cat():
-        '''
-        Send a random cat pic from thecatapi.com
-        '''
-        url = 'http://thecatapi.com/api/images/get'
-        req = requests.get(url)
-        url = req.url.replace('http://', 'https://')
-        AidenBot.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=url,
-                preview_image_url=url
-            )
-        )
-
-    def define(keyword):
-        '''
-        Send word definition from oxforddictionaries.com
-        '''
-        word = quote(keyword)
-        url = ('https://od-api.oxforddictionaries.com:443/api/v1/entries/en/{}'
-               .format(word))
-        req = requests.get(url, headers={'app_id': oxdict_appid,
-                                         'app_key': oxdict_key})
-        if "No entry available" in req.text:
-            quickreply('No entry available for "{}".'.format(word))
-            return
-
-        req = req.json()
-        result = ''
-        i = 0
-        for each_result in req['results']:
-            for each_lexEntry in each_result['lexicalEntries']:
-                for each_entry in each_lexEntry['entries']:
-                    for each_sense in each_entry['senses']:
-                        if 'crossReferenceMarkers' in each_sense:
-                            search = 'crossReferenceMarkers'
-                        else:
-                            search = 'definitions'
-                        for each_def in each_sense[search]:
-                            i += 1
-                            result += '\n{}. {}'.format(i, each_def)
-
-        if i == 1:
-            result = 'Definition of {}:\n'.format(keyword) + result[4:]
-        else:
-            result = 'Definitions of {}:'.format(keyword) + result
-        quickreply(result)
 
     def getprofile():
         '''
@@ -306,550 +147,29 @@ def handle_text_message(event):
         else:
             quickreply("Bot can't use profile API without user ID")
 
-    def isup(site, mode='simple'):
-        '''
-        Send site status received from https://isitup.org
-        '''
-        if not site.startswith('http'):
-            url = 'http://{}'.format(site)
-        else:
-            url = site
-        domain = urlparse(url).netloc
-        api_url = 'https://isitup.org/{}.txt'.format(domain)
-
-        try:
-            data = requests.get(api_url).text
-            data = data.split(', ')
-            status_code = int(data[2])
-        except requests.exceptions.ConnectionError:
-            status_code = 4
-
-        if status_code == 1:
-            result = "{} is up.".format(site)
-        elif status_code == 2:
-            result = "{} seems to be down.".format(site)
-        elif status_code == 3:
-            result = "{} is not a valid domain.".format(site)
-        elif status_code == 4:
-            result = "Sorry, the isitup.org service seems to be down."
-        else:
-            result = "Sorry, I encountered an error in the API."
-
-        if mode == 'detailed' and status_code == 1:
-            result += ("\nIP: {}"
-                       "\nResponse code: {}"
-                       "\nResponse time: {} ms"
-                       .format(data[3], data[4], float(data[5])*1000))
-
-        quickreply(result)
-
-    def kbbi_def(keyword, ex=False):
-        '''
-        Send an entry of keyword in KBBI.
-        '''
-        try:
-            result = KBBI(keyword)
-        except KBBI.TidakDitemukan as e:
-            result = str(e)
-        else:
-            if ex:
-                result = '\n'.join(result.arti_contoh)
-            result = "Definisi {}:\n{}".format(keyword, result)
-        quickreply(result)
-
-    def reddit(subname):
-        '''
-        Send top 5 posts' titles in a subreddit.
-        '''
-        sub = reddit_object.subreddit(subname).hot(limit=5)
-        try:
-            i = 1
-            result = "Top 5 posts in /r/{}:".format(keyword)
-            for posts in sub:
-                result += "\n{}. {}".format(i, posts.title)
-                i += 1
-        except prawcore.exceptions.Redirect:
-            result = "{} subreddit not found.".format(keyword)
-        quickreply(result)
-
-    def slap(subject, target):
-        '''
-        Send a message stating "Subject slapped target with a random object."
-        '''
-        s_name = subject.display_name
-        me = AidenBot.get_profile(my_id)
-        itsme = subject == me
-        has_my_name = not itsme and me.display_name.title() in s_name.title()
-
-        if has_my_name:
-            if me.display_name.lower() == s_name.lower():
-                slap_msg = ("IMPERSONATOR! >:(\n"
-                            "I slapped you back and forth with a {} "
-                            "for impersonating my creator."
-                            .format(random.choice(slap_items)))
-            else:
-                slap_msg = ("NOT FUNNY! >:("
-                            "I slapped you back and forth with a {} "
-                            "for making fun of my creator."
-                            .format(random.choice(slap_items)))
-
-        if "Aiden" in target.title():
-            if itsme:
-                slap_msg = ("{} gently slapped me.\n"
-                            "Sorry, {} :("
-                            .format(s_name, s_name))
-            elif has_my_name:
-                slap_msg = slap_msg[:-1] + " AND trying to slap me."
-            else:
-                slap_msg = ("I slapped {} with a {} for trying to slap me."
-                            .format(s_name, random.choice(slap_items)))
-
-        elif ''.join(c for c in target.lower() if c.isalpha()) == "me":
-            if itsme:
-                slap_msg = ("Sorry, {}, but I can't bring myself to "
-                            "slap you :("
-                            .format(s_name))
-            elif has_my_name:
-                slap_msg = slap_msg[:-1] + " AND asking me to slap you."
-            else:
-                slap_msg = ("I slapped {} with a {} at their request."
-                            .format(s_name, random.choice(slap_items)))
-
-        elif "myself" in target.lower():
-            if itsme:
-                slap_msg = ("Sorry, {}, but I can't let you slap yourself :("
-                            .format(s_name))
-            elif has_my_name:
-                slap_msg = slap_msg[:-1] + " AND wanted to slap yourself."
-            else:
-                slap_msg = ("{} slapped themself with a {}."
-                            .format(s_name, random.choice(slap_items)))
-
-        elif me.display_name.title() in target.title():
-            slap_msg = ("You shouldn't include my creator's name in your "
-                        "slapping target.")
-
-        else:
-            slap_msg = ("{} slapped {} with a {}."
-                        .format(s_name, target, random.choice(slap_items)))
-
-        quickreply(slap_msg)
-
-    def stalkig(username):
-        '''
-        Send a random image taken from username's instagram profile.
-        '''
-        url = 'https://www.instagram.com/{}/?__a=1'.format(username)
-        req = requests.get(url)
-        if req.status_code == 404:
-            quickreply("@{} not found!".format(username))
-            return
-
-        req = req.json()
-        if req['user']['is_private']:
-            quickreply("@{} is a private account.".format(username))
-            return
-
-        nodes = req['user']['media']['nodes']
-        image = random.choice(nodes)['display_src']
-        AidenBot.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=image,
-                preview_image_url=image
-            )
-        )
-
-    def surprise():
-        '''
-        ?
-        '''
-        orig_url = random.choice(surprises)
-        prev_url = 'http://thecatapi.com/api/images/get'
-        prev_url = requests.get(prev_url)
-        prev_url = prev_url.url.replace('http://', 'https://')
-        AidenBot.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=orig_url,
-                preview_image_url=prev_url
-            )
-        )
-
-    def ticket_add(item):
-        '''
-        Add a ticket.
-        '''
-        tickets = json.loads(dbx.files_download(tickets_path)[1]
-                             .content.decode('utf-8'))
-        if item in tickets:
-            quickreply("Ticket already exists.")
-            return
-        if len('num. \n'.join(tickets + [item])) > 2000:
-            quickreply(("There are currently too many tickets.\n"
-                        "Please wait until the developer deletes "
-                        "some of them."))
-            return
-
-        tickets.append(item)
-        dbx.files_upload(json.dumps(tickets).encode('utf-8'), tickets_path,
-                         dropbox.files.WriteMode.overwrite)
-        quickreply("Ticket sent!")
-
-    def ticket_get():
-        '''
-        Send current tickets.
-        '''
-        tickets = json.loads(dbx.files_download(tickets_path)[1]
-                             .content.decode('utf-8'))
-        if not tickets:
-            quickreply("No tickets.")
-            return
-
-        current_tickets = "Tickets:"
-        for num, items in enumerate(tickets):
-            current_tickets += "\n{}. {}".format(num+1, items)
-        quickreply(current_tickets)
-
-    def ticket_rem(num):
-        '''
-        Remove an item from a user's notes.
-        '''
-        tickets = json.loads(dbx.files_download(tickets_path)[1]
-                             .content.decode('utf-8'))
-        if not tickets:
-            quickreply("No tickets.")
-            return
-        if num == 'all':
-            del tickets[:]
-            quickreply("Ticket list has been emptied.")
-        else:
-            try:
-                num = int(num)
-                del tickets[num-1]
-            except IndexError:
-                quickreply("Ticket [{}] is not available.".format(num))
-            except ValueError:
-                quickreply("Wrong format.")
-            else:
-                quickreply("Ticket [{}] has been removed.".format(num))
-        dbx.files_upload(json.dumps(tickets).encode('utf-8'), tickets_path,
-                         dropbox.files.WriteMode.overwrite)
-
-    def urban(keyword, ex=False):
-        '''
-        Send the top definition of keyword in Urban Dictionary.
-        '''
-        try:
-            result = udtop(keyword)
-        except udtop.TermNotFound as e:
-            result = str(e)
-        else:
-            if not ex:
-                result = result.definition
-            else:
-                result = str(result)
-        quickreply(result)
-
-    def weather(keyword):
-        '''
-        Send current weather condition of a location, obtained from
-        Weather Underground.
-        '''
-        url = ('http://api.wunderground.com/api/{}/conditions/q/{}.json'
-               .format(wunder_key, quote(keyword)))
-        data = requests.get(url).json()
-        try:
-            locID = data['response']['results'][0]['l']
-        except KeyError:
-            pass
-        else:
-            url = url[:url.find('/q/')] + locID + '.json'
-            data = requests.get(url).json()
-
-        try:
-            data = data['current_observation']
-            result = ("Weather in {}:\n"
-                      "{}\n"
-                      "Temperature: {}°C ({}°F)\n"
-                      "Feels like: {}°C ({}°F)"
-                      .format(data['display_location']['full'],
-                              data['weather'],
-                              data['temp_c'], data['temp_f'],
-                              data['feelslike_c'], data['feelslike_f']))
-        except KeyError:
-            result = "Location is not found or not specific enough."
-        quickreply(result)
-
-    def wiki(keyword):
-        '''
-        Send a summary of a wikipedia article with keyword as the title,
-        or send a list of titles in the disambiguation page.
-        '''
-        try:
-            wikipedia.set_lang(wiki_settings[set_id])
-        except KeyError:
-            wikipedia.set_lang('en')
-
-        try:
-            result = wikipedia.summary(keyword)[:2000]
-
-        except wikipedia.exceptions.DisambiguationError:
-            articles = wikipedia.search(keyword)
-            result = "{} disambiguation:".format(keyword)
-            for item in articles:
-                result += "\n{}".format(item)
-        except wikipedia.exceptions.PageError:
-            result = "{} not found!".format(keyword)
-
-        else:
-            if not result.endswith('.'):
-                result = result[:result.rfind('.')+1]
-        quickreply(result)
-
-    def wikilang(lang):
-        '''
-        Change wikipedia language.
-        '''
-        if lang in list(wikipedia.languages().keys()):
-            wiki_settings[set_id] = lang
-            quickreply(("Language has been changed to {} successfully."
-                        .format(lang)))
-            return
-
-        langlist = ("{} not available!\nList of available languages:\n"
-                    .format(lang))
-        for available in list(wikipedia.languages().keys()):
-            langlist += "{}, ".format(available)
-        langlist_1 = langlist[:2000]
-        langlist_1 = langlist_1[:langlist_1.rfind(' ')]
-        langlist_2 = langlist.replace(langlist_1, '').strip(', ')
-
-        AidenBot.reply_message(
-            event.reply_token, [
-                TextSendMessage(text=langlist_1),
-                TextSendMessage(text=langlist_2)
-            ]
-        )
-
-    def wolfram(query, mode='simple'):
-        '''
-        Get answer from WolframAlpha.
-        '''
-        url = ('https://api.wolframalpha.com/v1/{}?i={}&appid={}'
-               .format(mode, quote(query), wolfram_appid))
-        if mode == 'simple':
-            AidenBot.reply_message(
-                event.reply_token,
-                ImageSendMessage(
-                    original_content_url=url,
-                    preview_image_url=url
-                )
-            )
-        if mode == 'result':
-            quickreply(requests.get(url).text)
-
-    # BenCoin begin
-    def daftar(Nama, Jenis):
-        '''
-        Mendaftarkan akun baru di BenCoin dengan nama nasabah
-        dan jenis tabungan yang telah ditentukan.
-        '''
-        if Nama in akun:
-            return "Akun atas nama {} sudah ada dalam sistem!".format(Nama)
-        if Jenis in AkunBenCoin.spek:
-            akun[Nama] = AkunBenCoin(Nama, Jenis)
-            return ("Akun atas nama {} telah terdaftar dengan paket {}."
-                    .format(Nama, Jenis))
-        return "Jenis tabungan salah."
-
-    def perbarui_kurs(mata_uang, kurs, mode):
-        '''
-        Memperbarui daftar kurs valuta asing dengan menambah
-        atau mengubah nilai tukar suatu mata uang dengan kurs
-        yang ditentukan.
-        '''
-        if kurs <= 0:
-            return "Rate mata uang harus > 0."
-
-        if mata_uang not in AkunBenCoin.valas and mode == 'ubah':
-            return "Mata uang {} belum terdaftar!".format(mata_uang)
-        AkunBenCoin.valas[mata_uang] = kurs
-        if mode == 'ubah':
-            return ("Rate mata uang {} berubah menjadi {} per BenCoin."
-                    .format(mata_uang, kurs))
-        return ("Mata uang {} telah ditambahkan dengan rate {} per BenCoin."
-                .format(mata_uang, kurs))
-    # BenCoin end
-
     if text[0] == '/':
         command = text[1:]
-
-        if command.lower().strip().startswith('ask '):
-            question = command[len('ask '):]
-            ask(question, 'id')
-
-        if command.lower().strip().startswith('bencoin'):
-            quickreply(AkunBenCoin.intro)
-
         if command.lower().strip().startswith('bye'):
             bye()
-
-        if command.lower().strip().startswith('cat'):
-            cat()
-
-        if command.lower().strip().startswith('define '):
-            word = command[len('define '):].strip()
-            define(word)
-
-        if command.lower().startswith('echo '):
-            echo_msg = command[len('echo '):]
-            quickreply(echo_msg)
-
-        if command.lower().strip().startswith('help'):
-            quickreply(help_msg)
-
-        if command.lower().startswith('isup '):
-            site = command[len('isup '):].strip()
-            isup(site)
-
-        if command.lower().startswith('isupd '):
-            site = command[len('isupd '):].strip()
-            isup(site, 'detailed')
-
-        if command.lower().startswith('kbbi '):
-            keyword = command[len('kbbi '):].strip()
-            kbbi_def(keyword)
-
-        if command.lower().startswith('kbbix '):
-            keyword = command[len('kbbix '):].strip()
-            kbbi_def(keyword, ex=True)
-
-        if command.lower().strip().startswith('lenny'):
-            quickreply('( ͡° ͜ʖ ͡°)')
-
-        if command.lower().strip().startswith('mcs '):
-            question = command[len('mcs '):]
-            ask(question)
-
-        if command.lower().strip().startswith('profile'):
+        elif command.lower().strip().startswith('profile'):
             getprofile()
+        else:
+            result = command_handler(command, subject, me, set_id)
+            try:
+                if result[0] in ('text', 'image', 'custimg'):
+                    quickreply(*result[1:], mode=(result[0],)*len(result[1:]))
+                elif result[0] == 'multi':
+                    content = [[], []]
+                    for item in result[1]:
+                        content[0].append(item[0])
+                        content[1].append(item[1])
+                    quickreply(*content[1], mode=content[0])
+            except TypeError:
+                pass
 
-        if command.lower().startswith('reddit '):
-            keyword = command[len('reddit '):].strip()
-            reddit(keyword)
-
-        if command.lower().startswith('shout '):
-            shout_msg = command[len('shout '):].upper()
-            quickreply(shout_msg)
-
-        if command.lower().strip().startswith('shrug'):
-            quickreply('¯\\_(ツ)_/¯')
-
-        if command.lower().startswith('slap '):
-            target = command[len('slap '):].strip()
-            subject = AidenBot.get_profile(event.source.user_id)
-            slap(subject, target)
-
-        if command.lower().startswith('stalkig '):
-            username = command[len('stalkig '):].strip()
-            stalkig(username)
-
-        if command.lower().strip().startswith('surprise'):
-            surprise()
-
-        if command.lower().startswith('ticket '):
-            item = command[len('ticket '):]
-            ticket_add(item)
-
-        if command.lower().strip().startswith('tix'):
-            if event.source.user_id == my_id:
-                ticket_get()
-
-        if command.lower().strip().startswith('rtix '):
-            if event.source.user_id == my_id:
-                item = command[len('rtix '):]
-                ticket_rem(item)
-
-        if command.lower().startswith('urban '):
-            keyword = command[len('urban '):].strip()
-            urban(keyword)
-
-        if command.lower().startswith('urbanx '):
-            keyword = command[len('urbanx '):].strip()
-            urban(keyword, ex=True)
-
-        if command.lower().startswith('weather '):
-            keyword = command[len('weather '):].strip()
-            weather(keyword)
-
-        if command.lower().startswith('wiki '):
-            keyword = command[len('wiki '):].strip()
-            wiki(keyword)
-
-        if command.lower().startswith('wikilang '):
-            keyword = command[len('wikilang '):].strip().lower()
-            wikilang(keyword)
-
-        if command.lower().startswith('wolfram '):
-            query = command[len('wolfram '):].strip()
-            wolfram(query)
-
-        if command.lower().startswith('wolframs '):
-            query = command[len('wolframs '):].strip()
-            wolfram(query, 'result')
-
-    # BenCoin begin
-    try:
-        perintah = text.split()
-        operasi = perintah[0]
-
-        if operasi == 'DAFTAR':
-            nama, jenis = perintah[1].title(), perintah[2].title()
-            msg = daftar(nama, jenis)
-            quickreply(msg)
-
-        elif operasi == 'TAMBAH':
-            MATA_UANG, nilai_tukar = perintah[1].upper(), int(perintah[2])
-            msg = perbarui_kurs(MATA_UANG, nilai_tukar, 'tambah')
-            quickreply(msg)
-
-        elif operasi == 'UBAH':
-            MATA_UANG, nilai_tukar = perintah[1].upper(), int(perintah[2])
-            msg = perbarui_kurs(MATA_UANG, int(nilai_tukar), 'ubah')
-            quickreply(msg)
-
-        elif operasi == 'SETOR':
-            nama = perintah[1].title()
-            jumlah, MATA_UANG = int(perintah[2]), perintah[3].upper()
-            msg = akun[nama].setor(jumlah, MATA_UANG)
-            quickreply(msg)
-
-        elif operasi == 'INFO':
-            nama = perintah[1].title()
-            msg = str(akun[nama])
-            quickreply(msg)
-
-        elif operasi == 'TRANSFER':
-            nama, penerima = perintah[1].title(), perintah[2].title()
-            jumlah = int(perintah[3])
-            msg = akun[nama].transfer(akun[penerima], jumlah)
-            quickreply(msg)
-
-        elif operasi == 'TARIK':
-            nama = perintah[1].title()
-            jumlah, MATA_UANG = int(perintah[2]), perintah[3].upper()
-            msg = akun[nama].tarik(jumlah, MATA_UANG)
-            quickreply(msg)
-
-    except IndexError:
-        quickreply("Format perintah yang Anda masukkan salah.")
-    except KeyError as e:
-        quickreply(("Akun atas nama {} belum terdaftar dalam sistem."
-                    .format(e.args[0])))
-    except ValueError:
-        quickreply("Format nilai yang Anda masukkan salah.")
-    # BenCoin end
+    elif text.split()[0] in ('DAFTAR', 'TAMBAH', 'UBAH', 'SETOR',
+                             'INFO', 'TRANSFER', 'TARIK', 'BANTUAN'):
+        penangan_operasi(event.source.user_id, text.strip())
 
 
 @handler.add(MessageEvent, message=FileMessage)
@@ -869,9 +189,11 @@ def handle_file_message(event):
     os.rename(tempfile_path, dist_path)
 
     AidenBot.reply_message(
-        event.reply_token,
-        TextSendMessage(text="Mirror: " + request.host_url +
-                        quote((os.path.join('static', 'tmp', dist_name))))
+        event.reply_token, [
+            TextSendMessage(text="Mirror:"),
+            TextSendMessage(text=request.host_url +
+                            quote((os.path.join('static', 'tmp', dist_name))))
+            ]
     )
 
 

@@ -116,6 +116,6 @@ def command_handler(text, user, me, set_id):
 
     elif cmd[0] == 'reddit':
         command = command[1].split()
-        result = ('text', reddit_hot(command[0], command[-1]))
+        result = ('text', reddit_hot(command[0], command[-1], split=True))
 
     return result

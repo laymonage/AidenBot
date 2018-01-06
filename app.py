@@ -104,7 +104,7 @@ def handle_text_message(event):
         content = []
         for idx, msg in enumerate(msgs):
             if mode[idx] == 'text':
-                if isinstance(msg, tuple):
+                if isinstance(msg, (tuple, list)):
                     content = [TextSendMessage(text=item) for item in msg]
                 else:
                     content.append(TextSendMessage(text=msg))

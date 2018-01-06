@@ -49,3 +49,16 @@ def is_palindrome(text, perfect=False):
     if test == test[::-1]:
         return text + " is a palindrome!"
     return text + " is not a palindrome."
+
+
+def rng(ceil, floor=1):
+    '''
+    Return a random integer from floor to ceil (inclusive).
+    '''
+    try:
+        floor, ceil = int(floor), int(ceil)
+        result = ("From {} to {}, I pick {}."
+                  .format(floor, ceil, str(random.randint(floor, ceil))))
+    except ValueError:
+        result = "Wrong format."
+    return result

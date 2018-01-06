@@ -12,7 +12,7 @@ from .kbbih import kbbi_def
 from .mcs import ask
 from .oxdict import define
 from .reddit import reddit_hot
-from .simpletext import echo, shout, mock, is_palindrome
+from .simpletext import echo, shout, mock, is_palindrome, rng
 from .slapper import slap
 from .stalker import stalkig
 from .ticket import ticket_add, ticket_rem, ticket_get

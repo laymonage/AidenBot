@@ -3,8 +3,8 @@ Command handler module for AidenBot
 '''
 
 from . import (
-    AkunBenCoin, cat, echo, shout, mock, is_palindrome, isup,
-    kbbi_def, ask, define, reddit_hot, slap, stalkig,
+    AkunBenCoin, cat, echo, shout, mock, is_palindrome, rng,
+    isup, kbbi_def, ask, define, reddit_hot, slap, stalkig,
     ticket_add, ticket_rem, ticket_get, surprise, urban,
     wiki_get, wiki_lang, wolfram, weather
 )
@@ -12,7 +12,7 @@ from . import (
 help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
             "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
-            "profile, reddit, shout, shrug, slap, stalkig, surprise, "
+            "profile, reddit, rng, shout, shrug, slap, stalkig, surprise, "
             "ticket, urban, urbanx, weather, wiki, wikilang, wolfram, "
             "wolframs\n"
             "Use /help <command> for more information.")
@@ -93,6 +93,11 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                       "Get hot <limit> posts' titles in <subreddit>.\n"
                       "<limit> is optional, default is 5, maximum is 25.\n"
                       "Example: /reddit showerthoughts 7",
+
+            'rng': "Usage: /rng <floor> <ceiling>\n"
+                   "Get a random integer in <floor>..<ceiling> (inclusive).\n"
+                   "<floor> is optional, default is 1.\n"
+                   "Example: /rng 4815 162342",
 
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
@@ -247,5 +252,11 @@ def command_handler(text, user, me, set_id):
     elif cmd[0] == 'reddit':
         command = command[1].split()
         result = ('text', reddit_hot(command[0], command[-1], split=True))
+
+    elif cmd[0] == 'rng':
+        try:
+            result = rng(cmd[2], cmd[1])
+        except IndexError:
+            result = rng(cmd[1])
 
     return result

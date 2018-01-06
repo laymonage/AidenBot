@@ -262,14 +262,16 @@ def daftar(ID, Nama, Jenis):
                 return ("Akun atas nama {} sudah ada dalam sistem."
                         "Mohon gunakan nama lain untuk akun Anda."
                         .format(Nama))
+            akun[Nama] = akun.pop(tautan[ID])
             akun[Nama].nama = Nama
             tautan[ID] = Nama
-            return ("Nama akun BenCoin Anda telah diubah menjadi {}"
+            return ("Nama akun BenCoin Anda telah diubah menjadi {}."
                     .format(Nama))
     if Jenis in AkunBenCoin.spek:
         if ID in tautan:
             msg = ("Akun BenCoin Anda telah didaftarkan ulang atas nama {} "
                    "dengan paket {}.".format(Nama, Jenis))
+            del akun[tautan[ID]]
         else:
             msg = ("Akun BenCoin Anda telah terdaftar atas nama {} "
                    "dengan paket {}.".format(Nama, Jenis))
@@ -293,7 +295,7 @@ def perbarui_kurs(mata_uang, kurs, mode):
         return "Rate mata uang harus > 0."
 
     if mata_uang not in AkunBenCoin.valas and mode == 'ubah':
-        return "Mata uang {} belum terdaftar!".format(mata_uang)
+        return "Mata uang {} belum terdaftar.".format(mata_uang)
     AkunBenCoin.valas[mata_uang] = kurs
     if mode == 'ubah':
         msg = ("Rate mata uang {} berubah menjadi {} per BenCoin."

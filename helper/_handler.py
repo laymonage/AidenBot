@@ -12,7 +12,7 @@ from . import (
 help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
             "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
-            "profile, reddit, rng, rpick, shout, shrug, slap, stalkig, "
+            "pick, profile, reddit, rng, shout, shrug, slap, stalkig, "
             "surprise, ticket, urban, urbanx, weather, wiki, wikilang, "
             "wolfram, wolframs\n"
             "Use /help <command> for more information.")
@@ -85,6 +85,10 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                            "Check if <something> is a perfect palindrome\n"
                            "Example: /ppalindrome kasur nababan rusak",
 
+            'pick': "Usage: /pick <something1>;<something2>;<somethingN>\n"
+                    "Pick a random item from a semicolon-separated list.\n"
+                    "Example: /pick Dota;LoL;Mobile Legends",
+
             'profile': "Usage: /profile\n"
                        "Send your display name and your status message "
                        "(if any).",
@@ -96,13 +100,9 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
 
             'rng': "Usage: /rng <floor> <ceiling>\n"
                    "Random (integer) number generator in range "
-                   "<floor>..<ceiling> (inclusive).\n"
+                   "<floor>..<ceiling> (inclusive, ceiling > floor).\n"
                    "<floor> is optional, default is 1.\n"
                    "Example: /rng 4815 162342",
-
-            'rpick': "Usage: /rpick <something1>;<something2>;<somethingn>\n"
-                     "Pick a random item from a semicolon-separated list.\n"
-                     "Example: /rpick Dota;LoL;Mobile Legends",
 
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
@@ -161,7 +161,7 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
             'wolframs': "Usage: /wolframs <something>\n"
                         "Ask wolframalpha.com about <something>.\n"
                         "Returns a short text answer (if available).\n"
-                        "Example: /wolfram tell me a computer science joke"}
+                        "Example: /wolfram Tell me a computer science joke"}
 
 
 def get_help(command):
@@ -260,9 +260,10 @@ def command_handler(text, user, me, set_id):
         result = ('text', reddit_hot(command[0], command[-1], split=True))
 
     elif cmd[0] == 'rng':
+        command = command[1].split()
         try:
-            result = rng(cmd[2], cmd[1])
+            result = ('text', rng(command[-1], command[0]))
         except IndexError:
-            result = rng(cmd[1])
+            result = ('text', rng(cmd[0]))
 
     return result

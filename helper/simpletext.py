@@ -68,4 +68,4 @@ def rpick(text):
     '''
     Pick a random item from a semicolon-separated list in a string.
     '''
-    return "I pick " + random.choice(text.split(';'))
+    return "I pick {}.".format(random.choice(text.split(';')))

@@ -46,8 +46,7 @@ help_msg = ("These commands will instruct me to:\n\n\n"
 no_arg_commands = {'bencoin': AkunBenCoin.intro,
                    'help': help_msg,
                    'lenny': '( ͡° ͜ʖ ͡°)',
-                   'shrug': '¯\\_(ツ)_/¯',
-                   'surprise': surprise}
+                   'shrug': '¯\\_(ツ)_/¯'}
 
 single_arg_commands = {'define': define,
                        'echo': echo,

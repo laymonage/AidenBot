@@ -6,21 +6,15 @@
 import os
 import random
 import requests
+from .dropson import dbx_dl, getJSON
 
 
 def surprise():
     '''
     ?
     '''
-    imgur_client = os.getenv('IMGUR_CLIENT_ID', None)
-    surprise_album = os.getenv('SURPRISE_ALBUM_HASH', None)
-    surprises = [image['link']
-                 for image in
-                 requests.get('https://api.imgur.com/3/album/{}'
-                              .format(surprise_album),
-                              headers={'authorization':
-                                       'Client-ID ' + imgur_client}).json()
-                 ['data']['images']]
+    surprise_links = os.getenv('SURPRISES_FILE_PATH', None)
+    surprises = getJSON(dbx_dl(surprise_links))
     orig_url = random.choice(surprises)
     prev_url = 'http://thecatapi.com/api/images/get'
     prev_url = requests.get(prev_url)

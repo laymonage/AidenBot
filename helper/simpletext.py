@@ -62,3 +62,10 @@ def rng(ceil, floor=1):
     except ValueError:
         result = "Wrong format."
     return result
+
+
+def rpick(text):
+    '''
+    Pick a random item from a semicolon-separated list in a string.
+    '''
+    return "I pick " + random.choice(text.split(';'))

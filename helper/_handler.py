@@ -4,17 +4,17 @@ Command handler module for AidenBot
 
 from . import (
     AkunBenCoin, cat, echo, shout, mock, is_palindrome, rng,
-    isup, kbbi_def, ask, define, reddit_hot, slap, stalkig,
-    ticket_add, ticket_rem, ticket_get, surprise, urban,
-    wiki_get, wiki_lang, wolfram, weather
+    rpick, isup, kbbi_def, ask, define, reddit_hot, slap,
+    stalkig, ticket_add, ticket_rem, ticket_get, surprise,
+    urban, wiki_get, wiki_lang, wolfram, weather
 )
 
 help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
             "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
-            "profile, reddit, rng, shout, shrug, slap, stalkig, surprise, "
-            "ticket, urban, urbanx, weather, wiki, wikilang, wolfram, "
-            "wolframs\n"
+            "profile, reddit, rng, rpick, shout, shrug, slap, stalkig, "
+            "surprise, ticket, urban, urbanx, weather, wiki, wikilang, "
+            "wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
 cmd_help = {'ask': "Usage: /ask <question>\n"
@@ -99,6 +99,10 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                    "<floor> is optional, default is 1.\n"
                    "Example: /rng 4815 162342",
 
+            'rpick': "Usage: /rpick <something1>;<something2>;<somethingn>\n"
+                     "Pick a random item from a semicolon-separated list.\n"
+                     "Example: /rpick Dota;LoL;Mobile Legends",
+
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
                      "Example: /shout how do you like them apples?",
@@ -182,6 +186,7 @@ single_arg_commands = {'define': define,
                        'mcs': ask,
                        'mock': mock,
                        'palindrome': is_palindrome,
+                       'pick': rpick,
                        'shout': shout,
                        'ticket': ticket_add,
                        'urban': urban,

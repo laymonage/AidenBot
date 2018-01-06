@@ -95,7 +95,8 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                       "Example: /reddit showerthoughts 7",
 
             'rng': "Usage: /rng <floor> <ceiling>\n"
-                   "Get a random integer in <floor>..<ceiling> (inclusive).\n"
+                   "Random (integer) number generator in range "
+                   "<floor>..<ceiling> (inclusive).\n"
                    "<floor> is optional, default is 1.\n"
                    "Example: /rng 4815 162342",
 

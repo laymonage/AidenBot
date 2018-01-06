@@ -9,42 +9,159 @@ from . import (
     wiki_get, wiki_lang, wolfram, weather
 )
 
-help_msg = ("These commands will instruct me to:\n\n\n"
-            "/ask <question> : Kulit Kerang Ajaib simulator\n\n"
-            "/bye : leave this chat room\n\n"
-            "/bencoin: [Fasilkom UI 2017 joke] send bencoin help message\n\n"
-            "/cat : send a random cat image from thecatapi.com\n\n"
-            "/define <word> : send definition(s) of <word>\n\n"
-            "/echo <message> : send <message>\n\n"
-            "/help : send this help message\n\n"
-            "/isup <website> : check <website>'s status\n\n"
-            "/isupd <website> : like /isup, but more detailed\n\n"
-            "/kbbi <something> : send an entry of <something> in KBBI\n\n"
-            "/kbbix <something> : like /kbbi, but with examples (if any)\n\n"
-            "/lenny : send ( ͡° ͜ʖ ͡°)\n\n"
-            "/mcs <question> : like /ask, but in English\n\n"
-            "/profile : send your display name and your status message\n\n"
-            "/reddit <subreddit> : send hot 5 posts' titles in <subreddit>\n\n"
-            "/shout <message> : SEND <MESSAGE>\n\n"
-            "/shrug : send ¯\\_(ツ)_/¯\n\n"
-            "/slap <someone> : slap <someone> with a random object\n\n"
-            "/stalkig <username> : send a random image taken from "
-            "<username>'s instagram profile.\n\n"
-            "/surprise : ?\n\n"
-            "/ticket <something> : send <something> as a suggestion or bug "
-            "report to the developer\n\n"
-            "/urban <something> : send the top definition of <something> "
-            "in UrbanDictionary\n\n"
-            "/urbanx <something> : like /urban, but with examples (if any)\n\n"
-            "/weather <location> : send current weather in <location>, "
-            "obtained from weather.com\n\n"
-            "/wiki <article> : send the summary of a Wikipedia <article>\n\n"
-            "/wikilang <language> : change /wiki language\n\n"
-            "/wolfram <something> : ask WolframAlpha about <something>\n\n"
-            "/wolframs <something> : short answer version of /wolfram")
+help_msg = ("Available commands:\n"
+            "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
+            "kbbi, kbbix, lenny, mcs, mock, palindrome, profile, reddit, "
+            "shout, shrug, slap, stalkig, surprise, ticket, urban, urbanx, "
+            "weather, wiki, wikilang, wolfram, wolframs\n"
+            "Use /help <command> for more information.")
+
+cmd_help = {'ask': "Usage: /ask <question>\n"
+                   "Simulator Kulit Kerang Ajaib.\n"
+                   "Example: /ask Apa aku boleh makan?",
+
+            'bye': "Usage: /bye\n"
+                   "Instruct me to leave this chat room.",
+
+            'bencoin': "Usage: /bencoin\n"
+                       "[Fasilkom UI 2017 joke]\n"
+                       "Send bencoin help message.\n"
+                       "(note: the commands actually work!)",
+
+            'cat': "Usage: /cat\n"
+                   "Get a random cat image, obtained from thecatapi.com.",
+
+            'define': "Usage: /define <something>\n"
+                      "Define <something>, obtained from "
+                      "oxforddictionaries.com\n"
+                      "Example: /define onomatopoeia",
+
+            'echo': "Usage: /echo <something>\n"
+                    "Repeat <something>.\n"
+                    "Example: /echo Hello, world!",
+
+            'help': "Usage: /help\n"
+                    "Send a list of available commands.",
+
+            'isup': "Usage: /isup <website>\n"
+                    "Check <website>'s status, "
+                    "obtained from isitup.org.\n"
+                    "Example: /isup google.com",
+
+            'isupd': "Usage: /isupd <website>\n"
+                     "Check <website>'s status, along with its IP, "
+                     "response code, and response time, "
+                     "obtained from isitup.org.\n"
+                     "Example: /isupd google.com",
+
+            'kbbi': "Usage: /kbbi <something>\n"
+                    "Define <something>, obtained from kbbi.kemdikbud.go.id.\n"
+                    "Example: /kbbi eufemisme",
+
+            'kbbix': "Usage: /kbbix <something>\n"
+                     "Define <something> and give usage examples (if any), "
+                     "obtained from kbbi.kemdikbud.go.id.\n"
+                     "Example: /kbbix cinta",
+
+            'lenny': "Usage: /lenny\n"
+                     "Send ( ͡° ͜ʖ ͡°)",
+
+            'mcs': "Usage: /mcs <question>\n"
+                   "Magic Conch Shell simulator.\n"
+                   "Example: /mcs Can I eat something?",
+
+            'mock': "uSaGE: /mock <something>\n"
+                    "sEnD <sOMetHiNg> iN A mOcKinG MaNnER.\n"
+                    "ExaMpLE: /mock Don't tell me what I can't do!",
+
+            'palindrome': "Usage: /palindrome <something>\n"
+                          "Check if <something> is a palindrome.\n"
+                          "(only alphanumeric characters are checked, "
+                          "case-insensitive)\n"
+                          "Example: /palindrome Dammit, I'm mad!",
+
+            'profile': "Usage: /profile\n"
+                       "Send your display name and your status message "
+                       "(if any).",
+
+            'reddit': "Usage: /reddit <subreddit> <limit>\n"
+                      "Get hot <limit> posts' titles in <subreddit>.\n"
+                      "<limit> is optional, default is 5, maximum is 25.\n"
+                      "Example: /reddit showerthoughts 7",
+
+            'shout': "Usage: /shout <something>\n"
+                     "REPEAT <SOMETHING> IN UPPERCASE.\n"
+                     "Example: /shout how do you like them apples?",
+
+            'shrug': "Usage: /shrug\n"
+                     "Send ¯\\_(ツ)_/¯",
+
+            'slap': "Usage: /slap <someone>\n"
+                    "Slap <someone> with a random object.\n"
+                    "Example: /slap Pak Dengklek",
+
+            'stalkig': "Usage: /stalkig <username>\n"
+                       "Get a random picture taken from <username>'s "
+                       "instagram account, along with the post's link.\n"
+                       "Example: /stalkig tychomusic",
+
+            'surprise': "Usage: /surprise\n"
+                        "?",
+
+            'ticket': "Usage: /ticket <something>\n"
+                      "Send <something> to my developer. "
+                      "Don't worry, it's anonymous!\n"
+                      "Example: /ticket this bot sucks",
+
+            'urban': "Usage: /urban <something>\n"
+                     "Define <something>, obtained from urbandictionary.com.\n"
+                     "Example: /urban Mac DeMarco",
+
+            'urbanx': "Usage: /urbanx <something>\n"
+                      "Define <something>, and give usage examples (if any), "
+                      "obtained from urbandictionary.com.\n"
+                      "Example: /urbanx Young the Giant",
+
+            'weather': "Usage: /weather <location>\n"
+                       "Obtain current weather data in <location>, obtained "
+                       "from wunderground.com.\n"
+                       "Example: /weather Jakarta",
+
+            'wiki': "Usage: /wiki <title>\n"
+                    "Summarize a Wikipedia article titled <title>, or get "
+                    "a list of titles in the disambiguation page.\n"
+                    "Example: /wiki Vampire Weekend",
+
+            'wikilang': "Usage: /wikilang <language>\n"
+                        "Change /wiki language to <language>\n"
+                        "Language settings will be reset to default (en) "
+                        "every once in a while.\n"
+                        "Example: /wikilang id",
+
+            'wolfram': "Usage: /wolfram <something>\n"
+                       "Ask wolframalpha.com about <something>.\n"
+                       "Returns an image of the result summary.\n"
+                       "Example: /wolfram Who are Cage the Elephant?",
+
+            'wolframs': "Usage: /wolframs <something>\n"
+                        "Ask wolframalpha.com about <something>.\n"
+                        "Returns a short text answer (if available).\n"
+                        "Example: /wolfram tell me a computer science joke"}
+
+
+def get_help(command):
+    '''
+    Return a command's help message.
+    '''
+    if not command:
+        return help_msg
+    try:
+        return cmd_help[command]
+    except KeyError:
+        return command + " is unavailable."
+
 
 no_arg_commands = {'bencoin': AkunBenCoin.intro,
-                   'help': help_msg,
                    'lenny': '( ͡° ͜ʖ ͡°)',
                    'shrug': '¯\\_(ツ)_/¯'}
 
@@ -75,7 +192,11 @@ def command_handler(text, user, me, set_id):
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    if cmd[0] in no_arg_commands:
+    if cmd[0] == 'help':
+        cmd = [cmd[0], ''] if len(cmd) == 1 else cmd
+        result = ('text', get_help(cmd[1]))
+
+    elif cmd[0] in no_arg_commands:
         result = ('text', no_arg_commands[cmd[0]])
 
     elif cmd[0] == 'tix' and user.user_id == me.user_id:

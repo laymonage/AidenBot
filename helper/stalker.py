@@ -23,7 +23,8 @@ def stalkig(username):
         return (False, "@{} is a private account.".format(username))
 
     nodes = req['user']['media']['nodes']
-    image = random.choice(nodes)['display_src']
-    ncode = random.choice(nodes)['code']
+    anode = random.choice(nodes)
+    image = anode['display_src']
+    ncode = anode['code']
     nlink = 'instagram.com/p/{}'.format(ncode)
     return (image, nlink)

@@ -51,16 +51,23 @@ def is_palindrome(text, perfect=False):
     return text + " is not a palindrome."
 
 
-def rng(ceil, floor=1):
+def rng(ceil, floor=1, frac=False):
     '''
-    Return a random integer from floor to ceil (inclusive).
+    Return a random number from floor to ceil (inclusive).
     '''
     try:
         floor, ceil = int(floor), int(ceil)
         if floor == ceil:
             floor = 1
-        result = ("From {} to {}, I pick {}."
-                  .format(floor, ceil, str(random.randint(floor, ceil))))
+        elif floor > ceil:
+            floor, ceil = ceil, floor
+        if frac:
+            result = ("From {} to {}, I pick {:.2f}."
+                      .format(floor, ceil, random.uniform(floor, ceil)))
+        else:
+            result = ("From {} to {}, I pick {}."
+                      .format(floor, ceil, random.randint(floor, ceil)))
+
     except ValueError:
         result = "Wrong format."
     return result

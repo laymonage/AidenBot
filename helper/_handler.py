@@ -12,9 +12,9 @@ from . import (
 help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
             "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
-            "pick, profile, reddit, rng, shout, shrug, slap, stalkig, "
-            "surprise, ticket, urban, urbanx, weather, wiki, wikilang, "
-            "wolfram, wolframs\n"
+            "pick, profile, reddit, rng, rngf, shout, shrug, slap, "
+            "stalkig, surprise, ticket, urban, urbanx, weather, wiki, "
+            "wikilang, wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
 cmd_help = {'ask': "Usage: /ask <question>\n"
@@ -100,9 +100,15 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
 
             'rng': "Usage: /rng <floor> <ceiling>\n"
                    "Random (integer) number generator in range "
-                   "<floor>..<ceiling> (inclusive, ceiling > floor).\n"
+                   "<floor>..<ceiling> (inclusive).\n"
                    "<floor> is optional, default is 1.\n"
                    "Example: /rng 4815 162342",
+
+            'rngf': "Usage: /rngf <floor> <ceiling>\n"
+                    "Random (float, 2 digit precision) number generator "
+                    "in range <floor>..<ceiling> (inclusive).\n"
+                    "<floor> is optional, default is 1.\n"
+                    "Example: /rngf 2.19 4.2",
 
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
@@ -259,8 +265,9 @@ def command_handler(text, user, me, set_id):
         command = command[1].split()
         result = ('text', reddit_hot(command[0], command[-1], split=True))
 
-    elif cmd[0] == 'rng':
+    elif cmd[0] == 'rng' or cmd[0] == 'rngf':
         command = command[1].split()
-        result = ('text', rng(command[-1], command[0]))
+        result = ('text', rng(command[-1], command[0],
+                              frac=True if cmd[0] == 'rngf' else False))
 
     return result

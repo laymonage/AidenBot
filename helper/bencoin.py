@@ -53,6 +53,7 @@ class AkunBenCoin(object):
                 "DAFTAR <nama> <jenis akun>\n"
                 "Mendaftarkan ID LINE Anda ke dalam sistem BenCoin atas nama "
                 "<nama> dengan paket <jenis akun>.\n"
+                "Jenis akun yang tersedia: Pelajar, Reguler, Bisnis, Elite\n"
                 "Anda dapat menggunakan perintah ini untuk mengubah nama "
                 "akun BenCoin Anda, namun pastikan <jenis akun> sama dengan "
                 "jenis akun Anda saat ini. Apabila berbeda, maka akun Anda "
@@ -141,8 +142,7 @@ class AkunBenCoin(object):
             ben_setor = nominal/AkunBenCoin.valas[mata_uang]
 
         if ben_setor == 0:
-            return ("Saldo akun {} sudah mencapai limit tabungan."
-                    .format(self.nama))
+            return "Saldo akun Anda sudah mencapai limit tabungan."
 
         # Nominal yang berhasil disetor:
         # kas_setor = ben_setor * AkunBenCoin.valas[mata_uang]
@@ -150,8 +150,8 @@ class AkunBenCoin(object):
         self.riwayat += ("\nSETOR {} {} -> {} BenCoin"
                          .format(mata_uang, nominal, ben_setor))
 
-        return ("Akun {} telah bertambah {} BenCoin."
-                .format(self.nama, ben_setor))
+        return ("Akun Anda telah bertambah {} BenCoin."
+                .format(ben_setor))
 
     def tarik(self, nominal, mata_uang):
         '''
@@ -177,7 +177,7 @@ class AkunBenCoin(object):
             ben_tarik = self.saldo - self.fee_trx
 
         if ben_tarik <= 0:
-            return "Saldo tidak mencukupi untuk melakukan penarikan."
+            return "Saldo Anda tidak mencukupi untuk melakukan penarikan."
 
         kas_tarik = ben_tarik * AkunBenCoin.valas[mata_uang]
         self.riwayat += ("\nTARIK {} {} -> {:.2f} BenCoin"
@@ -185,8 +185,8 @@ class AkunBenCoin(object):
         ben_tarik += self.fee_trx
         self.saldo -= ben_tarik
 
-        return ("Penarikan {} {} dari akun {} berhasil."
-                .format(mata_uang, kas_tarik, self.nama))
+        return ("Penarikan {} {} dari akun Anda berhasil."
+                .format(mata_uang, kas_tarik))
 
     def transfer(self, akun_penerima, nominal):
         '''
@@ -205,12 +205,10 @@ class AkunBenCoin(object):
             return "Nilai transfer harus > 0."
 
         if self.saldo == 0:
-            return ("Saldo akun {} tidak mencukupi untuk melakukan transfer."
-                    .format(self.nama))
+            return "Saldo akun Anda tidak mencukupi untuk melakukan transfer."
 
         if akun_penerima == self:
-            return ("{} tidak bisa melakukan transfer ke akunnya sendiri."
-                    .format(self.nama))
+            return "Anda tidak dapat melakukan transfer ke akun Anda sendiri."
 
         ben_transf = nominal
         if ben_transf > self.lim_trx:
@@ -220,7 +218,7 @@ class AkunBenCoin(object):
             ben_transf = self.saldo - self.fee_trx
 
         if ben_transf <= 0:
-            return "Saldo tidak mencukupi untuk melakukan transfer."
+            return "Saldo akun Anda tidak mencukupi untuk melakukan transfer."
 
         if ben_transf + akun_penerima.saldo > akun_penerima.lim_tbg:
             ben_transf = akun_penerima.lim_tbg - akun_penerima.saldo
@@ -234,8 +232,8 @@ class AkunBenCoin(object):
                          .format(akun_penerima.nama, ben_transf))
         self.saldo -= ben_transf + self.fee_trx
 
-        return ("{} berhasil mentransfer {} BenCoin kepada {}."
-                .format(self.nama, ben_transf, akun_penerima.nama))
+        return ("Anda berhasil mentransfer {} BenCoin kepada {}."
+                .format(ben_transf, akun_penerima.nama))
 
     def toJSON(self):
         '''
@@ -350,12 +348,12 @@ def penangan_operasi(ID, perintah):
         else:
             msg = "Perintah tidak tersedia."
 
-        return msg
-
     except IndexError:
         return "Format perintah yang Anda masukkan salah."
     except KeyError as e:
-        return ("Akun atas nama {} belum terdaftar dalam sistem."
+        if e.args[0] == ID:
+            return "Anda belum mendaftarkan akun dalam sistem BenCoin."
+        return ("Akun atas nama {} belum terdaftar dalam sistem BenCoin."
                 .format(e.args[0]))
     except ValueError:
         return "Format nilai yang Anda masukkan salah."
@@ -363,11 +361,14 @@ def penangan_operasi(ID, perintah):
         # Mengunggah data ke Dropbox apabila operasi sukses.
         dbx_ul(toJSON({nasabah: akun[nasabah].toJSON() for nasabah in akun}),
                accounts_path, overwrite=True)
+        dbx_ul(toJSON(tautan), acclinks_path, overwrite=True)
+        return msg
 
 
 # Memuat JSON dari Dropbox.
 akun = getJSON(dbx_dl(accounts_path))
 tautan = getJSON(dbx_dl(acclinks_path))
+
 
 # Mengkonversi data JSON ke dalam bentuk objek AkunBenCoin.
 for nama in akun:

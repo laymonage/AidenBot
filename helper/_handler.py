@@ -11,9 +11,10 @@ from . import (
 
 help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
-            "kbbi, kbbix, lenny, mcs, mock, palindrome, profile, reddit, "
-            "shout, shrug, slap, stalkig, surprise, ticket, urban, urbanx, "
-            "weather, wiki, wikilang, wolfram, wolframs\n"
+            "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
+            "profile, reddit, shout, shrug, slap, stalkig, surprise, "
+            "ticket, urban, urbanx, weather, wiki, wikilang, wolfram, "
+            "wolframs\n"
             "Use /help <command> for more information.")
 
 cmd_help = {'ask': "Usage: /ask <question>\n"
@@ -79,6 +80,10 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                           "(only alphanumeric characters are checked, "
                           "case-insensitive)\n"
                           "Example: /palindrome Dammit, I'm mad!",
+
+            'ppalindrome': "Usage: /ppalindrome <something>\n"
+                           "Check if <something> is a perfect palindrome\n"
+                           "Example: /ppalindrome kasur nababan rusak",
 
             'profile': "Usage: /profile\n"
                        "Send your display name and your status message "
@@ -181,6 +186,7 @@ single_arg_commands = {'define': define,
 double_arg_commands = {'ask': ask,
                        'isupd': isup,
                        'kbbix': kbbi_def,
+                       'ppalindrome': is_palindrome,
                        'urbanx': urban}
 
 

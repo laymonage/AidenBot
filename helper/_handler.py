@@ -216,8 +216,11 @@ def command_handler(text, user, me, set_id):
 
     elif cmd[0] == 'stalkig':
         result = stalkig(command[1])
-        result = ('multi', (('image', result[0]),
-                            ('text', result[1])))
+        if result[0]:
+            result = ('multi', (('image', result[0]),
+                                ('text', result[1])))
+        else:
+            result = ('text', result[1])
 
     elif cmd[0] in double_arg_commands:
         result = ('text', double_arg_commands[cmd[0]](command[1], True))

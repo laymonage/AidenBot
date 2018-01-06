@@ -261,9 +261,6 @@ def command_handler(text, user, me, set_id):
 
     elif cmd[0] == 'rng':
         command = command[1].split()
-        try:
-            result = ('text', rng(command[-1], command[0]))
-        except IndexError:
-            result = ('text', rng(cmd[0]))
+        result = ('text', rng(command[-1], command[0]))
 
     return result

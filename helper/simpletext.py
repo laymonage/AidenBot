@@ -57,6 +57,8 @@ def rng(ceil, floor=1):
     '''
     try:
         floor, ceil = int(floor), int(ceil)
+        if floor == ceil:
+            floor = 1
         result = ("From {} to {}, I pick {}."
                   .format(floor, ceil, str(random.randint(floor, ceil))))
     except ValueError:

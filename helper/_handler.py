@@ -4,8 +4,8 @@ Command handler module for AidenBot
 
 from . import (
     AkunBenCoin, cat, echo, shout, mock, is_palindrome, rng,
-    rpick, isup, kbbi_def, ask, define, reddit_hot, slap,
-    stalkig, ticket_add, ticket_rem, ticket_get, surprise,
+    rpick, translate, isup, kbbi_def, ask, define, reddit_hot,
+    slap, stalkig, ticket_add, ticket_rem, ticket_get, surprise,
     urban, wiki_get, wiki_lang, wolfram, weather
 )
 
@@ -13,7 +13,7 @@ help_msg = ("Available commands:\n"
             "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
             "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
             "pick, profile, reddit, rng, rngf, shout, shrug, slap, "
-            "stalkig, surprise, ticket, urban, urbanx, weather, wiki, "
+            "stalkig, surprise, ticket, tl, urban, urbanx, weather, wiki, "
             "wikilang, wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
@@ -134,6 +134,12 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                       "Don't worry, it's anonymous!\n"
                       "Example: /ticket this bot sucks",
 
+            'tl': "Usage: /tl <src_lang> <dest_lang> <text>\n"
+                  "Translate <text> from <src_lang> to <dest_lang>.\n"
+                  "You can use auto as <src_lang> for auto-detection.\n"
+                  "Look up ISO 639-1 for valid language codes.\n"
+                  "Example: /tl auto id Sorry for my English",
+
             'urban': "Usage: /urban <something>\n"
                      "Define <something>, obtained from urbandictionary.com.\n"
                      "Example: /urban Mac DeMarco",
@@ -196,6 +202,7 @@ single_arg_commands = {'define': define,
                        'pick': rpick,
                        'shout': shout,
                        'ticket': ticket_add,
+                       'tl': translate,
                        'urban': urban,
                        'weather': weather,
                        'wolframs': wolfram}

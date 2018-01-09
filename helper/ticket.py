@@ -54,14 +54,13 @@ def ticket_rem(num):
         del tickets[:]
         dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
         return "Ticket list has been emptied."
+    try:
+        num = int(num)
+        del tickets[num-1]
+    except IndexError:
+        return "Ticket [{}] is not available.".format(num)
+    except ValueError:
+        return "Wrong format."
     else:
-        try:
-            num = int(num)
-            del tickets[num-1]
-        except IndexError:
-            return "Ticket [{}] is not available.".format(num)
-        except ValueError:
-            return "Wrong format."
-        else:
-            dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
-            return "Ticket [{}] has been removed.".format(num)
+        dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
+        return "Ticket [{}] has been removed.".format(num)

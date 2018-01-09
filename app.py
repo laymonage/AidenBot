@@ -120,8 +120,8 @@ def handle_text_message(event):
                     )
             elif mode[idx] == 'custimg':
                 if isinstance(msg, (tuple, list)):
-                    content = [ImageSendMessage(original_content_url=item,
-                                                preview_image_url=item)
+                    content = [ImageSendMessage(original_content_url=item[0],
+                                                preview_image_url=item[1])
                                for item in msg]
                 else:
                     content.append(ImageSendMessage(

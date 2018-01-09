@@ -41,7 +41,7 @@ def surprise_wrap():
     '''
     ?
     '''
-    return ('custimg', surprise())
+    return ('custimg', (surprise(),))
 
 
 def wolfram_wrap(query):

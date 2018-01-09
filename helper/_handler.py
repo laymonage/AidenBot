@@ -218,7 +218,7 @@ def command_handler(text, user, me, set_id):
                            'pick': rpick,
                            'rtix': ticket_rem,
                            'shout': shout,
-                           'slap': pt(slap, subject=user, me=me),
+                           'slap': pt(slap, user, me=me),
                            'ticket': ticket_add,
                            'tl': translate,
                            'urban': urban,

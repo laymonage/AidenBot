@@ -52,6 +52,7 @@ def ticket_rem(num):
         return "No tickets."
     if num == 'all':
         del tickets[:]
+        dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
         return "Ticket list has been emptied."
     else:
         try:

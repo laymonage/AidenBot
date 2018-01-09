@@ -98,7 +98,7 @@ def handle_text_message(event):
 
     def quickreply(*msgs, mode=('text',)*5):
         '''
-        Reply a message with msg as reply content.
+        Reply a message with msgs as reply content.
         '''
         msgs = msgs[:5]
         content = []
@@ -109,11 +109,25 @@ def handle_text_message(event):
                 else:
                     content.append(TextSendMessage(text=msg))
             elif mode[idx] == 'image':
-                content.append(ImageSendMessage(original_content_url=msg,
-                                                preview_image_url=msg))
+                if isinstance(msg, (tuple, list)):
+                    content = [ImageSendMessage(original_content_url=item,
+                                                preview_image_url=item)
+                               for item in msg]
+                else:
+                    content.append(ImageSendMessage(
+                        original_content_url=msg,
+                        preview_image_url=msg)
+                    )
             elif mode[idx] == 'custimg':
-                content.append(ImageSendMessage(original_content_url=msg[0],
-                                                preview_image_url=msg[1]))
+                if isinstance(msg, (tuple, list)):
+                    content = [ImageSendMessage(original_content_url=item,
+                                                preview_image_url=item)
+                               for item in msg]
+                else:
+                    content.append(ImageSendMessage(
+                        original_content_url=msg[0],
+                        preview_image_url=msg[1])
+                    )
         AidenBot.reply_message(
             event.reply_token, content
         )
@@ -158,17 +172,14 @@ def handle_text_message(event):
             getprofile()
         else:
             result = command_handler(command, subject, me, set_id)
-            try:
-                if result[0] in ('text', 'image', 'custimg'):
-                    quickreply(*result[1:], mode=(result[0],)*len(result[1:]))
-                elif result[0] == 'multi':
-                    content = [[], []]
-                    for item in result[1]:
-                        content[0].append(item[0])
-                        content[1].append(item[1])
-                    quickreply(*content[1], mode=content[0])
-            except TypeError:
-                pass
+            if result[0] in ('text', 'image', 'custimg'):
+                quickreply(*result[1:], mode=(result[0],)*len(result[1:]))
+            elif result[0] == 'multi':
+                mode, content = [], []
+                for item in result[1]:
+                    mode.append(item[0])
+                    content.append(item[1])
+                quickreply(*content, mode=mode)
 
     elif text.split()[0] in ('DAFTAR', 'TAMBAH', 'UBAH', 'SETOR',
                              'INFO', 'TRANSFER', 'TARIK', 'BANTUAN'):

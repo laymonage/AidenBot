@@ -237,20 +237,25 @@ def command_handler(text, user, me, set_id):
                         'surprise': surprise_wrap,
                         'wolfram': pt(wolfram_wrap, *command[1:])}
 
-    if cmd[0] == 'help':
-        result = ('text', get_help(*cmd[1:]))
+    try:
+      if cmd[0] == 'help':
+          result = ('text', get_help(*cmd[1:]))
 
-    elif cmd[0] in no_arg_commands and (cmd[0] != 'tix' or itsme):
-        result = ('text', no_arg_commands[cmd[0]])
+      elif cmd[0] in no_arg_commands and (cmd[0] != 'tix' or itsme):
+          result = ('text', no_arg_commands[cmd[0]])
 
-    elif cmd[0] in single_arg_commands and (cmd[0] != 'rtix' or itsme):
-        result = ('text', single_arg_commands[cmd[0]](command[1]))
+      elif cmd[0] in single_arg_commands and (cmd[0] != 'rtix' or itsme):
+          result = ('text', single_arg_commands[cmd[0]](command[1]))
 
-    elif cmd[0] in double_arg_commands:
-        command = command[1].split()
-        result = ('text', double_arg_commands[cmd[0]](command[0], command[-1]))
+      elif cmd[0] in double_arg_commands:
+          command = command[1].split()
+          result = ('text', double_arg_commands[cmd[0]](command[0], command[-1]))
 
-    elif cmd[0] in distinct_commands:
-        result = distinct_commands[cmd[0]]()
+      elif cmd[0] in distinct_commands:
+          result = distinct_commands[cmd[0]]()
+    except (IndexError, TypeError):
+      result = ('text', "Invalid format.\n"
+                        "Please see /help {} for more info."
+                        .format(cmd[0]))
 
     return result

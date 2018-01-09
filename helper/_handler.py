@@ -2,11 +2,13 @@
 Command handler module for AidenBot
 '''
 
+from functools import partial as pt
 from . import (
-    AkunBenCoin, cat, echo, shout, mock, is_palindrome, rng,
+    AkunBenCoin, cat_wrap, echo, shout, mock, is_palindrome, rng,
     rpick, translate, isup, kbbi_def, ask, define, reddit_hot,
-    slap, stalkig, ticket_add, ticket_rem, ticket_get, surprise,
-    urban, wiki_get, wiki_lang, wolfram, weather
+    slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
+    surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
+    wolfram_wrap, weather
 )
 
 help_msg = ("Available commands:\n"
@@ -176,7 +178,7 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                         "Example: /wolfram Tell me a computer science joke"}
 
 
-def get_help(command):
+def get_help(command=None):
     '''
     Return a command's help message.
     '''
@@ -188,93 +190,67 @@ def get_help(command):
         return command + " is unavailable."
 
 
-no_arg_commands = {'bencoin': AkunBenCoin.intro,
-                   'lenny': '( ͡° ͜ʖ ͡°)',
-                   'shrug': '¯\\_(ツ)_/¯'}
-
-single_arg_commands = {'define': define,
-                       'echo': echo,
-                       'isup': isup,
-                       'kbbi': kbbi_def,
-                       'mcs': ask,
-                       'mock': mock,
-                       'palindrome': is_palindrome,
-                       'pick': rpick,
-                       'shout': shout,
-                       'ticket': ticket_add,
-                       'tl': translate,
-                       'urban': urban,
-                       'weather': weather,
-                       'wolframs': wolfram}
-
-double_arg_commands = {'ask': ask,
-                       'isupd': isup,
-                       'kbbix': kbbi_def,
-                       'ppalindrome': is_palindrome,
-                       'urbanx': urban}
-
-
 def command_handler(text, user, me, set_id):
     '''
     Command handler for AidenBot.
     '''
+    itsme = user.user_id == me.user_id
     command = text.split(maxsplit=1)
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    if cmd[0] == 'help':
-        cmd = [cmd[0], ''] if len(cmd) == 1 else cmd
-        result = ('text', get_help(cmd[1]))
+    no_arg_commands = {'bencoin': AkunBenCoin.intro,
+                       'lenny': '( ͡° ͜ʖ ͡°)',
+                       'shrug': '¯\\_(ツ)_/¯',
+                       'tix': ticket_get}
 
-    elif cmd[0] in no_arg_commands:
+    single_arg_commands = {'ask': pt(ask, id_=True),
+                           'define': define,
+                           'echo': echo,
+                           'isup': isup,
+                           'isupd': pt(isup, detailed=True),
+                           'kbbi': kbbi_def,
+                           'kbbix': pt(kbbi_def, ex=True),
+                           'mcs': ask,
+                           'mock': mock,
+                           'palindrome': is_palindrome,
+                           'ppalindrome': pt(is_palindrome, perfect=True),
+                           'pick': rpick,
+                           'rtix': ticket_rem,
+                           'shout': shout,
+                           'slap': pt(slap, subject=user, me=me),
+                           'ticket': ticket_add,
+                           'tl': translate,
+                           'urban': urban,
+                           'urbanx': pt(urban, ex=True),
+                           'weather': weather,
+                           'wiki': pt(wiki_get, set_id=set_id),
+                           'wikilang': pt(wiki_lang, set_id=set_id),
+                           'wolframs': wolfram}
+
+    double_arg_commands = {'reddit': pt(reddit_hot, splitted=True),
+                           'rng': rng,
+                           'rngf': pt(rng, frac=True)}
+
+    distinct_commands = {'cat': cat_wrap,
+                        'stalkig': pt(stalkig_wrap, *command[1:]),
+                        'surprise': surprise_wrap,
+                        'wolfram': pt(wolfram_wrap, *command[1:])}
+
+    if cmd[0] == 'help':
+        result = ('text', get_help(*cmd[1:]))
+
+    elif cmd[0] in no_arg_commands and (cmd[0] != 'tix' or itsme):
         result = ('text', no_arg_commands[cmd[0]])
 
-    elif cmd[0] == 'tix' and user.user_id == me.user_id:
-        result = ('text', ticket_get())
-
-    elif cmd[0] in single_arg_commands:
+    elif cmd[0] in single_arg_commands and (cmd[0] != 'rtix' or itsme):
         result = ('text', single_arg_commands[cmd[0]](command[1]))
 
-    elif cmd[0] == 'rtix' and user.user_id == me.user_id:
-        result = ('text', ticket_rem(command[1]))
-
-    elif cmd[0] == 'stalkig':
-        result = stalkig(command[1])
-        if result[0]:
-            result = ('multi', (('image', result[0]),
-                                ('text', result[1])))
-        else:
-            result = ('text', result[1])
-
     elif cmd[0] in double_arg_commands:
-        result = ('text', double_arg_commands[cmd[0]](command[1], True))
-
-    elif cmd[0] == 'wolfram':
-        result = ('image', wolfram(command[1], True))
-
-    elif cmd[0] == 'wiki':
-        result = ('text', wiki_get(command[1], set_id))
-
-    elif cmd[0] == 'wikilang':
-        result = ('text', wiki_lang(command[1], set_id))
-
-    elif cmd[0] == 'slap':
-        result = ('text', slap(user, command[1], me))
-
-    elif cmd[0] == 'surprise':
-        result = ('custimg', surprise())
-
-    elif cmd[0] == 'cat':
-        result = cat()
-        result = ('image', result)
-
-    elif cmd[0] == 'reddit':
         command = command[1].split()
-        result = ('text', reddit_hot(command[0], command[-1], split=True))
+        result = ('text', double_arg_commands[cmd[0]](command[0], command[-1]))
 
-    elif cmd[0] == 'rng' or cmd[0] == 'rngf':
-        command = command[1].split()
-        result = ('text', rng(command[-1], command[0],
-                              frac=True if cmd[0] == 'rngf' else False))
+    elif cmd[0] in distinct_commands:
+        result = distinct_commands[cmd[0]]()
 
     return result

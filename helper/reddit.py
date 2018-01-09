@@ -6,12 +6,12 @@ Reddit helper module
 import requests
 
 
-def reddit_hot(subname, limit=5, split=False):
+def reddit_hot(subname, limit=5, splitted=False):
     '''
     Return hot <limit> posts' titles in /r/subname.
     - subname (str): name of subreddit (case-insensitive)
     - limit (str or int): number of threads to be returned (max: 25)
-    - split (bool): if True, split result every 2000 chars and make a list
+    - splitted (bool): if True, split result every 2000 chars and make a list
     '''
     try:
         limit = int(limit)
@@ -29,7 +29,7 @@ def reddit_hot(subname, limit=5, split=False):
         print(r)
         return "reddit.com/r/{} is currently unavailable.".format(subname)
     result = "Hot {} posts in reddit.com/r/{}:\n".format(len(threads), subname)
-    if not split:
+    if not splitted:
         result += '\n'.join(['{}. {}'.format(i+1, title)
                              for i, title in enumerate(threads)])
     else:

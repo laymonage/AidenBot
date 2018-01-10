@@ -202,7 +202,7 @@ def command_handler(text, user, me, set_id):
     no_arg_commands = {'bencoin': AkunBenCoin.intro,
                        'lenny': '( ͡° ͜ʖ ͡°)',
                        'shrug': '¯\\_(ツ)_/¯',
-                       'tix': ticket_get}
+                       'tix': ticket_get()}
 
     single_arg_commands = {'ask': pt(ask, id_=True),
                            'define': define,

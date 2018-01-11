@@ -49,13 +49,3 @@ def wolfram_wrap(query):
     Wrap wolfram (simple mode) command.
     '''
     return ('image', wolfram(query, simple=True))
-
-
-def predefined_wrap(key):
-    '''
-    Wrap predefined strings.
-    '''
-    strings = {'bencoin': AkunBenCoin.intro,
-               'lenny': '( ͡° ͜ʖ ͡°)',
-               'shrug': '¯\\_(ツ)_/¯'}
-    return ('text', strings[key])

@@ -4,7 +4,7 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    predefined_wrap, cat_wrap, echo, shout, mock, is_palindrome, rng,
+    AkunBenCoin, cat_wrap, echo, shout, mock, is_palindrome, rng,
     rpick, translate, isup, kbbi_def, ask, define, reddit_hot,
     slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
     surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
@@ -190,6 +190,16 @@ def get_help(command=None):
         return command + " is unavailable."
 
 
+def predefined(key):
+    '''
+    Predefined strings.
+    '''
+    strings = {'bencoin': AkunBenCoin.intro,
+               'lenny': '( ͡° ͜ʖ ͡°)',
+               'shrug': '¯\\_(ツ)_/¯'}
+    return strings[key]
+
+
 def command_handler(text, user, me, set_id):
     '''
     Command handler for AidenBot.
@@ -199,9 +209,9 @@ def command_handler(text, user, me, set_id):
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    no_args = {'bencoin': pt(predefined_wrap, 'bencoin'),
-               'lenny': pt(predefined_wrap, 'lenny'),
-               'shrug': pt(predefined_wrap, 'shrug'),
+    no_args = {'bencoin': pt(predefined, 'bencoin'),
+               'lenny': pt(predefined, 'lenny'),
+               'shrug': pt(predefined, 'shrug'),
                'tix': pt(ticket_get, allowed=itsme)}
 
     single_args = {'ask': pt(ask, id_=True),

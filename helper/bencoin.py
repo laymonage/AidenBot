@@ -306,12 +306,15 @@ def perbarui_kurs(mata_uang, kurs, mode):
     return msg
 
 
-def penangan_operasi(ID, perintah):
+def penangan_operasi(ID, masukan):
     '''
-    Menangani operasi berdasarkan perintah yang diberikan.
+    Mengandal semua operasi dan menangani apabila terjadi kesalahan.
     '''
-    try:
-        perintah = perintah.split()
+    def pelaku_operasi():
+        '''
+        Melakukan operasi berdasarkan masukan yang diberikan.
+        '''
+        perintah = masukan.split()
         operasi = perintah[0].upper()
 
         if operasi == 'DAFTAR':
@@ -348,6 +351,10 @@ def penangan_operasi(ID, perintah):
         else:
             msg = "Perintah tidak tersedia."
 
+        return msg
+
+    try:
+        msg = pelaku_operasi()
     except IndexError:
         return "Format perintah yang Anda masukkan salah."
     except KeyError as e:

@@ -21,50 +21,74 @@ def slap(subject, target, me):
     itsme = subject == me
     has_my_name = not itsme and me.display_name.title() in s_name.title()
 
-    if has_my_name:
+    def impersonator():
+        '''
+        Used when the slap subject's name contains my name.
+        '''
         if me.display_name.lower() == s_name.lower():
-            slap_msg = ("IMPERSONATOR! >:(\n"
+            temp_msg = ("IMPERSONATOR! >:(\n"
                         "I slapped you back and forth with a {} "
                         "for impersonating my creator."
                         .format(random.choice(slap_items)))
         else:
-            slap_msg = ("NOT FUNNY! >:("
+            temp_msg = ("NOT FUNNY! >:("
                         "I slapped you back and forth with a {} "
                         "for making fun of my creator."
                         .format(random.choice(slap_items)))
+        return temp_msg
 
-    if "Aiden" in target.title():
+    def aiden():
+        '''
+        Used when target name contains "Aiden".
+        '''
         if itsme:
-            slap_msg = ("{} gently slapped me.\n"
+            temp_msg = ("{} gently slapped me.\n"
                         "Sorry, {} :("
                         .format(s_name, s_name))
         elif has_my_name:
-            slap_msg = slap_msg[:-1] + " AND trying to slap me."
+            temp_msg = slap_msg[:-1] + " AND trying to slap me."
         else:
-            slap_msg = ("I slapped {} with a {} for trying to slap me."
+            temp_msg = ("I slapped {} with a {} for trying to slap me."
                         .format(s_name, random.choice(slap_items)))
+        return temp_msg
 
-    elif ''.join(c for c in target.lower() if c.isalpha()) == "me":
+    def justme():
+        '''
+        Used when all alphabets taken from target name equals "me".
+        '''
         if itsme:
-            slap_msg = ("Sorry, {}, but I can't bring myself to "
+            temp_msg = ("Sorry, {}, but I can't bring myself to "
                         "slap you :("
                         .format(s_name))
         elif has_my_name:
-            slap_msg = slap_msg[:-1] + " AND asking me to slap you."
+            temp_msg = slap_msg[:-1] + " AND asking me to slap you."
         else:
-            slap_msg = ("I slapped {} with a {} at their request."
+            temp_msg = ("I slapped {} with a {} at their request."
                         .format(s_name, random.choice(slap_items)))
+        return temp_msg
 
-    elif "myself" in target.lower():
+    def myself():
+        '''
+        Used when target name contains "Myself".
+        '''
         if itsme:
-            slap_msg = ("Sorry, {}, but I can't let you slap yourself :("
+            temp_msg = ("Sorry, {}, but I can't let you slap yourself :("
                         .format(s_name))
         elif has_my_name:
-            slap_msg = slap_msg[:-1] + " AND wanted to slap yourself."
+            temp_msg = slap_msg[:-1] + " AND wanted to slap yourself."
         else:
-            slap_msg = ("{} slapped themself with a {}."
+            temp_msg = ("{} slapped themself with a {}."
                         .format(s_name, random.choice(slap_items)))
+        return temp_msg
 
+    if has_my_name:
+        slap_msg = impersonator()
+    if "Aiden" in target.title():
+        slap_msg = aiden()
+    elif ''.join(c for c in target.lower() if c.isalpha()) == "me":
+        slap_msg = justme()
+    elif "myself" in target.lower():
+        slap_msg = myself()
     elif me.display_name.title() in target.title():
         slap_msg = ("You shouldn't include my creator's name in your "
                     "slapping target.")

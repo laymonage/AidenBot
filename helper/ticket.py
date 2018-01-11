@@ -28,9 +28,10 @@ def ticket_add(item, trim=True):
     return "Ticket sent!"
 
 
-def ticket_get():
+def ticket_get(allowed=True):
     '''
     Return current tickets.
+    allowed (bool): if False, return None
     '''
     tickets = getJSON(dbx_dl(tickets_path))
     if not tickets:
@@ -38,7 +39,7 @@ def ticket_get():
     current_tickets = "Tickets:"
     for num, items in enumerate(tickets):
         current_tickets += "\n{}. {}".format(num+1, items)
-    return current_tickets
+    return current_tickets if allowed else None
 
 
 def ticket_rem(num):

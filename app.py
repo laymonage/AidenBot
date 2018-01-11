@@ -116,8 +116,7 @@ def handle_text_message(event):
                 else:
                     content.append(ImageSendMessage(
                         original_content_url=msg,
-                        preview_image_url=msg)
-                    )
+                        preview_image_url=msg))
             elif mode[idx] == 'custimg':
                 if isinstance(msg, (tuple, list)):
                     content = [ImageSendMessage(original_content_url=item[0],
@@ -126,8 +125,7 @@ def handle_text_message(event):
                 else:
                     content.append(ImageSendMessage(
                         original_content_url=msg[0],
-                        preview_image_url=msg[1])
-                    )
+                        preview_image_url=msg[1]))
         AidenBot.reply_message(
             event.reply_token, content
         )

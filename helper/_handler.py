@@ -4,7 +4,7 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    AkunBenCoin, cat_wrap, echo, shout, mock, is_palindrome, rng,
+    predefined_wrap, cat_wrap, echo, shout, mock, is_palindrome, rng,
     rpick, translate, isup, kbbi_def, ask, define, reddit_hot,
     slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
     surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
@@ -199,63 +199,64 @@ def command_handler(text, user, me, set_id):
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    no_arg_commands = {'bencoin': AkunBenCoin.intro,
-                       'lenny': '( ͡° ͜ʖ ͡°)',
-                       'shrug': '¯\\_(ツ)_/¯',
-                       'tix': ticket_get()}
+    no_args = {'bencoin': pt(predefined_wrap, 'bencoin'),
+               'lenny': pt(predefined_wrap, 'lenny'),
+               'shrug': pt(predefined_wrap, 'shrug'),
+               'tix': pt(ticket_get, allowed=itsme)}
 
-    single_arg_commands = {'ask': pt(ask, id_=True),
-                           'define': define,
-                           'echo': echo,
-                           'isup': isup,
-                           'isupd': pt(isup, detailed=True),
-                           'kbbi': kbbi_def,
-                           'kbbix': pt(kbbi_def, ex=True),
-                           'mcs': ask,
-                           'mock': mock,
-                           'palindrome': is_palindrome,
-                           'ppalindrome': pt(is_palindrome, perfect=True),
-                           'pick': rpick,
-                           'rtix': ticket_rem,
-                           'shout': shout,
-                           'slap': pt(slap, user, me=me),
-                           'ticket': ticket_add,
-                           'tl': translate,
-                           'urban': urban,
-                           'urbanx': pt(urban, ex=True),
-                           'weather': weather,
-                           'wiki': pt(wiki_get, set_id=set_id),
-                           'wikilang': pt(wiki_lang, set_id=set_id),
-                           'wolframs': wolfram}
+    single_args = {'ask': pt(ask, id_=True),
+                   'define': define,
+                   'echo': echo,
+                   'isup': isup,
+                   'isupd': pt(isup, detailed=True),
+                   'kbbi': kbbi_def,
+                   'kbbix': pt(kbbi_def, ex=True),
+                   'mcs': ask,
+                   'mock': mock,
+                   'palindrome': is_palindrome,
+                   'ppalindrome': pt(is_palindrome, perfect=True),
+                   'pick': rpick,
+                   'rtix': ticket_rem,
+                   'shout': shout,
+                   'slap': pt(slap, user, me=me),
+                   'ticket': ticket_add,
+                   'tl': translate,
+                   'urban': urban,
+                   'urbanx': pt(urban, ex=True),
+                   'weather': weather,
+                   'wiki': pt(wiki_get, set_id=set_id),
+                   'wikilang': pt(wiki_lang, set_id=set_id),
+                   'wolframs': wolfram}
 
-    double_arg_commands = {'reddit': pt(reddit_hot, splitted=True),
-                           'rng': rng,
-                           'rngf': pt(rng, frac=True)}
+    double_args = {'reddit': pt(reddit_hot, splitted=True),
+                   'rng': rng,
+                   'rngf': pt(rng, frac=True)}
 
     distinct_commands = {'cat': cat_wrap,
-                        'stalkig': pt(stalkig_wrap, *command[1:]),
-                        'surprise': surprise_wrap,
-                        'wolfram': pt(wolfram_wrap, *command[1:])}
+                         'stalkig': pt(stalkig_wrap, *command[1:]),
+                         'surprise': surprise_wrap,
+                         'wolfram': pt(wolfram_wrap, *command[1:])}
 
     try:
-      if cmd[0] == 'help':
-          result = ('text', get_help(*cmd[1:]))
+        if cmd[0] == 'help':
+            result = ('text', get_help(*cmd[1:]))
 
-      elif cmd[0] in no_arg_commands and (cmd[0] != 'tix' or itsme):
-          result = ('text', no_arg_commands[cmd[0]])
+        elif cmd[0] in no_args and (cmd[0] != 'tix' or itsme):
+            result = ('text', no_args[cmd[0]]())
 
-      elif cmd[0] in single_arg_commands and (cmd[0] != 'rtix' or itsme):
-          result = ('text', single_arg_commands[cmd[0]](command[1]))
+        elif cmd[0] in single_args and (cmd[0] != 'rtix' or itsme):
+            result = ('text', single_args[cmd[0]](command[1]))
 
-      elif cmd[0] in double_arg_commands:
-          command = command[1].split()
-          result = ('text', double_arg_commands[cmd[0]](command[0], command[-1]))
+        elif cmd[0] in double_args:
+            command = command[1].split()
+            result = ('text', double_args[cmd[0]](command[0], command[-1]))
 
-      elif cmd[0] in distinct_commands:
-          result = distinct_commands[cmd[0]]()
+        elif cmd[0] in distinct_commands:
+            result = distinct_commands[cmd[0]]()
+
     except (IndexError, TypeError):
-      result = ('text', "Invalid format.\n"
-                        "Please see /help {} for more info."
-                        .format(cmd[0]))
+        result = ('text', ("Invalid format.\n"
+                           "Please see /help {} for more info."
+                           .format(cmd[0])))
 
     return result

@@ -14,7 +14,7 @@ Example:
 '''
 
 from . import (
-    AkunBenCoin, cat, stalkig, surprise, wolfram
+    cat, stalkig, surprise, wolfram
 )
 
 

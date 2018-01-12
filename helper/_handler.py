@@ -84,7 +84,7 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                           "Example: /palindrome Dammit, I'm mad!",
 
             'ppalindrome': "Usage: /ppalindrome <something>\n"
-                           "Check if <something> is a perfect palindrome\n"
+                           "Check if <something> is a perfect palindrome.\n"
                            "Example: /ppalindrome kasur nababan rusak",
 
             'pick': "Usage: /pick <something1>;<something2>;<somethingN>\n"

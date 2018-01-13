@@ -139,7 +139,8 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
             'tl': "Usage: /tl <src_lang> <dest_lang> <text>\n"
                   "Translate <text> from <src_lang> to <dest_lang>.\n"
                   "You can use auto as <src_lang> for auto-detection.\n"
-                  "Look up ISO 639-1 for valid language codes.\n"
+                  "See cloud.google.com/translate/docs/languages for "
+                  "a list of available languages.\n"
                   "Example: /tl auto id Sorry for my English",
 
             'urban': "Usage: /urban <something>\n"
@@ -163,6 +164,8 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
 
             'wikilang': "Usage: /wikilang <language>\n"
                         "Change /wiki language to <language>\n"
+                        "See meta.wikimedia.org/wiki/List_of_Wikipedias for "
+                        "a list of available languages.\n"
                         "Language settings will be reset to default (en) "
                         "every once in a while.\n"
                         "Example: /wikilang id",

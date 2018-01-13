@@ -4,24 +4,38 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    AkunBenCoin, cat_wrap, echo, shout, mock, is_palindrome, rng,
-    rpick, translate, isup, kbbi_def, ask, define, reddit_hot,
-    slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
-    surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
-    wolfram_wrap, weather
+    AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
+    aesthetic, bawl, is_palindrome, rng, rpick, translate,
+    isup, kbbi_def, ask, define, reddit_hot, slap, stalkig_wrap,
+    ticket_add, ticket_rem, ticket_get, surprise_wrap, urban,
+    wiki_get, wiki_lang, wolfram, wolfram_wrap, weather
 )
 
 help_msg = ("Available commands:\n"
-            "ask, bye, bencoin, cat, define, echo, help, isup, isupd, "
-            "kbbi, kbbix, lenny, mcs, mock, palindrome, ppalindrome, "
-            "pick, profile, reddit, rng, rngf, shout, shrug, slap, "
-            "stalkig, surprise, ticket, tl, urban, urbanx, weather, wiki, "
-            "wikilang, wolfram, wolframs\n"
+            "aes, ask, bawl, bye, bencoin, cat, cmb, define, echo, "
+            "help, isup, isupd, kbbi, kbbix, lenny, mcs, mock, "
+            "palindrome, ppalindrome, pick, profile, reddit, rng, rngf, "
+            "shout, shrug, slap, spc, stalkig, surprise, ticket, tl, "
+            "urban, urbanx, weather, wiki, wikilang, wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
-cmd_help = {'ask': "Usage: /ask <question>\n"
+cmd_help = {'aes': "Usage: /aes <something>\n"
+                   "{}\n"
+                   "Can be combined with /bawl, /mock, "
+                   "/shout, and /spc using /cmb.\n"
+                   "Example: /aes thetic"
+                   .format(aesthetic('Repeat <something> aesthetically')),
+
+            'ask': "Usage: /ask <question>\n"
                    "Simulator Kulit Kerang Ajaib.\n"
                    "Example: /ask Apa aku boleh makan?",
+
+            'bawl': "Usage: /bawl <something>\n"
+                    "{}\n"
+                    "Can be combined with /aes, /mock, "
+                    "/shout, and /spc using /cmb.\n"
+                    "Example: /bawl EDGY"
+                    .format(bawl('Repeat <something>')),
 
             'bye': "Usage: /bye\n"
                    "Instruct me to leave this chat room.",
@@ -33,6 +47,14 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
 
             'cat': "Usage: /cat\n"
                    "Get a random cat image, obtained from thecatapi.com.",
+
+            'cmb': "Usage: /cmb <num> <cmd1> <cmd2> ... <cmdnum>\n"
+                   "Combine <num> commands into one. Commands are executed "
+                   "respectively.\n"
+                   "Available commands to combine: "
+                   "aes, bawl, mock, shout, spc\n"
+                   "Note: each commands can only be used once.\n"
+                   "Example: /cmb 3 mock aes bawl wow this is so cool!",
 
             'define': "Usage: /define <something>\n"
                       "Define <something>, obtained from "
@@ -73,9 +95,12 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
                    "Magic Conch Shell simulator.\n"
                    "Example: /mcs Can I eat something?",
 
-            'mock': "uSaGE: /mock <something>\n"
-                    "sEnD <sOMetHiNg> iN A mOcKinG MaNnER.\n"
-                    "ExaMpLE: /mock Don't tell me what I can't do!",
+            'mock': "Usage: /mock <something>\n"
+                    "{}\n"
+                    "Can be combined with /aes, /bawl, "
+                    "/shout, and /spc using /cmb.\n"
+                    "Example: /mock Don't tell me what I can't do!"
+                    .format(mock('Repeat <something> in a mocking manner.')),
 
             'palindrome': "Usage: /palindrome <something>\n"
                           "Check if <something> is a palindrome.\n"
@@ -114,6 +139,8 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
 
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
+                     "Can be combined with /aes, /bowl, "
+                     "/mock, and /spc using /cmb.\n"
                      "Example: /shout how do you like them apples?",
 
             'shrug': "Usage: /shrug\n"
@@ -122,6 +149,13 @@ cmd_help = {'ask': "Usage: /ask <question>\n"
             'slap': "Usage: /slap <someone>\n"
                     "Slap <someone> with a random object.\n"
                     "Example: /slap Pak Dengklek",
+
+            'spc': "Usage: /spc <something>\n"
+                   "{}\n"
+                   "Can be combined with /aes, /bowl, "
+                   "/mock, and /shout using /cmb.\n"
+                   "Example: /spc aesthetic"
+                   .format(space('Repeat <something> with extra spaces')),
 
             'stalkig': "Usage: /stalkig <username>\n"
                        "Get a random picture taken from <username>'s "
@@ -218,6 +252,9 @@ def command_handler(text, user, me, set_id):
                'tix': pt(ticket_get, allowed=itsme)}
 
     single_args = {'ask': pt(ask, id_=True),
+                   'aes': aesthetic,
+                   'bawl': bawl,
+                   'cmb': combine,
                    'define': define,
                    'echo': echo,
                    'isup': isup,
@@ -232,6 +269,7 @@ def command_handler(text, user, me, set_id):
                    'rtix': ticket_rem,
                    'shout': shout,
                    'slap': pt(slap, user, me=me),
+                   'spc': space,
                    'ticket': ticket_add,
                    'tl': translate,
                    'urban': urban,
@@ -267,7 +305,7 @@ def command_handler(text, user, me, set_id):
         elif cmd[0] in distinct_commands:
             result = distinct_commands[cmd[0]]()
 
-    except (IndexError, TypeError):
+    except (IndexError, TypeError, ValueError):
         result = ('text', ("Invalid format.\n"
                            "Please see /help {} for more info."
                            .format(cmd[0])))

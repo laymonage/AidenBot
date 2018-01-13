@@ -35,6 +35,68 @@ def mock(text):
     return result
 
 
+def space(text):
+    '''
+    R e t u r n   t e x t.
+    '''
+    return ' '.join(text)
+
+
+def aesthetic(text):
+    '''
+    Return text in fullwidth unicode.
+    '''
+    HALFWIDTH_TO_FULLWIDTH = str.maketrans(
+        ('0123456789 abcdefghijklmnopqrstuvwxyz'
+         'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+         '!"#$%&()*+,-./:;<=>?@[]^_`{|}~'),
+        ('０１２３４５６７８９　ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
+         'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'
+         '！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～'))
+    return text.translate(HALFWIDTH_TO_FULLWIDTH)
+
+
+def bawl(text):
+    '''
+    Return
+    t e x t .
+    e
+    x
+    t
+    .
+    '''
+    return ' '.join(text) + '\n' + '\n'.join(text[1:])
+
+
+def combine(text):
+    '''
+    Combine multiple functions.
+    '''
+    funcs = {'shout': shout,
+             'mock': mock,
+             'spc': space,
+             'aes': aesthetic,
+             'bawl': bawl}
+    used = {'shout': False,
+            'mock': False,
+            'spc': False,
+            'aes': False,
+            'bawl': False}
+
+    operation = text.split(maxsplit=1)
+    num = int(operation[0])
+    todo = operation[1].split(maxsplit=num)
+    text = todo[num]
+    for op in range(num):
+        try:
+            if not used[todo[op]]:
+                text = funcs[todo[op]](text)
+                used[todo[op]] = True
+        except KeyError:
+            return todo[op] + " is not available for combining."
+    return text
+
+
 def is_palindrome(text, perfect=False):
     '''
     Return a palindrome checking result of text
@@ -55,21 +117,17 @@ def rng(ceil, floor=1, frac=False):
     '''
     Return a random number from floor to ceil (inclusive).
     '''
-    try:
-        floor, ceil = int(floor), int(ceil)
-        if floor == ceil:
-            floor = 1
-        elif floor > ceil:
-            floor, ceil = ceil, floor
-        if frac:
-            result = ("From {} to {}, I pick {:.2f}."
-                      .format(floor, ceil, random.uniform(floor, ceil)))
-        else:
-            result = ("From {} to {}, I pick {}."
-                      .format(floor, ceil, random.randint(floor, ceil)))
-
-    except ValueError:
-        result = "Wrong format."
+    floor, ceil = int(floor), int(ceil)
+    if floor == ceil:
+        floor = 1
+    elif floor > ceil:
+        floor, ceil = ceil, floor
+    if frac:
+        result = ("From {} to {}, I pick {:.2f}."
+                  .format(floor, ceil, random.uniform(floor, ceil)))
+    else:
+        result = ("From {} to {}, I pick {}."
+                  .format(floor, ceil, random.randint(floor, ceil)))
     return result
 
 

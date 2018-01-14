@@ -56,7 +56,7 @@ def aesthetic(text):
     return text.translate(HALFWIDTH_TO_FULLWIDTH)
 
 
-def bawl(text):
+def bawl1(text):
     '''
     Return
     t e x t .
@@ -64,8 +64,27 @@ def bawl(text):
     x
     t
     .
+    or boxed if text is a palindrome.
     '''
-    return ' '.join(text) + '\n' + '\n'.join(text[1:])
+    if text[0].lower() != text[-1].lower() or len(text) <= 2:
+        return ' '.join(text) + '\n' + '\n'.join(text[1:])
+    return (' '.join(text) + '\n' +
+            '\n'.join(char + ' '*((len(text) - 2)*2 + 1) + char
+                      for char in text[1:-1]) + '\n' +
+            ' '.join(text))
+
+
+def bawl2(text):
+    '''
+    Return
+    t e x t .
+    e e
+    x   x
+    t     t
+    .       .
+    '''
+    return ' '.join(text) + ''.join('\n' + char + ' '*(2*idx + 1) + char
+                                    for idx, char in enumerate(text[1:]))
 
 
 def combine(text):
@@ -76,12 +95,14 @@ def combine(text):
              'mock': mock,
              'spc': space,
              'aes': aesthetic,
-             'bawl': bawl}
+             'bawl1': bawl1,
+             'bawl2': bawl2}
     used = {'shout': False,
             'mock': False,
             'spc': False,
             'aes': False,
-            'bawl': False}
+            'bawl1': False,
+            'bawl2': False}
 
     operation = text.split(maxsplit=1)
     num = int(operation[0])
@@ -91,7 +112,10 @@ def combine(text):
         try:
             if not used[todo[op]]:
                 text = funcs[todo[op]](text)
-                used[todo[op]] = True
+                if todo[op] in ('bawl1', 'bawl2'):
+                    used['bawl1'], used['bawl2'] = True, True
+                else:
+                    used[todo[op]] = True
         except KeyError:
             return todo[op] + " is not available for combining."
     return text

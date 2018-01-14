@@ -10,7 +10,7 @@ import requests
 
 def weather(keyword):
     '''
-    Send current weather condition of a location, obtained from
+    Send current weather condition of a location, retrieved from
     Weather Underground.
     keyword (str): location to look up in wunderground.com
     '''

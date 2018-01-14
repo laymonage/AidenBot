@@ -64,7 +64,7 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
                     "Example: /calc 4 + 8 + 15 + 16 + 23 + 42",
 
             'cat': "Usage: /cat\n"
-                   "Get a random cat image, obtained from thecatapi.com.",
+                   "Get a random cat image, retrieved from thecatapi.com.",
 
             'cmb': "Usage: /cmb <num> <cmd1> <cmd2> ... <cmdnum>\n"
                    "Combine <num> commands into one. Commands are executed "
@@ -76,7 +76,7 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
                    "Example: /cmb 3 bawl1 aes mock noble man",
 
             'define': "Usage: /define <something>\n"
-                      "Define <something>, obtained from "
+                      "Define <something>, retrieved from "
                       "oxforddictionaries.com\n"
                       "Example: /define onomatopoeia",
 
@@ -89,22 +89,23 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
 
             'isup': "Usage: /isup <website>\n"
                     "Check <website>'s status, "
-                    "obtained from isitup.org.\n"
+                    "retrieved from isitup.org.\n"
                     "Example: /isup google.com",
 
             'isupd': "Usage: /isupd <website>\n"
                      "Check <website>'s status, along with its IP, "
                      "response code, and response time, "
-                     "obtained from isitup.org.\n"
+                     "retrieved from isitup.org.\n"
                      "Example: /isupd google.com",
 
             'kbbi': "Usage: /kbbi <something>\n"
-                    "Define <something>, obtained from kbbi.kemdikbud.go.id.\n"
+                    "Define <something>, retrieved from "
+                    "kbbi.kemdikbud.go.id.\n"
                     "Example: /kbbi eufemisme",
 
             'kbbix': "Usage: /kbbix <something>\n"
                      "Define <something> and give usage examples (if any), "
-                     "obtained from kbbi.kemdikbud.go.id.\n"
+                     "retrieved from kbbi.kemdikbud.go.id.\n"
                      "Example: /kbbix cinta",
 
             'lenny': "Usage: /lenny\n"
@@ -197,16 +198,17 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
                   "Example: /tl auto id Sorry for my English",
 
             'urban': "Usage: /urban <something>\n"
-                     "Define <something>, obtained from urbandictionary.com.\n"
+                     "Define <something>, retrieved from "
+                     "urbandictionary.com.\n"
                      "Example: /urban Mac DeMarco",
 
             'urbanx': "Usage: /urbanx <something>\n"
                       "Define <something>, and give usage examples (if any), "
-                      "obtained from urbandictionary.com.\n"
+                      "retrieved from urbandictionary.com.\n"
                       "Example: /urbanx Young the Giant",
 
             'weather': "Usage: /weather <location>\n"
-                       "Obtain current weather data in <location>, obtained "
+                       "Obtain current weather data in <location>, retrieved "
                        "from wunderground.com.\n"
                        "Example: /weather Jakarta",
 

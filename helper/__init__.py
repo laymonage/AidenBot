@@ -10,6 +10,7 @@ from .dropson import dbx_dl, dbx_ul, toJSON, getJSON
 from .gtrans import translate
 from .isitup import isup
 from .kbbih import kbbi_def
+from .mathjs import calc
 from .mcs import ask
 from .oxdict import define
 from .reddit import reddit_hot

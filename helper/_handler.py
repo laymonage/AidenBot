@@ -6,13 +6,13 @@ from functools import partial as pt
 from . import (
     AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
     aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, translate,
-    isup, kbbi_def, ask, define, reddit_hot, slap, stalkig_wrap,
+    isup, kbbi_def, calc, ask, define, reddit_hot, slap, stalkig_wrap,
     ticket_add, ticket_rem, ticket_get, surprise_wrap, urban,
     wiki_get, wiki_lang, wolfram, wolfram_wrap, weather
 )
 
 help_msg = ("Available commands:\n"
-            "aes, ask, bawl1, bawl2, bye, bencoin, cat, cmb, define, "
+            "aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, define, "
             "echo, help, isup, isupd, kbbi, kbbix, lenny, mcs, mock, "
             "palindrome, ppalindrome, pick, profile, reddit, rng, rngf, "
             "shout, shrug, slap, spc, stalkig, surprise, ticket, tl, "
@@ -57,6 +57,11 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
                        "[Fasilkom UI 2017 joke]\n"
                        "Send bencoin help message.\n"
                        "(note: the commands actually work!)",
+
+            'calc': "Usage: /calc <expression>\n"
+                    "Evaluate a mathematical <expression>, retrieved from "
+                    "mathjs.org.\n"
+                    "Example: /calc 4 + 8 + 15 + 16 + 23 + 42",
 
             'cat': "Usage: /cat\n"
                    "Get a random cat image, obtained from thecatapi.com.",
@@ -269,6 +274,7 @@ def command_handler(text, user, me, set_id):
                    'aes': aesthetic,
                    'bawl1': bawl1,
                    'bawl2': bawl2,
+                   'calc': calc,
                    'cmb': combine,
                    'define': define,
                    'echo': echo,

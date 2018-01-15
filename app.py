@@ -1,6 +1,6 @@
 '''
 AidenBot
-v0.9: modular
+v0.96: public
 '''
 
 import errno

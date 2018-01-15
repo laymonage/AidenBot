@@ -15,7 +15,7 @@ def about():
     Return about message retrieved from Dropbox.
     '''
     about_file = os.getenv('ABOUT_FILE_PATH', None)
-    return dbx_dl(about_file).decode('utf-8')
+    return dbx_dl(about_file).decode('utf-8').strip()
 
 
 def ticket_add(item, trim=True):

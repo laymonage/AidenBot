@@ -10,6 +10,14 @@ from .dropson import dbx_dl, dbx_ul, toJSON, getJSON
 tickets_path = os.getenv('TICKETS_FILE_PATH', None)
 
 
+def about():
+    '''
+    Return about message retrieved from Dropbox.
+    '''
+    about_file = os.getenv('ABOUT_FILE_PATH', None)
+    return dbx_dl(about_file).decode('utf-8')
+
+
 def ticket_add(item, trim=True):
     '''
     Add a ticket.

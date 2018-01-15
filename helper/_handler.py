@@ -4,7 +4,7 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
+    about, AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
     aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, translate,
     isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, define,
     reddit_hot, slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
@@ -13,14 +13,18 @@ from . import (
 )
 
 help_msg = ("Available commands:\n"
-            "aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, define, "
-            "echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, mcs, "
-            "memes, mock, palindrome, ppalindrome, pick, profile, reddit, "
-            "rng, rngf, shout, shrug, slap, spc, stalkig, surprise, ticket, "
-            "tl, urban, urbanx, weather, wiki, wikilang, wolfram, wolframs\n"
+            "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
+            "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
+            "mcs, memes, mock, palindrome, ppalindrome, pick, profile, "
+            "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, surprise, "
+            "ticket, tl, urban, urbanx, weather, wiki, wikilang, "
+            "wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
-cmd_help = {'aes': "Usage: /aes <something>\n"
+cmd_help = {'about': "Usage: /about\n"
+                     "Send a message about me.",
+
+            'aes': "Usage: /aes <something>\n"
                    "{}\n"
                    "Can be combined with /bawl1, /bawl2, /mock, "
                    "/shout, and /spc using /cmb.\n"
@@ -282,7 +286,8 @@ def command_handler(text, user, me, set_id):
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    no_args = {'bencoin': pt(predefined, 'bencoin'),
+    no_args = {'about': about,
+               'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'shrug': pt(predefined, 'shrug'),
                'tix': pt(ticket_get, allowed=itsme),

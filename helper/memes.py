@@ -42,10 +42,12 @@ def meme(*keywords):
     return result
 
 
-def updmemes():
+def updmemes(allowed=True):
     '''
     Update memes.
     '''
+    if not allowed:
+        return None
     del memes[:]
     memes.extend(dbx_ls(memes_path, sort=True, noext=True))
     return "Meme list has been updated."

@@ -41,21 +41,25 @@ def ticket_get(allowed=True):
     Return current tickets.
     allowed (bool): if False, return None
     '''
+    if not allowed:
+        return None
     tickets = getJSON(dbx_dl(tickets_path))
     if not tickets:
         return "No tickets."
     current_tickets = "Tickets:"
     for num, items in enumerate(tickets):
         current_tickets += "\n{}. {}".format(num+1, items)
-    return current_tickets if allowed else None
+    return current_tickets
 
 
-def ticket_rem(num):
+def ticket_rem(num, allowed=True):
     '''
     Remove an item from the ticket list.
     num (int or str): remove the num-th item in the ticket list
     if num == 'all', then all items in the ticket list will be removed
     '''
+    if not allowed:
+        return None
     tickets = getJSON(dbx_dl(tickets_path))
     if not tickets:
         return "No tickets."

@@ -291,7 +291,7 @@ def command_handler(text, user, me, set_id):
                'lenny': pt(predefined, 'lenny'),
                'shrug': pt(predefined, 'shrug'),
                'tix': pt(ticket_get, allowed=itsme),
-               'updmemes': updmemes}
+               'updmemes': pt(updmemes, allowed=itsme)}
 
     single_args = {'ask': pt(ask, id_=True),
                    'aes': aesthetic,
@@ -310,7 +310,7 @@ def command_handler(text, user, me, set_id):
                    'palindrome': is_palindrome,
                    'ppalindrome': pt(is_palindrome, perfect=True),
                    'pick': rpick,
-                   'rtix': ticket_rem,
+                   'rtix': pt(ticket_rem, allowed=itsme),
                    'shout': shout,
                    'slap': pt(slap, user, me=me),
                    'spc': space,
@@ -336,10 +336,10 @@ def command_handler(text, user, me, set_id):
                          'wolfram': pt(wolfram_wrap, *command[1:])}
 
     try:
-        if cmd[0] in no_args and (cmd[0] not in ('tix', 'updmemes') or itsme):
+        if cmd[0] in no_args:
             result = ('text', no_args[cmd[0]]())
 
-        elif cmd[0] in single_args and (cmd[0] != 'rtix' or itsme):
+        elif cmd[0] in single_args:
             result = ('text', single_args[cmd[0]](command[1]))
 
         elif cmd[0] in double_args:

@@ -6,4 +6,4 @@ python:
 install:
     - pip install -r requirements.txt
 script:
-    - find -name *.py | xargs pylint --disable=invalid-name
+    - find -name *.py | xargs pylint --disable=invalid-name --max-line-length=79

@@ -21,4 +21,4 @@
 <br>
 
 # GitHub contributors:
-- [annafis1](https://github.com/annafis1)
+- [annafis1](https://github.com/annafis1) ([#1](https://github.com/laymonage/AidenBot/pull/1))

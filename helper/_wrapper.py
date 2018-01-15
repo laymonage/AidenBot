@@ -14,7 +14,7 @@ Example:
 '''
 
 from . import (
-    cat, stalkig, surprise, wolfram
+    cat, meme, stalkig, surprise, wolfram
 )
 
 
@@ -23,6 +23,19 @@ def cat_wrap():
     Wrap cat command.
     '''
     return ('image', cat())
+
+
+def meme_wrap(keyword=''):
+    '''
+    Wrap meme command.
+    '''
+    keywords = keyword.split(';')[:5]
+    if not keywords[0]:
+        return ('image', meme())
+    result = meme(*keywords)
+    if 'not found' in result:
+        return result
+    return ('image', meme(*keywords))
 
 
 def stalkig_wrap(username):

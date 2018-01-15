@@ -164,12 +164,12 @@ def handle_text_message(event):
 
     if text[0] == '/':
         command = text[1:]
+        result = command_handler(command, subject, me, set_id)
         if command.lower().strip().startswith('bye'):
             bye()
         elif command.lower().strip().startswith('profile'):
             getprofile()
-        else:
-            result = command_handler(command, subject, me, set_id)
+        elif result:
             if result[0] in ('text', 'image', 'custimg'):
                 quickreply(*result[1:], mode=(result[0],)*len(result[1:]))
             elif result[0] == 'multi':
@@ -178,6 +178,8 @@ def handle_text_message(event):
                     mode.append(item[0])
                     content.append(item[1])
                 quickreply(*content, mode=mode)
+            else:
+                quickreply(result)
 
     elif text.split()[0] in ('DAFTAR', 'TAMBAH', 'UBAH', 'SETOR',
                              'INFO', 'TRANSFER', 'TARIK', 'BANTUAN'):

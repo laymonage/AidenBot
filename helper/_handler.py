@@ -6,17 +6,18 @@ from functools import partial as pt
 from . import (
     AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
     aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, translate,
-    isup, kbbi_def, calc, ask, define, reddit_hot, slap, stalkig_wrap,
-    ticket_add, ticket_rem, ticket_get, surprise_wrap, urban,
-    wiki_get, wiki_lang, wolfram, wolfram_wrap, weather
+    isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, define,
+    reddit_hot, slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
+    surprise_wrap, urban, wiki_get, wiki_lang, wolfram, wolfram_wrap,
+    weather
 )
 
 help_msg = ("Available commands:\n"
             "aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, define, "
-            "echo, help, isup, isupd, kbbi, kbbix, lenny, mcs, mock, "
-            "palindrome, ppalindrome, pick, profile, reddit, rng, rngf, "
-            "shout, shrug, slap, spc, stalkig, surprise, ticket, tl, "
-            "urban, urbanx, weather, wiki, wikilang, wolfram, wolframs\n"
+            "echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, mcs, "
+            "memes, mock, palindrome, ppalindrome, pick, profile, reddit, "
+            "rng, rngf, shout, shrug, slap, spc, stalkig, surprise, ticket, "
+            "tl, urban, urbanx, weather, wiki, wikilang, wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
 cmd_help = {'aes': "Usage: /aes <something>\n"
@@ -84,6 +85,12 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
                     "Repeat <something>.\n"
                     "Example: /echo Hello, world!",
 
+            'getmemes': "Usage: /getmemes <keyword>\n"
+                        "Find memes containing <keyword>.\n"
+                        "If <keyword> is not specified, then a list of "
+                        "all available memes will be returned.\n"
+                        "Example: /getmemes saya kan",
+
             'help': "Usage: /help\n"
                     "Send a list of available commands.",
 
@@ -114,6 +121,14 @@ cmd_help = {'aes': "Usage: /aes <something>\n"
             'mcs': "Usage: /mcs <question>\n"
                    "Magic Conch Shell simulator.\n"
                    "Example: /mcs Can I eat something?",
+
+            'meme': "Usage: /meme <keyword1>;<keyword2;...;<keywordN>\n"
+                    "Send a meme associated with each <keyword>.\n"
+                    "Use /getmemes to get the keywords.\n"
+                    "If no <keyword> is specified, a random meme will "
+                    "be sent.\n"
+                    "A maximum of 5 memes can be sent at the same time.\n"
+                    "Example: /meme ipk saya kan tinggi;saya kan maba",
 
             'mock': "Usage: /mock <something>\n"
                     "{}\n"
@@ -270,7 +285,8 @@ def command_handler(text, user, me, set_id):
     no_args = {'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'shrug': pt(predefined, 'shrug'),
-               'tix': pt(ticket_get, allowed=itsme)}
+               'tix': pt(ticket_get, allowed=itsme),
+               'updmemes': updmemes}
 
     single_args = {'ask': pt(ask, id_=True),
                    'aes': aesthetic,
@@ -307,15 +323,15 @@ def command_handler(text, user, me, set_id):
                    'rngf': pt(rng, frac=True)}
 
     distinct_commands = {'cat': cat_wrap,
+                         'getmemes': pt(getmemes, *command[1:]),
+                         'help': pt(get_help, *cmd[1:]),
+                         'meme': pt(meme_wrap, *command[1:]),
                          'stalkig': pt(stalkig_wrap, *command[1:]),
                          'surprise': surprise_wrap,
                          'wolfram': pt(wolfram_wrap, *command[1:])}
 
     try:
-        if cmd[0] == 'help':
-            result = ('text', get_help(*cmd[1:]))
-
-        elif cmd[0] in no_args and (cmd[0] != 'tix' or itsme):
+        if cmd[0] in no_args and (cmd[0] not in ('tix', 'updmemes') or itsme):
             result = ('text', no_args[cmd[0]]())
 
         elif cmd[0] in single_args and (cmd[0] != 'rtix' or itsme):
@@ -329,8 +345,8 @@ def command_handler(text, user, me, set_id):
             result = distinct_commands[cmd[0]]()
 
     except (IndexError, TypeError, ValueError):
-        result = ('text', ("Invalid format.\n"
-                           "Please see /help {} for more info."
-                           .format(cmd[0])))
+        result = ("Invalid format.\n"
+                  "Please see /help {} for more info."
+                  .format(cmd[0]))
 
     return result

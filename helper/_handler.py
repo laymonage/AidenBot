@@ -15,7 +15,7 @@ from . import (
 help_msg = ("Available commands:\n"
             "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
             "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
-            "mcs, memes, mock, palindrome, ppalindrome, pick, profile, "
+            "mcs, meme, mock, palindrome, ppalindrome, pick, profile, "
             "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, surprise, "
             "ticket, tl, urban, urbanx, weather, wiki, wikilang, "
             "wolfram, wolframs\n"

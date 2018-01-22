@@ -46,16 +46,14 @@ def wiki_lang(lang, set_id):
     lang (str): language to be used
     set_id (str): a unique ID to associate the user with the settings
     '''
-    if lang in list(wikipedia.languages().keys()):
+    langs_dict = wikipedia.languages()
+    if lang in langs_dict.keys():
         wiki_settings[set_id] = lang
-        return "Language has been changed to {} successfully.".format(lang)
+        return ("Language has been changed to {} successfully."
+                .format(langs_dict[lang]))
 
-    langlist = ("{} not available!\nList of available languages:\n"
-                .format(lang))
-    for available in list(wikipedia.languages().keys()):
-        langlist += "{}, ".format(available)
-    langlist_1 = langlist[:2000]
-    langlist_1 = langlist_1[:langlist_1.rfind(' ')]
-    langlist_2 = langlist.replace(langlist_1, '').strip(', ')
-
-    return (langlist_1, langlist_2)
+    return ("{} not available!\n"
+            "See meta.wikimedia.org/wiki/List_of_Wikipedias for "
+            "a list of available languages, and use the prefix "
+            "in the Wiki column to set the language."
+            .format(lang))

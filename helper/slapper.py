@@ -18,7 +18,7 @@ def slap(subject, target, me):
                   "katana", "hand", "laptop", "book", "drawing book",
                   "mouse", "keyboard"]
     s_name = subject.display_name
-    itsme = subject == me
+    itsme = subject.user_id == me.user_id
     has_my_name = not itsme and me.display_name.title() in s_name.title()
 
     def impersonator():

@@ -88,12 +88,16 @@ def handle_text_message(event):
     Text message handler
     '''
     text = event.message.text
-    subject = AidenBot.get_profile(event.source.user_id)
     if isinstance(event.source, SourceGroup):
+        subject = AidenBot.get_group_member_profile(event.source.group_id,
+                                                    event.source.user_id)
         set_id = event.source.group_id
     elif isinstance(event.source, SourceRoom):
+        subject = AidenBot.get_room_member_profile(event.source.room_id,
+                                                   event.source.user_id)
         set_id = event.source.room_id
     else:
+        subject = AidenBot.get_profile(event.source.user_id)
         set_id = event.source.user_id
 
     def quickreply(*msgs, mode=('text',)*5):

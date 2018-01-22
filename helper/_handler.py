@@ -156,8 +156,10 @@ cmd_help = {'about': "Usage: /about\n"
                     "Example: /pick Dota;LoL;Mobile Legends",
 
             'profile': "Usage: /profile\n"
-                       "Send your display name and your status message "
-                       "(if any).",
+                       "Send your display name, profile picture URL, "
+                       "and your status message (if any).\n"
+                       "If used in a group/multi chat, I can't see your "
+                       "status message unless you've added me.",
 
             'reddit': "Usage: /reddit <subreddit> <limit>\n"
                       "Get hot <limit> posts' titles in <subreddit>.\n"

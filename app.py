@@ -152,16 +152,15 @@ def handle_text_message(event):
         '''
         Send display name and status message of a user.
         '''
+        result = ("Display name: " + subject.display_name + "\n"
+                  "Profile picture: " + subject.picture_url)
         try:
             profile = AidenBot.get_profile(event.source.user_id)
             if profile.status_message:
-                quickreply("Display name: " + profile.display_name + "\n" +
-                           "Status message: " + profile.status_message)
-            else:
-                raise LineBotApiError
-
+                result += "\n" + "Status message: " + profile.status_message
         except LineBotApiError:
-            quickreply("Display name: " + subject.display_name)
+            pass
+        quickreply(result)
 
     if text[0] == '/':
         command = text[1:]

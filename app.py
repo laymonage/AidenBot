@@ -15,12 +15,11 @@ from linebot import (
     LineBotApi, WebhookHandler
 )
 from linebot.exceptions import (
-    InvalidSignatureError
+    InvalidSignatureError, LineBotApiError
 )
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage,
-    SourceUser, SourceGroup, SourceRoom, FileMessage,
-    UnfollowEvent, LeaveEvent
+    SourceGroup, SourceRoom, FileMessage, UnfollowEvent, LeaveEvent
 )
 
 from helper._handler import command_handler
@@ -153,18 +152,16 @@ def handle_text_message(event):
         '''
         Send display name and status message of a user.
         '''
-        if isinstance(event.source, (SourceUser, SourceGroup, SourceRoom)):
+        try:
             profile = AidenBot.get_profile(event.source.user_id)
             if profile.status_message:
-                status = profile.status_message
+                quickreply("Display name: " + profile.display_name + "\n" +
+                           "Status message: " + profile.status_message)
             else:
-                status = ""
+                raise LineBotApiError
 
-            quickreply("Display name: " + profile.display_name +
-                       "\nStatus message: " + status)
-
-        else:
-            quickreply("Bot can't use profile API without user ID")
+        except LineBotApiError:
+            quickreply("Display name: " + subject.display_name)
 
     if text[0] == '/':
         command = text[1:]

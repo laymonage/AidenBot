@@ -45,7 +45,8 @@ def stalktwt(username):
     t = Twitter(auth=OAuth(access_token, access_secret,
                            consumer_key, consumer_secret))
     try:
-        timeline = t.statuses.user_timeline(screen_name=username, count=200)
+        timeline = t.statuses.user_timeline(screen_name=username, count=200,
+                                            tweet_mode='extended')
         if timeline[0]['user']['protected']:
             return "@{} is a protected account.".format(username)
     except IndexError:
@@ -56,5 +57,5 @@ def stalktwt(username):
         return "@{} is unavailable.".format(username)
     tweet = random.choice(timeline)
     username = tweet['user']['screen_name']
-    return ("@{}: {}".format(username, tweet['text']),
+    return ("@{}: {}".format(username, tweet['full_text']),
             "twitter.com/{}/status/{}".format(username, tweet['id']))

@@ -3,6 +3,7 @@ Stalking helper module
 (c) 2018 - laymonage
 '''
 
+from html import unescape
 import os
 import random
 import requests
@@ -57,5 +58,5 @@ def stalktwt(username):
         return "@{} is unavailable.".format(username)
     tweet = random.choice(timeline)
     username = tweet['user']['screen_name']
-    return ("@{}: {}".format(username, tweet['full_text']),
+    return ("@{}: {}".format(username, unescape(tweet['full_text'])),
             "twitter.com/{}/status/{}".format(username, tweet['id']))

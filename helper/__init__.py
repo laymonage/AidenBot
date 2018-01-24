@@ -20,7 +20,7 @@ from .simpletext import (
     bawl1, bawl2, is_palindrome, rng, rpick
 )
 from .slapper import slap
-from .stalker import stalkig
+from .stalker import stalkig, stalktwt
 from .ticket import about, ticket_add, ticket_rem, ticket_get
 from .trap import surprise
 from .urban import urban

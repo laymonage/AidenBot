@@ -7,17 +7,17 @@ from . import (
     about, AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
     aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, translate,
     isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, define,
-    reddit_hot, slap, stalkig_wrap, ticket_add, ticket_rem, ticket_get,
-    surprise_wrap, urban, wiki_get, wiki_lang, wolfram, wolfram_wrap,
-    weather
+    reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem,
+    ticket_get, surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
+    wolfram_wrap, weather
 )
 
 help_msg = ("Available commands:\n"
             "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
             "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
             "mcs, meme, mock, palindrome, ppalindrome, pick, profile, "
-            "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, surprise, "
-            "ticket, tl, urban, urbanx, weather, wiki, wikilang, "
+            "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, stalktwt, "
+            "surprise, ticket, tl, urban, urbanx, weather, wiki, wikilang, "
             "wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
@@ -200,8 +200,13 @@ cmd_help = {'about': "Usage: /about\n"
 
             'stalkig': "Usage: /stalkig <username>\n"
                        "Get a random picture taken from <username>'s "
-                       "instagram account, along with the post's link.\n"
+                       "Instagram account, along with the post's link.\n"
                        "Example: /stalkig tychomusic",
+
+            'stalktwt': "Usage: /stalktwt <username>\n"
+                        "Get a random Tweet taken from <username>'s "
+                        "Twitter account, along with the Tweet's link.\n"
+                        "Example: /stalktwt TheNational",
 
             'surprise': "Usage: /surprise\n"
                         "?",
@@ -317,6 +322,7 @@ def command_handler(text, user, me, set_id):
                    'shout': shout,
                    'slap': pt(slap, user, me=me),
                    'spc': space,
+                   'stalktwt': stalktwt,
                    'ticket': ticket_add,
                    'tl': translate,
                    'urban': urban,

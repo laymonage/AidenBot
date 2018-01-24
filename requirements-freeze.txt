@@ -22,6 +22,7 @@ prawcore==0.13.0
 pylint==1.8.1
 requests==2.18.4
 six==1.11.0
+twitter==1.18.0
 update-checker==0.16
 urbandictionary-top==0.2
 urllib3==1.22

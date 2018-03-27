@@ -25,13 +25,13 @@ def mock(text):
     rEtURn tExT iN raNdoMcASe.
     '''
     result = ''
-    for c in text:
-        d = random.choice([c.upper(), c.lower()])
-        if d.isupper() and result[-1:-3:-1].isupper():
-            d = d.lower()
-        elif d.islower() and result[-1:-3:-1].islower():
-            d = d.upper()
-        result += d
+    for char in text:
+        mocked_char = random.choice([char.upper(), char.lower()])
+        if mocked_char.isupper() and result[-1:-3:-1].isupper():
+            mocked_char = mocked_char.lower()
+        elif mocked_char.islower() and result[-1:-3:-1].islower():
+            mocked_char = mocked_char.upper()
+        result += mocked_char
     return result
 
 
@@ -46,14 +46,14 @@ def aesthetic(text):
     '''
     Return text in fullwidth unicode.
     '''
-    HALFWIDTH_TO_FULLWIDTH = str.maketrans(
+    halfwidth_to_fullwidth = str.maketrans(
         ('0123456789 abcdefghijklmnopqrstuvwxyz'
          'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
          '!"#$%&()*+,-./:;<=>?@[]^_`{|}~'),
         ('０１２３４５６７８９　ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
          'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'
          '！゛＃＄％＆（）＊＋、ー。／：；〈＝〉？＠［］＾＿‘｛｜｝～'))
-    return text.translate(HALFWIDTH_TO_FULLWIDTH)
+    return text.translate(halfwidth_to_fullwidth)
 
 
 def bawl1(text):
@@ -108,16 +108,16 @@ def combine(text):
     num = int(operation[0])
     todo = operation[1].split(maxsplit=num)
     text = todo[num]
-    for op in range(num):
+    for each_op in range(num):
         try:
-            if not used[todo[op]]:
-                text = funcs[todo[op]](text)
-                if todo[op] in ('bawl1', 'bawl2'):
+            if not used[todo[each_op]]:
+                text = funcs[todo[each_op]](text)
+                if todo[each_op] in ('bawl1', 'bawl2'):
                     used['bawl1'], used['bawl2'] = True, True
                 else:
-                    used[todo[op]] = True
+                    used[todo[each_op]] = True
         except KeyError:
-            return todo[op] + " is not available for combining."
+            return todo[each_op] + " is not available for combining."
     return text
 
 

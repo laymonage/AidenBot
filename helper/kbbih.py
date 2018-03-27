@@ -14,8 +14,8 @@ def kbbi_def(keyword, ex=False):
     '''
     try:
         entry = KBBI(keyword)
-    except KBBI.TidakDitemukan as e:
-        result = str(e)
+    except KBBI.TidakDitemukan as error:
+        result = str(error)
     else:
         result = "Definisi {}:\n".format(keyword)
         if ex:

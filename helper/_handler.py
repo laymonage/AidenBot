@@ -12,7 +12,7 @@ from . import (
     wolfram_wrap, weather
 )
 
-help_msg = ("Available commands:\n"
+HELP_MSG = ("Available commands:\n"
             "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
             "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
             "mcs, meme, mock, palindrome, ppalindrome, pick, profile, "
@@ -21,7 +21,7 @@ help_msg = ("Available commands:\n"
             "wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
-cmd_help = {'about': "Usage: /about\n"
+CMD_HELP = {'about': "Usage: /about\n"
                      "Send a message about me.",
 
             'aes': "Usage: /aes <something>\n"
@@ -268,9 +268,9 @@ def get_help(command=None):
     Return a command's help message.
     '''
     if not command:
-        return help_msg
+        return HELP_MSG
     try:
-        return cmd_help[command]
+        return CMD_HELP[command]
     except KeyError:
         return command + " is unavailable."
 
@@ -285,11 +285,11 @@ def predefined(key):
     return strings[key]
 
 
-def command_handler(text, user, me, set_id):
+def command_handler(text, user, myself, set_id):
     '''
     Command handler for AidenBot.
     '''
-    itsme = user.user_id == me.user_id
+    itsme = user.user_id == myself.user_id
     command = text.split(maxsplit=1)
     cmd = text.lower().split(maxsplit=1)
     result = None
@@ -320,7 +320,7 @@ def command_handler(text, user, me, set_id):
                    'pick': rpick,
                    'rtix': pt(ticket_rem, allowed=itsme),
                    'shout': shout,
-                   'slap': pt(slap, user, me=me),
+                   'slap': pt(slap, user, myself=myself),
                    'spc': space,
                    'stalktwt': stalktwt,
                    'ticket': ticket_add,

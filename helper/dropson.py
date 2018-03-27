@@ -9,8 +9,8 @@ import requests
 import dropbox
 
 # Dropbox access token obtained from dropbox.com/developers
-dropbox_access_token = os.getenv('DROPBOX_ACCESS_TOKEN', None)
-dbx = dropbox.Dropbox(dropbox_access_token)
+DROPBOX_ACCESS_TOKEN = os.getenv('DROPBOX_ACCESS_TOKEN', None)
+DBX_CLIENT = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
 
 
 def dbx_dl(file_path, metadata=False):
@@ -20,8 +20,8 @@ def dbx_dl(file_path, metadata=False):
     metadata (bool): if True, return the metadata of the file instead
     '''
     if not metadata:
-        return dbx.files_download(file_path)[1].content
-    return dbx.files_download(file_path)[0]
+        return DBX_CLIENT.files_download(file_path)[1].content
+    return DBX_CLIENT.files_download(file_path)[0]
 
 
 def dbx_ul(content, file_path, overwrite=False):
@@ -34,7 +34,7 @@ def dbx_ul(content, file_path, overwrite=False):
     mode = (dropbox.files.WriteMode.overwrite
             if overwrite
             else dropbox.files.WriteMode.add)
-    dbx.files_upload(content, file_path, mode)
+    DBX_CLIENT.files_upload(content, file_path, mode)
 
 
 def dbx_ls(folder_path, sort=False, reverse=False, noext=False):
@@ -46,11 +46,11 @@ def dbx_ls(folder_path, sort=False, reverse=False, noext=False):
     noext (bool): if True, do not use file extension
     '''
     if noext:
-        result = [file.name[:file.name.rfind('.')]
-                  for file in dbx.files_list_folder(folder_path).entries]
+        result = [file.name[:file.name.rfind('.')] for file in
+                  DBX_CLIENT.files_list_folder(folder_path).entries]
     else:
-        result = [file.name
-                  for file in dbx.files_list_folder(folder_path).entries]
+        result = [file.name for file in
+                  DBX_CLIENT.files_list_folder(folder_path).entries]
     if sort:
         return sorted(result, reverse=reverse)
     return result
@@ -61,7 +61,7 @@ def dbx_tl(file_path):
     Return a temporary link to a file hosted on Dropbox.
     '''
     headers = {
-        'Authorization': 'Bearer {}'.format(dropbox_access_token),
+        'Authorization': 'Bearer {}'.format(DROPBOX_ACCESS_TOKEN),
         'Content-Type': 'application/json',
     }
     data = '"path": "{}"'.format(file_path)
@@ -71,7 +71,7 @@ def dbx_tl(file_path):
     return requests.post(url, headers=headers, data=data).json()['link']
 
 
-def toJSON(obj, indent=4, encoding='utf-8'):
+def to_json(obj, indent=4, encoding='utf-8'):
     '''
     Return an encoded JSON string converted from obj.
     obj (list or dict): object to be converted and encoded
@@ -81,10 +81,10 @@ def toJSON(obj, indent=4, encoding='utf-8'):
     return json.dumps(obj, indent=indent).encode(encoding)
 
 
-def getJSON(JSON_str, encoding='utf-8'):
+def get_json(json_str, encoding='utf-8'):
     '''
-    Return a list or dictionary converted from an encoded JSON_str.
-    JSON_str (str): JSON string to be decoded and converted
-    encoding (str): encoding used by JSON_str
+    Return a list or dictionary converted from an encoded json_str.
+    json_str (str): JSON string to be decoded and converted
+    encoding (str): encoding used by json_str
     '''
-    return json.loads(JSON_str.decode(encoding))
+    return json.loads(json_str.decode(encoding))

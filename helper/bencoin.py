@@ -6,11 +6,11 @@ Fasilkom UI 2017
 '''
 
 import os
-from .dropson import dbx_dl, dbx_ul, toJSON, getJSON
+from .dropson import dbx_dl, dbx_ul, to_json, get_json
 
-accounts_path = os.getenv('BENCOIN_ACCOUNTS_PATH', None)
-acclinks_path = os.getenv('ACCOUNT_LINKS_PATH', None)
-exchrate_path = os.getenv('EXCHANGE_RATE_PATH', None)
+ACCOUNTS_PATH = os.getenv('BENCOIN_ACCOUNTS_PATH', None)
+ACCLINKS_PATH = os.getenv('ACCOUNT_LINKS_PATH', None)
+EXCHRATE_PATH = os.getenv('EXCHANGE_RATE_PATH', None)
 
 
 class AkunBenCoin(object):
@@ -88,7 +88,7 @@ class AkunBenCoin(object):
             'Reguler': {'lim_tbg': 500, 'lim_trx': 100, 'fee_trx': 5},
             'Bisnis': {'lim_tbg': 2000, 'lim_trx': 500, 'fee_trx': 15},
             'Elite': {'lim_tbg': 100000, 'lim_trx': 10000, 'fee_trx': 50}}
-    valas = getJSON(dbx_dl(exchrate_path))
+    valas = get_json(dbx_dl(EXCHRATE_PATH))
 
     def __init__(self, Nama, Jenis, saldo=0, riwayat=''):
         self.nama = Nama
@@ -235,7 +235,7 @@ class AkunBenCoin(object):
         return ("Anda berhasil mentransfer {} BenCoin kepada {}."
                 .format(ben_transf, akun_penerima.nama))
 
-    def toJSON(self):
+    def to_json(self):
         '''
         Mengubah instance AkunBenCoin ke dalam bentuk dict yang
         kompatibel dengan format JSON.
@@ -244,37 +244,37 @@ class AkunBenCoin(object):
                 'Saldo': self.saldo, 'Riwayat': self.riwayat}
 
 
-def daftar(ID, Nama, Jenis):
+def daftar(user_id, nama, jenis):
     '''
     Mendaftarkan akun baru di BenCoin dengan nama nasabah
     dan jenis tabungan yang telah ditentukan.
-    ID (str): identitas unik untuk setiap akun (gunakan LINE userID)
-    Nama (str): nama untuk akun yang akan didaftarkan
-    Jenis (str): jenis akun yang didaftarkan
+    user_id (str): identitas unik untuk setiap akun (gunakan LINE userID)
+    nama (str): nama untuk akun yang akan didaftarkan
+    jenis (str): jenis akun yang didaftarkan
     '''
-    Nama = Nama.title()
-    Jenis = Jenis.title()
-    if ID in tautan:
-        if Jenis == akun[tautan[ID]].jenis:
-            if Nama in tautan.values():
+    nama = nama.title()
+    jenis = jenis.title()
+    if user_id in TAUTAN:
+        if jenis == AKUN[TAUTAN[user_id]].jenis:
+            if nama in TAUTAN.values():
                 return ("Akun atas nama {} sudah ada dalam sistem."
                         "Mohon gunakan nama lain untuk akun Anda."
-                        .format(Nama))
-            akun[Nama] = akun.pop(tautan[ID])
-            akun[Nama].nama = Nama
-            tautan[ID] = Nama
+                        .format(nama))
+            AKUN[nama] = AKUN.pop(TAUTAN[user_id])
+            AKUN[nama].nama = nama
+            TAUTAN[user_id] = nama
             return ("Nama akun BenCoin Anda telah diubah menjadi {}."
-                    .format(Nama))
-    if Jenis in AkunBenCoin.spek:
-        if ID in tautan:
+                    .format(nama))
+    if jenis in AkunBenCoin.spek:
+        if user_id in TAUTAN:
             msg = ("Akun BenCoin Anda telah didaftarkan ulang atas nama {} "
-                   "dengan paket {}.".format(Nama, Jenis))
-            del akun[tautan[ID]]
+                   "dengan paket {}.".format(nama, jenis))
+            del AKUN[TAUTAN[user_id]]
         else:
             msg = ("Akun BenCoin Anda telah terdaftar atas nama {} "
-                   "dengan paket {}.".format(Nama, Jenis))
-        akun[Nama] = AkunBenCoin(Nama, Jenis)
-        tautan[ID] = Nama
+                   "dengan paket {}.".format(nama, jenis))
+        AKUN[nama] = AkunBenCoin(nama, jenis)
+        TAUTAN[user_id] = nama
         return msg
     return "Jenis tabungan salah."
 
@@ -302,11 +302,11 @@ def perbarui_kurs(mata_uang, kurs, mode):
         msg = ("Mata uang {} telah ditambahkan dengan rate {} per BenCoin."
                .format(mata_uang, kurs))
     # Mengunggah data kurs ke Dropbox
-    dbx_ul(toJSON(AkunBenCoin.valas), exchrate_path, overwrite=True)
+    dbx_ul(to_json(AkunBenCoin.valas), EXCHRATE_PATH, overwrite=True)
     return msg
 
 
-def penangan_operasi(ID, masukan):
+def penangan_operasi(user_id, masukan):
     '''
     Mengandal semua operasi dan menangani apabila terjadi kesalahan.
     '''
@@ -319,31 +319,31 @@ def penangan_operasi(ID, masukan):
 
         if operasi == 'DAFTAR':
             nasabah, jenis = perintah[1].title(), perintah[2].title()
-            msg = daftar(ID, nasabah, jenis)
+            msg = daftar(user_id, nasabah, jenis)
 
         elif operasi == 'TAMBAH':
-            MATA_UANG, nilai_tukar = perintah[1].upper(), int(perintah[2])
-            msg = perbarui_kurs(MATA_UANG, nilai_tukar, 'tambah')
+            mata_uang, nilai_tukar = perintah[1].upper(), int(perintah[2])
+            msg = perbarui_kurs(mata_uang, nilai_tukar, 'tambah')
 
         elif operasi == 'UBAH':
-            MATA_UANG, nilai_tukar = perintah[1].upper(), int(perintah[2])
-            msg = perbarui_kurs(MATA_UANG, int(nilai_tukar), 'ubah')
+            mata_uang, nilai_tukar = perintah[1].upper(), int(perintah[2])
+            msg = perbarui_kurs(mata_uang, int(nilai_tukar), 'ubah')
 
         elif operasi == 'SETOR':
-            jumlah, MATA_UANG = int(perintah[1]), perintah[2].upper()
-            msg = akun[tautan[ID]].setor(jumlah, MATA_UANG)
+            jumlah, mata_uang = int(perintah[1]), perintah[2].upper()
+            msg = AKUN[TAUTAN[user_id]].setor(jumlah, mata_uang)
 
         elif operasi == 'INFO':
-            msg = str(akun[tautan[ID]])
+            msg = str(AKUN[TAUTAN[user_id]])
 
         elif operasi == 'TRANSFER':
             penerima = perintah[1].title()
             jumlah = int(perintah[2])
-            msg = akun[tautan[ID]].transfer(akun[penerima], jumlah)
+            msg = AKUN[TAUTAN[user_id]].transfer(AKUN[penerima], jumlah)
 
         elif operasi == 'TARIK':
-            jumlah, MATA_UANG = int(perintah[1]), perintah[2].upper()
-            msg = akun[tautan[ID]].tarik(jumlah, MATA_UANG)
+            jumlah, mata_uang = int(perintah[1]), perintah[2].upper()
+            msg = AKUN[TAUTAN[user_id]].tarik(jumlah, mata_uang)
 
         elif operasi == 'BANTUAN':
             msg = AkunBenCoin.help_msg
@@ -357,29 +357,29 @@ def penangan_operasi(ID, masukan):
         msg = pelaku_operasi()
     except IndexError:
         return "Format perintah yang Anda masukkan salah."
-    except KeyError as e:
-        if e.args[0] == ID:
+    except KeyError as error:
+        if error.args[0] == user_id:
             return "Anda belum mendaftarkan akun dalam sistem BenCoin."
         return ("Akun atas nama {} belum terdaftar dalam sistem BenCoin."
-                .format(e.args[0]))
+                .format(error.args[0]))
     except ValueError:
         return "Format nilai yang Anda masukkan salah."
     else:
         # Mengunggah data ke Dropbox apabila operasi sukses.
-        dbx_ul(toJSON({nasabah: akun[nasabah].toJSON() for nasabah in akun}),
-               accounts_path, overwrite=True)
-        dbx_ul(toJSON(tautan), acclinks_path, overwrite=True)
+        dbx_ul(to_json({nasabah: AKUN[nasabah].to_json() for nasabah in AKUN}),
+               ACCOUNTS_PATH, overwrite=True)
+        dbx_ul(to_json(TAUTAN), ACCLINKS_PATH, overwrite=True)
         return msg
 
 
 # Memuat JSON dari Dropbox.
-akun = getJSON(dbx_dl(accounts_path))
-tautan = getJSON(dbx_dl(acclinks_path))
+AKUN = get_json(dbx_dl(ACCOUNTS_PATH))
+TAUTAN = get_json(dbx_dl(ACCLINKS_PATH))
 
 
 # Mengkonversi data JSON ke dalam bentuk objek AkunBenCoin.
-for nama in akun:
-    akun[nama] = AkunBenCoin(Nama=akun[nama]['Nama'],
-                             Jenis=akun[nama]['Jenis'],
-                             saldo=akun[nama]['Saldo'],
-                             riwayat=akun[nama]['Riwayat'])
+for tiap_nama in AKUN:
+    AKUN[tiap_nama] = AkunBenCoin(Nama=AKUN[tiap_nama]['Nama'],
+                                  Jenis=AKUN[tiap_nama]['Jenis'],
+                                  saldo=AKUN[tiap_nama]['Saldo'],
+                                  riwayat=AKUN[tiap_nama]['Riwayat'])

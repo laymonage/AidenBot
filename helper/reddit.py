@@ -19,14 +19,14 @@ def reddit_hot(subname, limit=5, splitted=False):
         limit = 5
     if limit > 25:
         limit = 25
-    r = requests.get(('https://www.reddit.com/r/{}.json?limit={}'
-                      .format(subname, limit)),
-                     headers={'user-agent': 'AidenBot'}).json()
+    sub = requests.get(('https://www.reddit.com/r/{}.json?limit={}'
+                        .format(subname, limit)),
+                       headers={'user-agent': 'AidenBot'}).json()
     try:
         threads = [thread['data']['title']
-                   for thread in r['data']['children'][-limit:]]
+                   for thread in sub['data']['children'][-limit:]]
     except KeyError:  # Happens when request limit is reached or 404
-        print(r)
+        print(sub)
         return "reddit.com/r/{} is currently unavailable.".format(subname)
     result = "Hot {} posts in reddit.com/r/{}:\n".format(len(threads), subname)
     if not splitted:

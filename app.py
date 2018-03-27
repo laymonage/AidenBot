@@ -1,6 +1,6 @@
 '''
 AidenBot
-v0.96: public
+v0.97: public
 '''
 
 import errno
@@ -26,25 +26,25 @@ from helper._handler import command_handler
 from helper.bencoin import penangan_operasi
 
 
-app = Flask(__name__)
+APP = Flask(__name__)
 
-# Get channel_secret and channel_access_token from environment variable
-channel_secret = os.getenv('LINE_CHANNEL_SECRET', None)
-channel_access_token = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
-if channel_secret is None:
+# Get CHANNEL_SECRET and CHANNEL_ACCESS_TOKEN from environment variable
+CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET', None)
+CHANNEL_ACCESS_TOKEN = os.getenv('LINE_CHANNEL_ACCESS_TOKEN', None)
+if CHANNEL_SECRET is None:
     print('Specify LINE_CHANNEL_SECRET as environment variable.')
     sys.exit(1)
-if channel_access_token is None:
+if CHANNEL_ACCESS_TOKEN is None:
     print('Specify LINE_CHANNEL_ACCESS_TOKEN as environment variable.')
     sys.exit(1)
 
-AidenBot = LineBotApi(channel_access_token)
-handler = WebhookHandler(channel_secret)
+AIDEN = LineBotApi(CHANNEL_ACCESS_TOKEN)
+HANDLER = WebhookHandler(CHANNEL_SECRET)
 
-static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
+STATIC_TMP_PATH = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
-my_id = os.getenv('MY_USER_ID', None)
-me = AidenBot.get_profile(my_id)
+MY_ID = os.getenv('MY_USER_ID', None)
+MYSELF = AIDEN.get_profile(MY_ID)
 
 
 def make_static_tmp_dir():
@@ -52,15 +52,15 @@ def make_static_tmp_dir():
     Create temporary directory for download content
     '''
     try:
-        os.makedirs(static_tmp_path)
+        os.makedirs(STATIC_TMP_PATH)
     except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(static_tmp_path):
+        if exc.errno == errno.EEXIST and os.path.isdir(STATIC_TMP_PATH):
             pass
         else:
             raise
 
 
-@app.route("/callback", methods=['POST'])
+@APP.route("/callback", methods=['POST'])
 def callback():
     '''
     Webhook callback function
@@ -70,33 +70,33 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    app.logger.info(("Request body: ", body))
+    APP.logger.info(("Request body: ", body))
 
     # handle webhook body
     try:
-        handler.handle(body, signature)
+        HANDLER.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
 
     return 'OK'
 
 
-@handler.add(MessageEvent, message=TextMessage)
+@HANDLER.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     '''
-    Text message handler
+    Text message HANDLER
     '''
     text = event.message.text
     if isinstance(event.source, SourceGroup):
-        subject = AidenBot.get_group_member_profile(event.source.group_id,
-                                                    event.source.user_id)
+        subject = AIDEN.get_group_member_profile(event.source.group_id,
+                                                 event.source.user_id)
         set_id = event.source.group_id
     elif isinstance(event.source, SourceRoom):
-        subject = AidenBot.get_room_member_profile(event.source.room_id,
-                                                   event.source.user_id)
+        subject = AIDEN.get_room_member_profile(event.source.room_id,
+                                                event.source.user_id)
         set_id = event.source.room_id
     else:
-        subject = AidenBot.get_profile(event.source.user_id)
+        subject = AIDEN.get_profile(event.source.user_id)
         set_id = event.source.user_id
 
     def quickreply(*msgs, mode=('text',)*5):
@@ -129,7 +129,7 @@ def handle_text_message(event):
                     content.append(ImageSendMessage(
                         original_content_url=msg[0],
                         preview_image_url=msg[1]))
-        AidenBot.reply_message(
+        AIDEN.reply_message(
             event.reply_token, content
         )
 
@@ -139,11 +139,11 @@ def handle_text_message(event):
         '''
         if isinstance(event.source, SourceGroup):
             quickreply("Leaving group...")
-            AidenBot.leave_group(event.source.group_id)
+            AIDEN.leave_group(event.source.group_id)
 
         elif isinstance(event.source, SourceRoom):
             quickreply("Leaving room...")
-            AidenBot.leave_room(event.source.room_id)
+            AIDEN.leave_room(event.source.room_id)
 
         else:
             quickreply("I can't leave a 1:1 chat.")
@@ -155,7 +155,7 @@ def handle_text_message(event):
         result = ("Display name: " + subject.display_name + "\n"
                   "Profile picture: " + subject.picture_url)
         try:
-            profile = AidenBot.get_profile(event.source.user_id)
+            profile = AIDEN.get_profile(event.source.user_id)
             if profile.status_message:
                 result += "\n" + "Status message: " + profile.status_message
         except LineBotApiError:
@@ -164,7 +164,7 @@ def handle_text_message(event):
 
     if text[0] == '/':
         command = text[1:]
-        result = command_handler(command, subject, me, set_id)
+        result = command_handler(command, subject, MYSELF, set_id)
         if command.lower().strip().startswith('bye'):
             bye()
         elif command.lower().strip().startswith('profile'):
@@ -186,23 +186,23 @@ def handle_text_message(event):
         quickreply(penangan_operasi(event.source.user_id, text.strip()))
 
 
-@handler.add(MessageEvent, message=FileMessage)
+@HANDLER.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
     '''
-    File message handler
+    File message HANDLER
     '''
-    message_content = AidenBot.get_message_content(event.message.id)
-    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-',
-                                     delete=False) as tf:
+    message_content = AIDEN.get_message_content(event.message.id)
+    with tempfile.NamedTemporaryFile(dir=STATIC_TMP_PATH, prefix='file-',
+                                     delete=False) as temp:
         for chunk in message_content.iter_content():
-            tf.write(chunk)
-        tempfile_path = tf.name
+            temp.write(chunk)
+        tempfile_path = temp.name
 
     dist_path = tempfile_path + '-' + event.message.file_name
     dist_name = os.path.basename(dist_path)
     os.rename(tempfile_path, dist_path)
 
-    AidenBot.reply_message(
+    AIDEN.reply_message(
         event.reply_token, [
             TextSendMessage(text="Mirror:"),
             TextSendMessage(text=request.host_url +
@@ -211,25 +211,25 @@ def handle_file_message(event):
     )
 
 
-@handler.add(UnfollowEvent)
+@HANDLER.add(UnfollowEvent)
 def handle_unfollow():
     '''
-    Unfollow event handler
+    Unfollow event HANDLER
     '''
-    app.logger.info("Got Unfollow event")
+    APP.logger.info("Got Unfollow event")
 
 
-@handler.add(LeaveEvent)
+@HANDLER.add(LeaveEvent)
 def handle_leave():
     '''
-    Leave event handler
+    Leave event HANDLER
     '''
-    app.logger.info("Got leave event")
+    APP.logger.info("Got leave event")
 
 
 if __name__ == "__main__":
     # Create temporary directory for download content
     make_static_tmp_dir()
 
-    port = int(os.getenv('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    PORT = int(os.getenv('PORT', 5000))
+    APP.run(host='0.0.0.0', port=PORT)

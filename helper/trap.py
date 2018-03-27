@@ -6,7 +6,7 @@
 import os
 import random
 import requests
-from .dropson import dbx_dl, getJSON
+from .dropson import dbx_dl, get_json
 
 
 def surprise():
@@ -14,7 +14,7 @@ def surprise():
     ?
     '''
     surprise_links = os.getenv('SURPRISES_FILE_PATH', None)
-    surprises = getJSON(dbx_dl(surprise_links))
+    surprises = get_json(dbx_dl(surprise_links))
     orig_url = random.choice(surprises)
     prev_url = 'http://thecatapi.com/api/images/get'
     prev_url = requests.get(prev_url)

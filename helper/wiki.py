@@ -5,7 +5,7 @@ Wikipedia helper module
 
 import wikipedia
 
-wiki_settings = {}
+WIKI_SETTINGS = {}
 
 
 def wiki_get(keyword, set_id, trim=True):
@@ -17,7 +17,7 @@ def wiki_get(keyword, set_id, trim=True):
     trim (bool): if true, trim result to 2000 characters max
     '''
     try:
-        wikipedia.set_lang(wiki_settings[set_id])
+        wikipedia.set_lang(WIKI_SETTINGS[set_id])
     except KeyError:
         wikipedia.set_lang('en')
 
@@ -48,7 +48,7 @@ def wiki_lang(lang, set_id):
     '''
     langs_dict = wikipedia.languages()
     if lang in langs_dict.keys():
-        wiki_settings[set_id] = lang
+        WIKI_SETTINGS[set_id] = lang
         return ("Language has been changed to {} successfully."
                 .format(langs_dict[lang]))
 

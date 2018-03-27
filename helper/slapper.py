@@ -6,7 +6,7 @@ Slapping module for LINE bots
 import random
 
 
-def slap(subject, target, me):
+def slap(subject, target, myself):
     '''
     Return a message stating "Subject slapped target with a random object."
     subject: an object returned by LineBotApi.get_profile method
@@ -18,14 +18,14 @@ def slap(subject, target, me):
                   "katana", "hand", "laptop", "book", "drawing book",
                   "mouse", "keyboard"]
     s_name = subject.display_name
-    itsme = subject.user_id == me.user_id
-    has_my_name = not itsme and me.display_name.title() in s_name.title()
+    itsme = subject.user_id == myself.user_id
+    has_my_name = not itsme and myself.display_name.title() in s_name.title()
 
     def impersonator():
         '''
         Used when the slap subject's name contains my name.
         '''
-        if me.display_name.lower() == s_name.lower():
+        if myself.display_name.lower() == s_name.lower():
             temp_msg = ("IMPERSONATOR! >:(\n"
                         "I slapped you back and forth with a {} "
                         "for impersonating my creator."
@@ -67,7 +67,7 @@ def slap(subject, target, me):
                         .format(s_name, random.choice(slap_items)))
         return temp_msg
 
-    def myself():
+    def own():
         '''
         Used when target name contains "Myself".
         '''
@@ -88,8 +88,8 @@ def slap(subject, target, me):
     elif ''.join(c for c in target.lower() if c.isalpha()) == "me":
         slap_msg = justme()
     elif "myself" in target.lower():
-        slap_msg = myself()
-    elif me.display_name.title() in target.title():
+        slap_msg = own()
+    elif myself.display_name.title() in target.title():
         slap_msg = ("You shouldn't include my creator's name in your "
                     "slapping target.")
 

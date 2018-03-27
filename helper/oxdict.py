@@ -30,8 +30,8 @@ def define(keyword):
     result = ''
     i = 0
     for each_result in req['results']:
-        for each_lexEntry in each_result['lexicalEntries']:
-            for each_entry in each_lexEntry['entries']:
+        for each_lex_entry in each_result['lexicalEntries']:
+            for each_entry in each_lex_entry['entries']:
                 for each_sense in each_entry['senses']:
                     if 'crossReferenceMarkers' in each_sense:
                         search = 'crossReferenceMarkers'

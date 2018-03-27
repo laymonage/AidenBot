@@ -21,11 +21,11 @@ def weather(keyword):
            .format(wunder_key, quote(keyword)))
     data = requests.get(url).json()
     try:
-        locID = data['response']['results'][0]['l']
+        loc_id = data['response']['results'][0]['l']
     except KeyError:
         pass
     else:
-        url = url[:url.find('/q/')] + locID + '.json'
+        url = url[:url.find('/q/')] + loc_id + '.json'
         data = requests.get(url).json()
 
     try:

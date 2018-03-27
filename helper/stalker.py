@@ -43,17 +43,18 @@ def stalktwt(username):
     access_secret = os.getenv('TWITTER_ACCESS_SECRET', None)
     consumer_key = os.getenv('TWITTER_CONSUMER_KEY', None)
     consumer_secret = os.getenv('TWITTER_CONSUMER_SECRET', None)
-    t = Twitter(auth=OAuth(access_token, access_secret,
-                           consumer_key, consumer_secret))
+    twitter = Twitter(auth=OAuth(access_token, access_secret,
+                                 consumer_key, consumer_secret))
     try:
-        timeline = t.statuses.user_timeline(screen_name=username, count=200,
-                                            tweet_mode='extended')
+        timeline = twitter.statuses.user_timeline(screen_name=username,
+                                                  count=200,
+                                                  tweet_mode='extended')
         if timeline[0]['user']['protected']:
             return "@{} is a protected account.".format(username)
     except IndexError:
         return "@{} hasn't Tweeted.".format(username)
-    except TwitterHTTPError as e:
-        if 'Not authorized' in str(e):
+    except TwitterHTTPError as error:
+        if 'Not authorized' in str(error):
             return "@{} is a protected account.".format(username)
         return "@{} is unavailable.".format(username)
     tweet = random.choice(timeline)

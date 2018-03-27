@@ -4,10 +4,10 @@ Ticket helper module
 '''
 
 import os
-from .dropson import dbx_dl, dbx_ul, toJSON, getJSON
+from .dropson import dbx_dl, dbx_ul, to_json, get_json
 
 # Path to tickets file in Dropbox
-tickets_path = os.getenv('TICKETS_FILE_PATH', None)
+TICKETS_PATH = os.getenv('TICKETS_FILE_PATH', None)
 
 
 def about():
@@ -24,7 +24,7 @@ def ticket_add(item, trim=True):
     item (str): item to be added to the ticket list
     trim (bool): if true, prevent ticket list from exceeding 2000 chars
     '''
-    tickets = getJSON(dbx_dl(tickets_path))
+    tickets = get_json(dbx_dl(TICKETS_PATH))
     if item in tickets:
         return "Ticket already exists."
     if len('num. \n'.join(tickets + [item])) > 2000 and trim:
@@ -32,7 +32,7 @@ def ticket_add(item, trim=True):
                 "Please wait until the developer deletes "
                 "some of them.")
     tickets.append(item)
-    dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
+    dbx_ul(to_json(tickets), TICKETS_PATH, overwrite=True)
     return "Ticket sent!"
 
 
@@ -43,7 +43,7 @@ def ticket_get(allowed=True):
     '''
     if not allowed:
         return None
-    tickets = getJSON(dbx_dl(tickets_path))
+    tickets = get_json(dbx_dl(TICKETS_PATH))
     if not tickets:
         return "No tickets."
     current_tickets = "Tickets:"
@@ -60,12 +60,12 @@ def ticket_rem(num, allowed=True):
     '''
     if not allowed:
         return None
-    tickets = getJSON(dbx_dl(tickets_path))
+    tickets = get_json(dbx_dl(TICKETS_PATH))
     if not tickets:
         return "No tickets."
     if num == 'all':
         del tickets[:]
-        dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
+        dbx_ul(to_json(tickets), TICKETS_PATH, overwrite=True)
         return "Ticket list has been emptied."
     try:
         num = int(num)
@@ -75,5 +75,5 @@ def ticket_rem(num, allowed=True):
     except ValueError:
         return "Wrong format."
     else:
-        dbx_ul(toJSON(tickets), tickets_path, overwrite=True)
+        dbx_ul(to_json(tickets), TICKETS_PATH, overwrite=True)
         return "Ticket [{}] has been removed.".format(num)

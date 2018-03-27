@@ -14,8 +14,8 @@ def urban(keyword, ex=False):
     '''
     try:
         result = udtop(keyword)
-    except udtop.TermNotFound as e:
-        result = str(e)
+    except udtop.TermNotFound as error:
+        result = str(error)
     else:
         if not ex:
             result = result.definition

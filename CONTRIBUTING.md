@@ -4,11 +4,10 @@
 - Fork this repo
 - Commit changes in your fork
 - Make sure the code still passes pylint checking
-  with 10/10 score, "invalid-name" rule disabled
-  and 79 max line length.
+  with 10/10 score and 79 max line length.
   You can check it by using the command:
   ```bash
-  find . -name '*.py' | xargs pylint --disable=invalid-name --max-line-length=79
+  find . -name '*.py' | xargs pylint --max-line-length=79
   ```
 - Send a Pull Request to this repo
 - Wait until it's merged :)

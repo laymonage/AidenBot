@@ -4,9 +4,11 @@ Stalking helper module
 '''
 
 from html import unescape
+import json
 import os
 import random
 import requests
+from bs4 import BeautifulSoup as bs
 from twitter import Twitter, OAuth
 from twitter.api import TwitterHTTPError
 
@@ -17,19 +19,26 @@ def stalkig(username):
     taken randomly from username's Instagram profile.
     username (str): username to stalk
     '''
-    url = 'https://www.instagram.com/{}/?__a=1'.format(username)
+    url = 'https://www.instagram.com/{}'.format(username)
     req = requests.get(url)
     if req.status_code == 404:
         return (False, "@{} is unavailable.".format(username))
 
-    req = req.json()
-    if req['user']['is_private']:
+    if "This Account is Private" in req.text:
         return (False, "@{} is a private account.".format(username))
 
-    nodes = req['user']['media']['nodes']
-    anode = random.choice(nodes)
-    image = anode['display_src']
-    ncode = anode['code']
+    page = bs(req.content)
+    scripts = page.find_all('script')
+    shared_data = scripts[2]  # Script element that contains timeline data JSON
+    shared_data = str(shared_data)
+    data_json = shared_data[shared_data.find("{"):shared_data.rfind(";")]
+    data_json = json.loads(data_json)
+
+    graphql = data_json['entry_data']['ProfilePage'][0]['graphql']
+    nodes = graphql['user']['edge_owner_to_timeline_media']['edges']
+    anode = random.choice(nodes)['node']
+    image = anode['display_url']
+    ncode = anode['shortcode']
     nlink = 'instagram.com/p/{}'.format(ncode)
     return (image, nlink)
 

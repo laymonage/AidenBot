@@ -24,18 +24,17 @@ def stalkig(username):
     if req.status_code == 404:
         return (False, "@{} is unavailable.".format(username))
 
-    if "This Account is Private" in req.text:
-        return (False, "@{} is a private account.".format(username))
-
-    page = bs(req.content)
+    page = bs(req.content, "html.parser")
     scripts = page.find_all('script')
     shared_data = scripts[2]  # Script element that contains timeline data JSON
     shared_data = str(shared_data)
     data_json = shared_data[shared_data.find("{"):shared_data.rfind(";")]
     data_json = json.loads(data_json)
+    user = data_json['entry_data']['ProfilePage'][0]['graphql']['user']
+    if user['is_private']:
+        return (False, "@{} is a private account.".format(username))
 
-    graphql = data_json['entry_data']['ProfilePage'][0]['graphql']
-    nodes = graphql['user']['edge_owner_to_timeline_media']['edges']
+    nodes = user['edge_owner_to_timeline_media']['edges']
     anode = random.choice(nodes)['node']
     image = anode['display_url']
     ncode = anode['shortcode']

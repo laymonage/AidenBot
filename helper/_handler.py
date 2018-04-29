@@ -15,7 +15,7 @@ from . import (
 HELP_MSG = ("Available commands:\n"
             "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
             "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
-            "mcs, meme, mock, palindrome, ppalindrome, pick, profile, "
+            "mcs, meme, mock, pal, ppal, pick, profile, "
             "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, stalktwt, "
             "surprise, ticket, tl, urban, urbanx, weather, wiki, wikilang, "
             "wolfram, wolframs\n"
@@ -141,15 +141,15 @@ CMD_HELP = {'about': "Usage: /about\n"
                     "Example: /mock Don't tell me what I can't do!"
                     .format(mock('Repeat <something> in a mocking manner.')),
 
-            'palindrome': "Usage: /palindrome <something>\n"
+            'pal': "Usage: /pal <something>\n"
                           "Check if <something> is a palindrome.\n"
                           "(only alphanumeric characters are checked, "
                           "case-insensitive)\n"
-                          "Example: /palindrome Dammit, I'm mad!",
+                          "Example: /pal Dammit, I'm mad!",
 
-            'ppalindrome': "Usage: /ppalindrome <something>\n"
+            'ppal': "Usage: /ppal <something>\n"
                            "Check if <something> is a perfect palindrome.\n"
-                           "Example: /ppalindrome kasur nababan rusak",
+                           "Example: /ppal kasur nababan rusak",
 
             'pick': "Usage: /pick <something1>;<something2>;...;<somethingN>\n"
                     "Pick a random item from a semicolon-separated list.\n"
@@ -315,8 +315,8 @@ def command_handler(text, user, myself, set_id):
                    'kbbix': pt(kbbi_def, ex=True),
                    'mcs': ask,
                    'mock': mock,
-                   'palindrome': is_palindrome,
-                   'ppalindrome': pt(is_palindrome, perfect=True),
+                   'pal': is_palindrome,
+                   'ppal': pt(is_palindrome, perfect=True),
                    'pick': rpick,
                    'rtix': pt(ticket_rem, allowed=itsme),
                    'shout': shout,

@@ -141,11 +141,16 @@ def rng(ceil, floor=1, frac=False):
     '''
     Return a random number from floor to ceil (inclusive).
     '''
-    floor, ceil = int(floor), int(ceil)
+    if frac:
+        floor, ceil = float(floor), float(ceil)
+    else:
+        floor, ceil = int(floor), int(ceil)
+
     if floor == ceil:
         floor = 1
     elif floor > ceil:
         floor, ceil = ceil, floor
+
     if frac:
         result = ("From {} to {}, I pick {:.2f}."
                   .format(floor, ceil, random.uniform(floor, ceil)))

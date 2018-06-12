@@ -26,7 +26,7 @@ def stalkig(username):
 
     page = bs(req.content, "html.parser")
     scripts = page.find_all('script')
-    shared_data = scripts[2]  # Script element that contains timeline data JSON
+    shared_data = scripts[3]  # Script element that contains timeline data JSON
     shared_data = str(shared_data)
     data_json = shared_data[shared_data.find("{"):shared_data.rfind(";")]
     data_json = json.loads(data_json)

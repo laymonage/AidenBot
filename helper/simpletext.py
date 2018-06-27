@@ -165,3 +165,10 @@ def rpick(text):
     Pick a random item from a semicolon-separated list in a string.
     '''
     return "I pick {}.".format(random.choice(text.split(';')))
+
+
+def emote(name, action):
+    '''
+    Emote an action.
+    '''
+    return "{} {}".format(name, action)

@@ -5,7 +5,7 @@ Command handler module for AidenBot
 from functools import partial as pt
 from . import (
     about, AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
-    aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, translate,
+    aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote, translate,
     isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, define,
     reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem,
     ticket_get, surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
@@ -15,7 +15,7 @@ from . import (
 HELP_MSG = ("Available commands:\n"
             "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
             "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
-            "mcs, meme, mock, pal, ppal, pick, profile, "
+            "mcs, me, meme, mock, pal, ppal, pick, profile, "
             "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, stalktwt, "
             "surprise, ticket, tl, urban, urbanx, weather, wiki, wikilang, "
             "wolfram, wolframs\n"
@@ -125,6 +125,10 @@ CMD_HELP = {'about': "Usage: /about\n"
             'mcs': "Usage: /mcs <question>\n"
                    "Magic Conch Shell simulator.\n"
                    "Example: /mcs Can I eat something?",
+
+            'me': "Usage: /me <action>\n"
+                  "Emote an <action>.\n"
+                  "Example: /me is playing guitar.",
 
             'meme': "Usage: /meme <keyword1>;<keyword2;...;<keywordN>\n"
                     "Send a meme associated with each <keyword>.\n"
@@ -314,6 +318,7 @@ def command_handler(text, user, myself, set_id):
                    'kbbi': kbbi_def,
                    'kbbix': pt(kbbi_def, ex=True),
                    'mcs': ask,
+                   'me': pt(emote, user.display_name),
                    'mock': mock,
                    'pal': is_palindrome,
                    'ppal': pt(is_palindrome, perfect=True),

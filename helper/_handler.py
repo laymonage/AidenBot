@@ -146,14 +146,14 @@ CMD_HELP = {'about': "Usage: /about\n"
                     .format(mock('Repeat <something> in a mocking manner.')),
 
             'pal': "Usage: /pal <something>\n"
-                          "Check if <something> is a palindrome.\n"
-                          "(only alphanumeric characters are checked, "
-                          "case-insensitive)\n"
-                          "Example: /pal Dammit, I'm mad!",
+                   "Check if <something> is a palindrome.\n"
+                   "(only alphanumeric characters are checked, "
+                   "case-insensitive)\n"
+                   "Example: /pal Dammit, I'm mad!",
 
             'ppal': "Usage: /ppal <something>\n"
-                           "Check if <something> is a perfect palindrome.\n"
-                           "Example: /ppal kasur nababan rusak",
+                    "Check if <something> is a perfect palindrome.\n"
+                    "Example: /ppal kasur nababan rusak",
 
             'pick': "Usage: /pick <something1>;<something2>;...;<somethingN>\n"
                     "Pick a random item from a semicolon-separated list.\n"

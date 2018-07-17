@@ -13,13 +13,15 @@ from . import (
 )
 
 HELP_MSG = ("Available commands:\n"
-            "about, aes, ask, bawl1, bawl2, bye, bencoin, calc, cat, cmb, "
-            "define, echo, getmemes, help, isup, isupd, kbbi, kbbix, lenny, "
-            "mcs, me, meme, mock, pal, ppal, pick, profile, "
-            "reddit, rng, rngf, shout, shrug, slap, spc, stalkig, stalktwt, "
-            "surprise, ticket, tl, urban, urbanx, weather, wiki, wikilang, "
-            "wolfram, wolframs\n"
+            "about, ask, bye, bencoin, calc, cat,  define, getmemes, help, "
+            "isup, isupd, kbbi, kbbix, mcs, meme, pick, profile, reddit, "
+            "rng, rngf, slap, stalkig, stalktwt, surprise, ticket, tl, urban, "
+            "urbanx, weather, wiki, wikilang,  wolfram, wolframs\n"
             "Use /help <command> for more information.")
+
+CMD_TEXT = ("Available text commands:\n"
+            "aes, bawl1, bawl2, cmb, echo, lenny, me, mock, pal, ppal, shout, "
+            "shrug, spc")
 
 CMD_HELP = {'about': "Usage: /about\n"
                      "Send a message about me.",
@@ -215,6 +217,9 @@ CMD_HELP = {'about': "Usage: /about\n"
             'surprise': "Usage: /surprise\n"
                         "?",
 
+            'text': "Usage: /text\n"
+                    "Send a list of text-related commands.",
+
             'ticket': "Usage: /ticket <something>\n"
                       "Send <something> to my developer. "
                       "Don't worry, it's anonymous!\n"
@@ -285,7 +290,8 @@ def predefined(key):
     '''
     strings = {'bencoin': AkunBenCoin.intro,
                'lenny': '( ͡° ͜ʖ ͡°)',
-               'shrug': '¯\\_(ツ)_/¯'}
+               'shrug': '¯\\_(ツ)_/¯',
+               'text': CMD_TEXT}
     return strings[key]
 
 
@@ -302,6 +308,7 @@ def command_handler(text, user, myself, set_id):
                'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'shrug': pt(predefined, 'shrug'),
+               'text': pt(predefined, 'text'),
                'tix': pt(ticket_get, allowed=itsme),
                'updmemes': pt(updmemes, allowed=itsme)}
 

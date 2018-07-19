@@ -6,8 +6,6 @@ v0.97: public
 import errno
 import os
 import sys
-import tempfile
-from urllib.parse import quote
 
 from flask import Flask, request, abort
 
@@ -24,6 +22,7 @@ from linebot.models import (
 
 from helper._handler import command_handler
 from helper.bencoin import penangan_operasi
+from helper.file import mirror
 
 
 APP = Flask(__name__)
@@ -192,21 +191,23 @@ def handle_file_message(event):
     File message HANDLER
     '''
     message_content = AIDEN.get_message_content(event.message.id)
-    with tempfile.NamedTemporaryFile(dir=STATIC_TMP_PATH, prefix='file-',
-                                     delete=False) as temp:
-        for chunk in message_content.iter_content():
-            temp.write(chunk)
-        tempfile_path = temp.name
+    if isinstance(event.source, SourceGroup):
+        set_id = event.source.group_id
+    elif isinstance(event.source, SourceRoom):
+        set_id = event.source.room_id
+    else:
+        set_id = event.source.user_id
 
-    dist_path = tempfile_path + '-' + event.message.file_name
-    dist_name = os.path.basename(dist_path)
-    os.rename(tempfile_path, dist_path)
+    link = mirror(message_content, event.message.file_name,
+                  request.host_url, set_id)
+
+    if not link:
+        return
 
     AIDEN.reply_message(
         event.reply_token, [
             TextSendMessage(text="Mirror:"),
-            TextSendMessage(text=request.host_url +
-                            quote((os.path.join('static', 'tmp', dist_name))))
+            TextSendMessage(text=link)
             ]
     )
 

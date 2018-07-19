@@ -6,17 +6,17 @@ from functools import partial as pt
 from . import (
     about, AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
     aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote, translate,
-    isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, define,
-    reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem,
+    isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, mirror_toggle,
+    define, reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem,
     ticket_get, surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
     wolfram_wrap, weather
 )
 
 HELP_MSG = ("Available commands:\n"
             "about, ask, bye, bencoin, calc, cat,  define, getmemes, help, "
-            "isup, isupd, kbbi, kbbix, mcs, meme, pick, profile, reddit, "
-            "rng, rngf, slap, stalkig, stalktwt, surprise, ticket, tl, urban, "
-            "urbanx, weather, wiki, wikilang,  wolfram, wolframs\n"
+            "isup, isupd, kbbi, kbbix, mcs, meme, mirror, pick, profile, "
+            "reddit, rng, rngf, slap, stalkig, stalktwt, surprise, ticket, "
+            "tl, urban, urbanx, weather, wiki, wikilang,  wolfram, wolframs\n"
             "Use /help <command> for more information.")
 
 CMD_TEXT = ("Available text commands:\n"
@@ -139,6 +139,9 @@ CMD_HELP = {'about': "Usage: /about\n"
                     "be sent.\n"
                     "A maximum of 5 memes can be sent at the same time.\n"
                     "Example: /meme ipk saya kan tinggi;saya kan maba",
+
+            'mirror': "Usage: /mirror\n"
+                      "Toggle file mirroring on or off.",
 
             'mock': "Usage: /mock <something>\n"
                     "{}\n"
@@ -307,6 +310,7 @@ def command_handler(text, user, myself, set_id):
     no_args = {'about': about,
                'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
+               'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),
                'text': pt(predefined, 'text'),
                'tix': pt(ticket_get, allowed=itsme),

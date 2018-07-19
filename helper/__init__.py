@@ -7,6 +7,7 @@ Initialization
 from .bencoin import AkunBenCoin
 from .caturl import cat
 from .dropson import dbx_dl, dbx_ul, to_json, get_json
+from .file import mirror_toggle, mirror
 from .gtrans import translate
 from .isitup import isup
 from .kbbih import kbbi_def

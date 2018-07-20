@@ -13,7 +13,7 @@ from . import (
 )
 
 HELP_MSG = ("Available commands:\n"
-            "about, ask, bye, bencoin, calc, cat,  define, getmemes, help, "
+            "about, ask, bye, calc, cat,  define, getmemes, help, "
             "isup, isupd, kbbi, kbbix, mcs, meme, mirror, pick, profile, "
             "reddit, rng, rngf, slap, stalkig, stalktwt, surprise, ticket, "
             "tl, urban, urbanx, weather, wiki, wikilang,  wolfram, wolframs\n"

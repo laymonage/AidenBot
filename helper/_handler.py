@@ -13,10 +13,10 @@ from . import (
 )
 
 HELP_MSG = ("Available commands:\n"
-            "about, ask, bye, calc, cat,  define, getmemes, help, "
-            "isup, isupd, kbbi, kbbix, mcs, meme, mirror, pick, profile, "
-            "reddit, rng, rngf, slap, stalkig, stalktwt, surprise, ticket, "
-            "tl, urban, urbanx, weather, wiki, wikilang,  wolfram, wolframs\n"
+            "about, ask, bye, calc, cat, define, help, isup, kbbi, "
+            "meme, mirror, pick, profile, reddit, rng, slap, stalk, "
+            "surprise, ticket, tl, urban, weather, wiki, wolfram\n"
+            "\n"
             "Use /help <command> for more information.")
 
 CMD_TEXT = ("Available text commands:\n"
@@ -35,7 +35,8 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'ask': "Usage: /ask <question>\n"
                    "Simulator Kulit Kerang Ajaib.\n"
-                   "Example: /ask Apa aku boleh makan?",
+                   "Example: /ask Apa aku boleh makan?\n"
+                   "Note: use /mcs to get the answers in English",
 
             'bawl1': "Usage: /bawl1 <something>\n"
                      "Repeat\n{}\n"
@@ -103,7 +104,8 @@ CMD_HELP = {'about': "Usage: /about\n"
             'isup': "Usage: /isup <website>\n"
                     "Check <website>'s status, "
                     "retrieved from isitup.org.\n"
-                    "Example: /isup google.com",
+                    "Example: /isup google.com\n"
+                    "Note: use /isupd for a more detailed result.",
 
             'isupd': "Usage: /isupd <website>\n"
                      "Check <website>'s status, along with its IP, "
@@ -114,7 +116,8 @@ CMD_HELP = {'about': "Usage: /about\n"
             'kbbi': "Usage: /kbbi <something>\n"
                     "Define <something>, retrieved from "
                     "kbbi.kemdikbud.go.id.\n"
-                    "Example: /kbbi eufemisme",
+                    "Example: /kbbi eufemisme\n"
+                    "Note: use /kbbix to also get usage examples.",
 
             'kbbix': "Usage: /kbbix <something>\n"
                      "Define <something> and give usage examples (if any), "
@@ -134,11 +137,11 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'meme': "Usage: /meme <keyword1>;<keyword2;...;<keywordN>\n"
                     "Send a meme associated with each <keyword>.\n"
-                    "Use /getmemes to get the keywords.\n"
                     "If no <keyword> is specified, a random meme will "
                     "be sent.\n"
                     "A maximum of 5 memes can be sent at the same time.\n"
-                    "Example: /meme ipk saya kan tinggi;saya kan maba",
+                    "Example: /meme ipk saya kan tinggi;saya kan maba\n"
+                    "Note: use /getmemes to get the keywords.",
 
             'mirror': "Usage: /mirror\n"
                       "Toggle temporary file mirroring on or off.\n"
@@ -181,7 +184,9 @@ CMD_HELP = {'about': "Usage: /about\n"
                    "Random (integer) number generator in range "
                    "<floor>..<ceiling> (inclusive).\n"
                    "<floor> is optional, default is 1.\n"
-                   "Example: /rng 4815 162342",
+                   "Example: /rng 4815 162342\n"
+                   "Note: use /rngf to generate (real) numbers "
+                   "with fractions.",
 
             'rngf': "Usage: /rngf <floor> <ceiling>\n"
                     "Random (float, 2 digit precision) number generator "
@@ -208,6 +213,11 @@ CMD_HELP = {'about': "Usage: /about\n"
                    "/mock, and /shout using /cmb.\n"
                    "Example: /spc aesthetic"
                    .format(space('Repeat <something> with extra spaces')),
+
+            'stalk': "Use /stalkig to stalk an instagram account.\n"
+                     "Use /stalktwt to stalk a twitter account.\n"
+                     "See \"/help stalkig\" and \"/help stalktwt\" "
+                     "for more information.",
 
             'stalkig': "Usage: /stalkig <username>\n"
                        "Get a random picture taken from <username>'s "
@@ -240,7 +250,8 @@ CMD_HELP = {'about': "Usage: /about\n"
             'urban': "Usage: /urban <something>\n"
                      "Define <something>, retrieved from "
                      "urbandictionary.com.\n"
-                     "Example: /urban Mac DeMarco",
+                     "Example: /urban Mac DeMarco\n"
+                     "Note: use /urbanx to also get usage examples.",
 
             'urbanx': "Usage: /urbanx <something>\n"
                       "Define <something>, and give usage examples (if any), "
@@ -255,7 +266,8 @@ CMD_HELP = {'about': "Usage: /about\n"
             'wiki': "Usage: /wiki <title>\n"
                     "Summarize a Wikipedia article titled <title>, or get "
                     "a list of titles in the disambiguation page.\n"
-                    "Example: /wiki Vampire Weekend",
+                    "Example: /wiki Vampire Weekend\n"
+                    "Note: use /wikilang to change the language.",
 
             'wikilang': "Usage: /wikilang <language>\n"
                         "Change /wiki language to <language>\n"
@@ -269,12 +281,13 @@ CMD_HELP = {'about': "Usage: /about\n"
             'wolfram': "Usage: /wolfram <something>\n"
                        "Ask wolframalpha.com about <something>.\n"
                        "Returns an image of the result summary.\n"
-                       "Example: /wolfram Who are Cage the Elephant?",
+                       "Example: /wolfram Who are Cage the Elephant?\n"
+                       "Note: use /wolframs to get a short text answer.",
 
             'wolframs': "Usage: /wolframs <something>\n"
                         "Ask wolframalpha.com about <something>.\n"
                         "Returns a short text answer (if available).\n"
-                        "Example: /wolfram Tell me a computer science joke"}
+                        "Example: /wolframs Tell me a computer science joke"}
 
 
 def get_help(command=None):
@@ -296,6 +309,7 @@ def predefined(key):
     strings = {'bencoin': AkunBenCoin.intro,
                'lenny': '( ͡° ͜ʖ ͡°)',
                'shrug': '¯\\_(ツ)_/¯',
+               'stalk': CMD_HELP['stalk'],
                'text': CMD_TEXT}
     return strings[key]
 
@@ -314,6 +328,7 @@ def command_handler(text, user, myself, set_id):
                'lenny': pt(predefined, 'lenny'),
                'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),
+               'stalk': pt(predefined, 'stalk'),
                'text': pt(predefined, 'text'),
                'tix': pt(ticket_get, allowed=itsme),
                'updmemes': pt(updmemes, allowed=itsme)}

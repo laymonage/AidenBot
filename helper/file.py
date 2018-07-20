@@ -46,4 +46,6 @@ def mirror(message_content, file_name, host_url, set_id):
     dist_name = os.path.basename(dist_path)
     os.rename(tempfile_path, dist_path)
 
+    host_url = host_url.replace('http://', 'https://')
+
     return host_url + quote((os.path.join('static', 'tmp', dist_name)))

@@ -141,7 +141,9 @@ CMD_HELP = {'about': "Usage: /about\n"
                     "Example: /meme ipk saya kan tinggi;saya kan maba",
 
             'mirror': "Usage: /mirror\n"
-                      "Toggle file mirroring on or off.",
+                      "Toggle temporary file mirroring on or off.\n"
+                      "If turned on, simply send a file (50 MB limit) and "
+                      "a temporary mirror will be sent.",
 
             'mock': "Usage: /mock <something>\n"
                     "{}\n"

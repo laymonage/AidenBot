@@ -8,7 +8,7 @@ import tempfile
 from urllib.parse import quote
 from .dropson import dbx_dl, dbx_ul, to_json, get_json
 
-STATIC_TMP_PATH = os.path.join(os.path.dirname(__file__), '..', 'static', 'tmp')
+STATIC_TMP_PATH = os.path.join(os.getcwd(), 'static', 'tmp')
 MIRROR_SETTINGS_PATH = os.getenv('MIRROR_SETTINGS_PATH', None)
 MIRROR_SETTINGS = get_json(dbx_dl(MIRROR_SETTINGS_PATH))
 

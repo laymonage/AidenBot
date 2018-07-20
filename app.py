@@ -40,6 +40,7 @@ if CHANNEL_ACCESS_TOKEN is None:
 AIDEN = LineBotApi(CHANNEL_ACCESS_TOKEN)
 HANDLER = WebhookHandler(CHANNEL_SECRET)
 
+MAXIMUM_MIRROR_SIZE = 52428800
 STATIC_TMP_PATH = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 
 MY_ID = os.getenv('MY_USER_ID', None)
@@ -203,6 +204,14 @@ def handle_file_message(event):
 
     if not link:
         return
+
+    file_size = int(message_content.response.headers['Content-Length'])
+
+    if file_size > MAXIMUM_MIRROR_SIZE:
+        AIDEN.reply_message(
+            event.reply_token,
+            TextSendMessage(text="File size shouldn't exceed 50 MB.")
+        )
 
     AIDEN.reply_message(
         event.reply_token, [

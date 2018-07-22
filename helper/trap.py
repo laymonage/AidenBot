@@ -5,7 +5,7 @@
 
 import os
 import random
-import requests
+from .caturl import cat
 from .dropson import dbx_dl, get_json
 
 
@@ -13,13 +13,10 @@ def surprise(safe=False):
     '''
     ?
     '''
-    cat_api = 'http://thecatapi.com/api/images/get'
-    prev_url = requests.get(cat_api)
-    prev_url = prev_url.url.replace('http://', 'https://')
+    prev_url = cat()
 
     if safe:
-        orig_url = requests.get(cat_api)
-        orig_url = orig_url.url.replace('http://', 'https://')
+        orig_url = cat()
     else:
         surprise_links = os.getenv('SURPRISES_FILE_PATH', None)
         surprises = get_json(dbx_dl(surprise_links))

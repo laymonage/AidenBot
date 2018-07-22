@@ -13,11 +13,20 @@ from . import (
 )
 
 HELP_MSG = ("Available commands:\n"
-            "about, ask, bye, calc, cat, define, help, isup, kbbi, "
-            "meme, mirror, pick, profile, reddit, rng, slap, stalk, "
-            "surprise, ticket, tl, urban, weather, wiki, wolfram\n"
             "\n"
-            "Use /help <command> for more information.")
+            "\U00100036 meta:\n"
+            "about, bye, help, profile, ticket\n"
+            "\n"
+            "\U00100077 knowledge:\n"
+            "define, kbbi, reddit, tl, urban, wiki, wolfram\n"
+            "\n"
+            "\U001000B4 tools:\n"
+            "ask, calc, isup, mirror, pick, rng, stalk, weather\n"
+            "\n"
+            "\U0010002D chat enhancer:\n"
+            "cat, meme, slap, surprise, text\n"
+            "\n"
+            "Use /help <command> for more information. Example: /help kbbi")
 
 CMD_TEXT = ("Available text commands:\n"
             "aes, bawl1, bawl2, cmb, echo, lenny, me, mock, pal, ppal, shout, "
@@ -227,7 +236,7 @@ CMD_HELP = {'about': "Usage: /about\n"
             'stalktwt': "Usage: /stalktwt <username>\n"
                         "Get a random Tweet taken from <username>'s "
                         "Twitter account, along with the Tweet's link.\n"
-                        "Example: /stalktwt TheNational",
+                        "Example: /stalktwt whattheffacts",
 
             'surprise': "Usage: /surprise\n"
                         "?",

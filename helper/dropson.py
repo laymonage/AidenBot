@@ -5,7 +5,6 @@ Dropbox and JSON helper module
 
 import json
 import os
-import requests
 import dropbox
 
 # Dropbox access token obtained from dropbox.com/developers
@@ -60,15 +59,7 @@ def dbx_tl(file_path):
     '''
     Return a temporary link to a file hosted on Dropbox.
     '''
-    headers = {
-        'Authorization': 'Bearer {}'.format(DROPBOX_ACCESS_TOKEN),
-        'Content-Type': 'application/json',
-    }
-    data = '"path": "{}"'.format(file_path)
-    data = '{' + data + '}'
-    data = data.encode('utf-8')
-    url = 'https://api.dropboxapi.com/2/files/get_temporary_link'
-    return requests.post(url, headers=headers, data=data).json()['link']
+    return DBX_CLIENT.files_get_temporary_link(file_path).link
 
 
 def to_json(obj, indent=4, encoding='utf-8'):

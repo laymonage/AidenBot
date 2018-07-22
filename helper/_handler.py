@@ -24,7 +24,7 @@ HELP_MSG = ("Available commands:\n"
             "ask, calc, isup, mirror, pick, rng, stalk, weather\n"
             "\n"
             "\U0010002D [chat enhancer]:\n"
-            "cat, meme, slap, surprise, text\n"
+            "cat, meme, slap, text\n"
             "\n"
             "Use /help <command> for more information. Example: /help kbbi")
 
@@ -81,7 +81,12 @@ CMD_HELP = {'about': "Usage: /about\n"
                     "Example: /calc 4 + 8 + 15 + 16 + 23 + 42",
 
             'cat': "Usage: /cat\n"
-                   "Get a random cat image, retrieved from thecatapi.com.",
+                   "Get a random cat image, retrieved from thecatapi.com.\n"
+                   "\n"
+                   "psst, use /cats for a surprise!",
+
+            'cats': "Usage: /cats\n"
+                    "Like /cat, but with a twist.",
 
             'cmb': "Usage: /cmb <num> <cmd1> <cmd2> ... <cmdnum>\n"
                    "Combine <num> commands into one. Commands are executed "
@@ -379,6 +384,7 @@ def command_handler(text, user, myself, set_id):
                    'rngf': pt(rng, frac=True)}
 
     distinct_commands = {'cat': cat_wrap,
+                         'cats': pt(surprise_wrap, safe=True),
                          'getmemes': pt(getmemes, *command[1:]),
                          'help': pt(get_help, *cmd[1:]),
                          'meme': pt(meme_wrap, *command[1:]),

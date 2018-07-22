@@ -50,10 +50,12 @@ def stalkig_wrap(username):
     return ('text', result[1])
 
 
-def surprise_wrap():
+def surprise_wrap(safe=False):
     '''
     ?
     '''
+    if safe:
+        return ('custimg', (surprise(safe=True),))
     return ('custimg', (surprise(),))
 
 

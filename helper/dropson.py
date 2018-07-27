@@ -59,7 +59,10 @@ def dbx_tl(file_path):
     '''
     Return a temporary link to a file hosted on Dropbox.
     '''
-    return DBX_CLIENT.files_get_temporary_link(file_path).link
+    try:
+        return DBX_CLIENT.files_get_temporary_link(file_path).link
+    except dropbox.exceptions.ApiError:
+        raise KeyError("Not found!")
 
 
 def to_json(obj, indent=4, encoding='utf-8'):

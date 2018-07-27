@@ -14,7 +14,7 @@ Example:
 '''
 
 from . import (
-    cat, meme, stalkig, surprise, wolfram
+    cat, convert, meme, stalkig, surprise, wolfram
 )
 
 
@@ -23,6 +23,14 @@ def cat_wrap():
     Wrap cat command.
     '''
     return ('image', cat())
+
+
+def curx_wrap(query):
+    '''
+    Wrap curx command.
+    '''
+    query = query.split()
+    return ('text', convert(query[1], query[2], query[0]))
 
 
 def meme_wrap(keyword=''):

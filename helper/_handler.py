@@ -4,12 +4,12 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    about, AkunBenCoin, cat_wrap, combine, echo, shout, mock, space,
-    aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote, translate,
-    isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes, mirror_toggle,
-    define, reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem,
-    ticket_get, surprise_wrap, urban, wiki_get, wiki_lang, wolfram,
-    wolfram_wrap, weather
+    about, AkunBenCoin, cat_wrap, convert, curx_wrap, combine, echo, shout,
+    mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
+    translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes,
+    mirror_toggle, define, reddit_hot, slap, stalkig_wrap, stalktwt,
+    ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get,
+    wiki_lang, wolfram, wolfram_wrap, weather
 )
 
 HELP_MSG = ("Available commands:\n"
@@ -21,7 +21,7 @@ HELP_MSG = ("Available commands:\n"
             "define, kbbi, reddit, tl, urban, wiki, wolfram\n"
             "\n"
             "\U001000B4 [tools]:\n"
-            "ask, calc, isup, mirror, pick, rng, stalk, weather\n"
+            "ask, cur, calc, isup, mirror, pick, rng, stalk, weather\n"
             "\n"
             "\U0010002D [chat enhancer]:\n"
             "cat, meme, slap, text\n"
@@ -96,6 +96,18 @@ CMD_HELP = {'about': "Usage: /about\n"
                    "Note: each commands can only be used once and bawl1 can't "
                    "be used with bawl2.\n"
                    "Example: /cmb 3 bawl1 aes mock noble man",
+
+            'cur': "Usage: /cur <currency_from> <currency_to>\n"
+                   "Get the currency exchange rate from <currency_from> "
+                   "to <currency_to>, "
+                   "obtained from currencyconverterapi.com.\n"
+                   "Example: /cur usd idr\n"
+                   "Note: Use /curx to use a custom amount",
+
+            'curx': "Usage: /curx <amount> <currency_from> <currency_to>\n"
+                    "Convert <amount> <currency_from> into <currency_to>, "
+                    "obtained from currencyconverterapi.com.\n"
+                    "Example: /curx 42 eur idr",
 
             'define': "Usage: /define <something>\n"
                       "Define <something>, retrieved from "
@@ -379,12 +391,14 @@ def command_handler(text, user, myself, set_id):
                    'wikilang': pt(wiki_lang, set_id=set_id),
                    'wolframs': wolfram}
 
-    double_args = {'reddit': pt(reddit_hot, splitted=True),
+    double_args = {'cur': convert,
+                   'reddit': pt(reddit_hot, splitted=True),
                    'rng': rng,
                    'rngf': pt(rng, frac=True)}
 
     distinct_commands = {'cat': cat_wrap,
                          'cats': pt(surprise_wrap, safe=True),
+                         'curx': pt(curx_wrap, *command[1:]),
                          'getmemes': pt(getmemes, *command[1:]),
                          'help': pt(get_help, *cmd[1:]),
                          'meme': pt(meme_wrap, *command[1:]),

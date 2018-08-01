@@ -24,3 +24,8 @@
 - [annafis1](https://github.com/annafis1)
   ([#1](https://github.com/laymonage/AidenBot/pull/1) and
    [#2](https://github.com/laymonage/AidenBot/pull/2))
+- [edawine](https://github.com/edawine)
+  ([#4](https://github.com/laymonage/AidenBot/issues/4),
+   [#5](https://github.com/laymonage/AidenBot/issues/5),
+   [#8](https://github.com/laymonage/AidenBot/issues/8), and
+   [#9](https://github.com/laymonage/AidenBot/issues/9))

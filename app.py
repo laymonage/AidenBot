@@ -1,6 +1,6 @@
 '''
 AidenBot
-v0.97: public
+v0.97
 '''
 
 import errno

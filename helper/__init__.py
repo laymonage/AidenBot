@@ -4,17 +4,16 @@ Initialization
 # pylint: disable=unused-import
 # flake8: noqa
 
-from .bencoin import AkunBenCoin
 from .caturl import cat
 from .currency import convert
-from .dropson import dbx_dl, dbx_ul, to_json, get_json
+#  from .dropson import dbx_dl, dbx_ul, to_json, get_json
 from .file import mirror_toggle, mirror
 from .gtrans import translate
 from .isitup import isup
 from .kbbih import kbbi_def
 from .mathjs import calc
 from .mcs import ask
-from .memes import getmemes, meme, updmemes
+#  from .memes import getmemes, meme, updmemes
 from .oxdict import define
 from .reddit import reddit_hot
 from .simpletext import (
@@ -23,8 +22,8 @@ from .simpletext import (
 )
 from .slapper import slap
 from .stalker import stalkig, stalktwt
-from .ticket import about, ticket_add, ticket_rem, ticket_get
-from .trap import surprise
+#  from .ticket import about, ticket_add, ticket_rem, ticket_get
+#  from .trap import surprise
 from .urban import urban
 from .wiki import wiki_get, wiki_lang
 from .wolframalpha import wolfram

@@ -4,18 +4,18 @@ Command handler module for AidenBot
 
 from functools import partial as pt
 from . import (
-    about, AkunBenCoin, cat_wrap, convert, curx_wrap, combine, echo, shout,
+    cat_wrap, convert, curx_wrap, combine, echo, shout,
     mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
-    translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes,
+    translate, isup, kbbi_def, calc, ask, meme_wrap,
     mirror_toggle, define, reddit_hot, slap, stalkig_wrap, stalktwt,
-    ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get,
+    surprise_wrap, urban, wiki_get,
     wiki_lang, wolfram, wolfram_wrap, weather
 )
 
 HELP_MSG = ("Available commands:\n"
             "\n"
             "\U00100036 [meta]:\n"
-            "about, bye, help, profile, ticket\n"
+            "about, bye, help, profile\n"
             "\n"
             "\U00100077 [knowledge]:\n"
             "define, kbbi, reddit, tl, urban, wiki, wolfram\n"
@@ -24,7 +24,7 @@ HELP_MSG = ("Available commands:\n"
             "ask, cur, calc, isup, mirror, pick, rng, stalk, weather\n"
             "\n"
             "\U0010002D [chat enhancer]:\n"
-            "cat, meme, slap, text\n"
+            "cat, slap, text\n"
             "\n"
             "Use /help <command> for more information. Example: /help kbbi")
 
@@ -332,7 +332,7 @@ def predefined(key):
     '''
     Predefined strings.
     '''
-    strings = {'bencoin': AkunBenCoin.intro,
+    strings = {'about': "AidenBot\nhttps://github.com/laymonage/AidenBot",
                'lenny': '( ͡° ͜ʖ ͡°)',
                'shrug': '¯\\_(ツ)_/¯',
                'stalk': CMD_HELP['stalk'],
@@ -349,15 +349,13 @@ def command_handler(text, user, myself, set_id):
     cmd = text.lower().split(maxsplit=1)
     result = None
 
-    no_args = {'about': about,
+    no_args = {'about': pt(predefined, 'about'),
                'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),
                'stalk': pt(predefined, 'stalk'),
-               'text': pt(predefined, 'text'),
-               'tix': pt(ticket_get, allowed=itsme),
-               'updmemes': pt(updmemes, allowed=itsme)}
+               'text': pt(predefined, 'text')}
 
     single_args = {'ask': pt(ask, id_=True),
                    'aes': aesthetic,
@@ -377,12 +375,10 @@ def command_handler(text, user, myself, set_id):
                    'pal': is_palindrome,
                    'ppal': pt(is_palindrome, perfect=True),
                    'pick': rpick,
-                   'rtix': pt(ticket_rem, allowed=itsme),
                    'shout': shout,
                    'slap': pt(slap, user, myself=myself),
                    'spc': space,
                    'stalktwt': stalktwt,
-                   'ticket': ticket_add,
                    'tl': translate,
                    'urban': urban,
                    'urbanx': pt(urban, ex=True),

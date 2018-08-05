@@ -16,6 +16,8 @@ def wolfram(query, simple=False):
     '''
     # WolframAlpha AppID, obtained from developer.wolframalpha.com
     wolfram_appid = os.getenv('WOLFRAMALPHA_APPID', None)
+    if not wolfram_appid:
+        return "Wolfram API is not configured."
 
     url = 'https://api.wolframalpha.com/v1/{}?i={}&appid={}'
     if not simple:

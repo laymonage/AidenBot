@@ -21,7 +21,6 @@ from linebot.models import (
 )
 
 from helper._handler import command_handler
-from helper.bencoin import penangan_operasi
 from helper.file import mirror
 
 

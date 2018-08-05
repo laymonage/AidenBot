@@ -16,6 +16,8 @@ def weather(keyword):
     '''
     # Weather Underground API key, obtained from wunderground.com/weather/api
     wunder_key = os.getenv('WUNDERGROUND_API_KEY', None)
+    if not wunder_key:
+        return "Weather API is not configured."
 
     url = ('http://api.wunderground.com/api/{}/conditions/q/{}.json'
            .format(wunder_key, quote(keyword)))

@@ -17,6 +17,8 @@ def define(keyword):
     # developer.oxforddictionaries.com
     oxdict_appid = os.getenv('OXFORD_DICT_APPID', None)
     oxdict_key = os.getenv('OXFORD_DICT_APPKEY', None)
+    if not oxdict_appid or not oxdict_key:
+        return "OxfordDictionaries API is not configured."
 
     word = quote(keyword)
     url = ('https://od-api.oxforddictionaries.com:443/api/v1/entries/en/{}'

@@ -6,11 +6,9 @@ File mirroring module.
 import os
 import tempfile
 from urllib.parse import quote
-from .dropson import dbx_dl, dbx_ul, to_json, get_json
 
 STATIC_TMP_PATH = os.path.join(os.getcwd(), 'static', 'tmp')
-MIRROR_SETTINGS_PATH = os.getenv('MIRROR_SETTINGS_PATH', None)
-MIRROR_SETTINGS = get_json(dbx_dl(MIRROR_SETTINGS_PATH))
+MIRROR_SETTINGS = {}
 
 
 def mirror_toggle(set_id):
@@ -21,7 +19,6 @@ def mirror_toggle(set_id):
         MIRROR_SETTINGS[set_id] = not MIRROR_SETTINGS[set_id]
     except KeyError:
         MIRROR_SETTINGS[set_id] = False
-    dbx_ul(to_json(MIRROR_SETTINGS), MIRROR_SETTINGS_PATH, overwrite=True)
     return ("File mirroring has been turned {}."
             .format('on' if MIRROR_SETTINGS[set_id] else 'off'))
 

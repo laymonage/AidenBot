@@ -51,6 +51,11 @@ def stalktwt(username):
     access_secret = os.getenv('TWITTER_ACCESS_SECRET', None)
     consumer_key = os.getenv('TWITTER_CONSUMER_KEY', None)
     consumer_secret = os.getenv('TWITTER_CONSUMER_SECRET', None)
+
+    if (not access_token or not access_secret
+        or not consumer_key or not consumer_secret):
+        return "Twitter API is not configured."
+
     twitter = Twitter(auth=OAuth(access_token, access_secret,
                                  consumer_key, consumer_secret))
     try:

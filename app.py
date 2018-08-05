@@ -181,10 +181,6 @@ def handle_text_message(event):
             else:
                 quickreply(result)
 
-    elif text.split()[0] in ('DAFTAR', 'TAMBAH', 'UBAH', 'SETOR',
-                             'INFO', 'TRANSFER', 'TARIK', 'BANTUAN'):
-        quickreply(penangan_operasi(event.source.user_id, text.strip()))
-
 
 @HANDLER.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):

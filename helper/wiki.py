@@ -3,12 +3,9 @@ Wikipedia helper module
 (c) 2018 - laymonage
 '''
 
-import os
 import wikipedia
-from .dropson import dbx_dl, dbx_ul, to_json, get_json
 
-WIKI_SETTINGS_PATH = os.getenv('WIKI_SETTINGS_PATH', None)
-WIKI_SETTINGS = get_json(dbx_dl(WIKI_SETTINGS_PATH))
+WIKI_SETTINGS = {}
 
 
 def wiki_get(keyword, set_id, trim=True):
@@ -50,9 +47,8 @@ def wiki_lang(lang, set_id):
     set_id (str): a unique ID to associate the user with the settings
     '''
     langs_dict = wikipedia.languages()
-    if lang in langs_dict:
+    if lang in langs_dict.keys():
         WIKI_SETTINGS[set_id] = lang
-        dbx_ul(to_json(WIKI_SETTINGS), WIKI_SETTINGS_PATH, overwrite=True)
         return ("Language has been changed to {} successfully."
                 .format(langs_dict[lang]))
 

@@ -6,10 +6,9 @@ from functools import partial as pt
 from . import (
     cat_wrap, convert, curx_wrap, combine, echo, shout,
     mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
-    translate, isup, kbbi_def, calc, ask, meme_wrap,
-    mirror_toggle, define, reddit_hot, slap, stalkig_wrap, stalktwt,
-    surprise_wrap, urban, wiki_get,
-    wiki_lang, wolfram, wolfram_wrap, weather
+    translate, isup, kbbi_def, calc, ask, mirror_toggle, define,
+    reddit_hot, slap, stalkig_wrap, stalktwt, urban, wiki_get, wiki_lang,
+    wolfram, wolfram_wrap, weather
 )
 
 HELP_MSG = ("Available commands:\n"
@@ -393,13 +392,9 @@ def command_handler(text, user, myself, set_id):
                    'rngf': pt(rng, frac=True)}
 
     distinct_commands = {'cat': cat_wrap,
-                         'cats': pt(surprise_wrap, safe=True),
                          'curx': pt(curx_wrap, *command[1:]),
-                         'getmemes': pt(getmemes, *command[1:]),
                          'help': pt(get_help, *cmd[1:]),
-                         'meme': pt(meme_wrap, *command[1:]),
                          'stalkig': pt(stalkig_wrap, *command[1:]),
-                         'surprise': surprise_wrap,
                          'wolfram': pt(wolfram_wrap, *command[1:])}
 
     try:

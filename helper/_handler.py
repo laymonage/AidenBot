@@ -343,13 +343,11 @@ def command_handler(text, user, myself, set_id):
     '''
     Command handler for AidenBot.
     '''
-    itsme = user.user_id == myself.user_id
     command = text.split(maxsplit=1)
     cmd = text.lower().split(maxsplit=1)
     result = None
 
     no_args = {'about': pt(predefined, 'about'),
-               'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),

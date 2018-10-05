@@ -1,4 +1,4 @@
-Flask==0.12.2
+Flask==0.12.3
 line-bot-sdk==1.5.0
 dropbox==8.5.1
 googletrans==2.2.0

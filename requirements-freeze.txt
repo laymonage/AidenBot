@@ -6,7 +6,7 @@ click==6.7
 dropbox==8.5.1
 Flask==0.12.3
 future==0.16.0
-googletrans==2.2.0
+googletrans==2.3.0
 html5lib==1.0.1
 idna==2.6
 isort==4.2.15

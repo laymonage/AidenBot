@@ -25,7 +25,7 @@ six==1.11.0
 twitter==1.18.0
 update-checker==0.16
 urbandictionary-top==0.3
-urllib3==1.22
+urllib3==1.23
 webencodings==0.5.1
 Werkzeug==0.14.1
 wikipedia==1.4.0

@@ -17,7 +17,7 @@ HELP_MSG = ("Available commands:\n"
             "about, bye, help, profile\n"
             "\n"
             "\U00100077 [knowledge]:\n"
-            "define, kbbi, reddit, tl, urban, wiki, wolfram\n"
+            "define, reddit, tl, urban, wiki, wolfram\n"
             "\n"
             "\U001000B4 [tools]:\n"
             "ask, cur, calc, isup, mirror, pick, rng, stalk, weather\n"
@@ -42,8 +42,8 @@ CMD_HELP = {'about': "Usage: /about\n"
                    .format(aesthetic('Repeat <something> aesthetically')),
 
             'ask': "Usage: /ask <question>\n"
-                   "Simulator Kulit Kerang Ajaib.\n"
-                   "Example: /ask Apa aku boleh makan?\n"
+                   "Magic Conch Shell Simulator(8ball).\n"
+                   "Example: /ask Does this bot suck?\n"
                    "Note: use /mcs to get the answers in English",
 
             'bawl1': "Usage: /bawl1 <something>\n"
@@ -188,7 +188,7 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'ppal': "Usage: /ppal <something>\n"
                     "Check if <something> is a perfect palindrome.\n"
-                    "Example: /ppal kasur nababan rusak",
+                    "Example: /ppal taco cat",
 
             'pick': "Usage: /pick <something1>;<something2>;...;<somethingN>\n"
                     "Pick a random item from a semicolon-separated list.\n"
@@ -230,7 +230,7 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'slap': "Usage: /slap <someone>\n"
                     "Slap <someone> with a random object.\n"
-                    "Example: /slap Pak Dengklek",
+                    "Example: /slap Scopely Employee",
 
             'spc': "Usage: /spc <something>\n"
                    "{}\n"
@@ -275,7 +275,7 @@ CMD_HELP = {'about': "Usage: /about\n"
             'urban': "Usage: /urban <something>\n"
                      "Define <something>, retrieved from "
                      "urbandictionary.com.\n"
-                     "Example: /urban Mac DeMarco\n"
+                     "Example: /urban Scopely\n"
                      "Note: use /urbanx to also get usage examples.",
 
             'urbanx': "Usage: /urbanx <something>\n"
@@ -286,7 +286,7 @@ CMD_HELP = {'about': "Usage: /about\n"
             'weather': "Usage: /weather <location>\n"
                        "Obtain current weather data in <location>, retrieved "
                        "from wunderground.com.\n"
-                       "Example: /weather Jakarta",
+                       "Example: /weather New York",
 
             'wiki': "Usage: /wiki <title>\n"
                     "Summarize a Wikipedia article titled <title>, or get "
@@ -306,7 +306,7 @@ CMD_HELP = {'about': "Usage: /about\n"
             'wolfram': "Usage: /wolfram <something>\n"
                        "Ask wolframalpha.com about <something>.\n"
                        "Returns an image of the result summary.\n"
-                       "Example: /wolfram Who are Cage the Elephant?\n"
+                       "Example: /wolfram Who are Pink Floyd?\n"
                        "Note: use /wolframs to get a short text answer.",
 
             'wolframs': "Usage: /wolframs <something>\n"
@@ -331,7 +331,7 @@ def predefined(key):
     '''
     Predefined strings.
     '''
-    strings = {'about': "AidenBot\nhttps://github.com/laymonage/AidenBot",
+    strings = {'about': "ShivaBOT\n Beta 1.0",
                'lenny': '( ͡° ͜ʖ ͡°)',
                'shrug': '¯\\_(ツ)_/¯',
                'stalk': CMD_HELP['stalk'],
@@ -354,7 +354,7 @@ def command_handler(text, user, myself, set_id):
                'stalk': pt(predefined, 'stalk'),
                'text': pt(predefined, 'text')}
 
-    single_args = {'ask': pt(ask, id_=True),
+    single_args = {'ask': pt(ask, id_=False),
                    'aes': aesthetic,
                    'bawl1': bawl1,
                    'bawl2': bawl2,

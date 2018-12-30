@@ -6,7 +6,7 @@ Initialization
 
 from .caturl import cat
 from .currency import convert
-#  from .dropson import dbx_dl, dbx_ul, to_json, get_json
+from .dropson import dbx_dl, dbx_ul, to_json, get_json
 from .file import mirror_toggle, mirror
 from .gtrans import translate
 from .isitup import isup
@@ -22,7 +22,7 @@ from .simpletext import (
 )
 from .slapper import slap
 from .stalker import stalkig, stalktwt
-#  from .ticket import about, ticket_add, ticket_rem, ticket_get
+from .ticket import about, ticket_add, ticket_rem, ticket_get
 from .trap import surprise
 from .urban import urban
 from .wiki import wiki_get, wiki_lang

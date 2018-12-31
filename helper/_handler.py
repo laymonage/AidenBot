@@ -393,6 +393,7 @@ def command_handler(text, user, myself, set_id):
                          'curx': pt(curx_wrap, *command[1:]),
                          'help': pt(get_help, *cmd[1:]),
                          'stalkig': pt(stalkig_wrap, *command[1:]),
+                         'surprise': surprise_wrap,
                          'wolfram': pt(wolfram_wrap, *command[1:])}
 
     try:

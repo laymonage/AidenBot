@@ -352,6 +352,7 @@ def command_handler(text, user, myself, set_id):
                'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),
                'stalk': pt(predefined, 'stalk'),
+               'tix': pt(ticket_get, allowed=itsme),
                'text': pt(predefined, 'text')}
 
     single_args = {'ask': pt(ask, id_=False),

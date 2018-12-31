@@ -376,6 +376,7 @@ def command_handler(text, user, myself, set_id):
                    'slap': pt(slap, user, myself=myself),
                    'spc': space,
                    'stalktwt': stalktwt,
+                   'ticket': ticket_add,
                    'tl': translate,
                    'urban': urban,
                    'urbanx': pt(urban, ex=True),

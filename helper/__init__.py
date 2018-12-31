@@ -22,7 +22,7 @@ from .simpletext import (
 )
 from .slapper import slap
 from .stalker import stalkig, stalktwt
-from .ticket import about, ticket_add, ticket_rem, ticket_get
+from .ticket import ticket_add, ticket_rem, ticket_get
 from .trap import surprise
 from .urban import urban
 from .wiki import wiki_get, wiki_lang

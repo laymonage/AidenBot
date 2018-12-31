@@ -7,7 +7,7 @@ from . import (
     cat_wrap, convert, curx_wrap, combine, echo, shout,
     mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
     translate, isup, kbbi_def, calc, ask, mirror_toggle, define,
-    reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem, ticket_get, urban, wiki_get, wiki_lang,
+    reddit_hot, slap, stalkig_wrap, stalktwt, urban, wiki_get, wiki_lang,
     wolfram, wolfram_wrap, weather
 )
 
@@ -352,7 +352,6 @@ def command_handler(text, user, myself, set_id):
                'mirror': pt(mirror_toggle, set_id=set_id),
                'shrug': pt(predefined, 'shrug'),
                'stalk': pt(predefined, 'stalk'),
-               'tix': pt(ticket_get, allowed=itsme),
                'text': pt(predefined, 'text')}
 
     single_args = {'ask': pt(ask, id_=False),
@@ -377,7 +376,6 @@ def command_handler(text, user, myself, set_id):
                    'slap': pt(slap, user, myself=myself),
                    'spc': space,
                    'stalktwt': stalktwt,
-                   'ticket': ticket_add,
                    'tl': translate,
                    'urban': urban,
                    'urbanx': pt(urban, ex=True),

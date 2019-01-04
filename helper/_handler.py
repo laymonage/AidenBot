@@ -377,6 +377,7 @@ def command_handler(text, user, myself, set_id):
                    'spc': space,
                    'stalktwt': stalktwt,
                    'tl': translate,
+                   'ticket': ticket_add,
                    'urban': urban,
                    'urbanx': pt(urban, ex=True),
                    'weather': weather,

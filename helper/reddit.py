@@ -28,7 +28,7 @@ def reddit_hot(subname, limit=5, splitted=False):
     except KeyError:  # Happens when request limit is reached or 404
         print(sub)
         return "reddit.com/r/{} is currently unavailable.".format(subname)
-    result = "Hot {} posts in reddit.com/r/{}:\n".format(len(threads), subname)
+    result = "Hot {} posts in reddit.com/r/{}\n".format(len(threads), subname)
     if not splitted:
         result += '\n'.join(['{}. {}'.format(i+1, title)
                              for i, title in enumerate(threads)])

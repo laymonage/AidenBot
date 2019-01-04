@@ -7,7 +7,7 @@ from . import (
     cat_wrap, convert, curx_wrap, combine, echo, shout,
     mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
     translate, isup, kbbi_def, calc, ask, mirror_toggle, define,
-    reddit_hot, slap, stalkig_wrap, stalktwt, surprise_wrap, urban, wiki_get, wiki_lang,
+    reddit_hot, slap, stalkig_wrap, stalktwt, ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get, wiki_lang,
     wolfram, wolfram_wrap, weather
 )
 

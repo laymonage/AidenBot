@@ -1,7 +1,7 @@
-Flask==0.12.2
+Flask==0.12.3
 line-bot-sdk==1.5.0
-dropbox==8.5.1
-googletrans==2.2.0
+dropbox==9.3.0
+googletrans==2.4.0
 kbbi==0.2.1
 praw==5.3.0
 pylint==1.8.1

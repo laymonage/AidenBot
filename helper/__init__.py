@@ -17,6 +17,7 @@ from .mcs import ask
 from .memes import getmemes, meme, updmemes
 from .oxdict import define
 from .reddit import reddit_hot
+from .roast import roast
 from .simpletext import (
     combine, echo, shout, mock, space, aesthetic,
     bawl1, bawl2, is_palindrome, rng, rpick, emote

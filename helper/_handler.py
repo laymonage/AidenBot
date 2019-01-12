@@ -7,7 +7,7 @@ from . import (
     about, AkunBenCoin, cat_wrap, convert, curx_wrap, combine, echo, shout,
     mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
     translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes,
-    mirror_toggle, define, reddit_hot, slap, stalkig_wrap, stalktwt,
+    mirror_toggle, define, reddit_hot, roast, slap, stalkig_wrap, stalktwt,
     ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get,
     wiki_lang, wolfram, wolfram_wrap, weather
 )
@@ -24,7 +24,7 @@ HELP_MSG = ("Available commands:\n"
             "ask, cur, calc, isup, mirror, pick, rng, stalk, weather\n"
             "\n"
             "\U0010002D [chat enhancer]:\n"
-            "cat, meme, slap, text\n"
+            "cat, meme, roast, slap, text\n"
             "\n"
             "Use /help <command> for more information. Example: /help kbbi")
 
@@ -220,6 +220,10 @@ CMD_HELP = {'about': "Usage: /about\n"
                     "<floor> is optional, default is 1.\n"
                     "Example: /rngf 2.19 4.2",
 
+            'roast': "Usage: /roast <someone>\n"
+                     "Roast <someone>.\n"
+                     "Example: /roast jack",
+
             'shout': "Usage: /shout <something>\n"
                      "REPEAT <SOMETHING> IN UPPERCASE.\n"
                      "Can be combined with /aes, /bawl1, /bawl2, "
@@ -377,6 +381,7 @@ def command_handler(text, user, myself, set_id):
                    'pal': is_palindrome,
                    'ppal': pt(is_palindrome, perfect=True),
                    'pick': rpick,
+                   'roast': roast,
                    'rtix': pt(ticket_rem, allowed=itsme),
                    'shout': shout,
                    'slap': pt(slap, user, myself=myself),

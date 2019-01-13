@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+line-bot-sdk = "==1.5.0"
+dropbox = "==9.3.0"
+googletrans = "==2.4.0"
+kbbi = "==0.2.1"
+pylint = "==1.8.1"
+twitter = "==1.18.0"
+urbandictionary-top = "==0.3"
+wikipedia = "==1.4.0"
+Flask = "==0.12.3"
+
+[requires]
+python_version = "3.7"

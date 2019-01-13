@@ -1,7 +1,8 @@
-'''
+"""
 Memes helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 import random
@@ -12,9 +13,7 @@ MEMES = dbx_ls(MEMES_PATH, sort=True, noext=True)
 
 
 def getmemes(keyword=''):
-    '''
-    Return a list of meme pictures in a Dropbox folder.
-    '''
+    """Return a list of meme pictures in a Dropbox folder."""
     if not keyword:
         return '{} memes available:\n'.format(len(MEMES)) + ', '.join(MEMES)
     found = [each for each in MEMES if keyword.lower() in each.lower()]
@@ -25,9 +24,7 @@ def getmemes(keyword=''):
 
 
 def meme(*keywords):
-    '''
-    Return a link to a meme picture, retrieved from Dropbox.
-    '''
+    """Return a link to a meme picture, retrieved from Dropbox."""
     if not keywords:
         return dbx_tl(MEMES_PATH + random.choice(dbx_ls(MEMES_PATH)))
     try:
@@ -43,9 +40,7 @@ def meme(*keywords):
 
 
 def updmemes(allowed=True):
-    '''
-    Update memes.
-    '''
+    """Update memes."""
     if not allowed:
         return None
     del MEMES[:]

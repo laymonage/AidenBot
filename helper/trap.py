@@ -1,7 +1,8 @@
-'''
-?
+"""
+Surprise helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 import random
@@ -10,9 +11,7 @@ from .dropson import dbx_dl, get_json
 
 
 def surprise(safe=False):
-    '''
-    ?
-    '''
+    """Surprise."""
     cat_api = 'http://thecatapi.com/api/images/get'
     prev_url = requests.get(cat_api)
     prev_url = prev_url.url.replace('http://', 'https://')

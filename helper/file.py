@@ -1,7 +1,8 @@
-'''
+"""
 File mirroring module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 import tempfile
@@ -14,9 +15,7 @@ MIRROR_SETTINGS = get_json(dbx_dl(MIRROR_SETTINGS_PATH))
 
 
 def mirror_toggle(set_id):
-    '''
-    Toggle file mirroring on or off.
-    '''
+    """Toggle file mirroring on or off."""
     try:
         MIRROR_SETTINGS[set_id] = not MIRROR_SETTINGS[set_id]
     except KeyError:
@@ -27,9 +26,7 @@ def mirror_toggle(set_id):
 
 
 def mirror(message_content, file_name, host_url, set_id):
-    '''
-    Write message_content into disk.
-    '''
+    """Write message_content into disk."""
     try:
         if not MIRROR_SETTINGS[set_id]:
             return ''

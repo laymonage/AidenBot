@@ -15,6 +15,7 @@ twitter = "==1.18.0"
 urbandictionary-top = "==0.3"
 wikipedia = "==1.4.0"
 Flask = "==0.12.3"
+pydocstyle = "==3.0.0"
 
 [requires]
 python_version = "3.7"

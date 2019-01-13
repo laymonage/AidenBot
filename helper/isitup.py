@@ -1,18 +1,20 @@
-'''
+"""
 isitup.org helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 from urllib.parse import urlparse
 import requests
 
 
 def isup(site, detailed=False):
-    '''
+    """
     Return site up or down status received from https://isitup.org.
+
     site (str): site to be checked
     detailed (bool): if true, add IP, response code, and response time info
-    '''
+    """
     if not site.startswith('http'):
         url = 'http://{}'.format(site)
     else:

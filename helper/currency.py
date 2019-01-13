@@ -1,15 +1,14 @@
-'''
+"""
 Currency converter.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import requests
 
 
 def convert(currency_from, currency_to, amount=1):
-    '''
-    Convert from a currency to another with a given amount.
-    '''
+    """Convert from a currency to another with a given amount."""
     currency_from, currency_to = currency_from.upper(), currency_to.upper()
     query = "{}_{}".format(currency_from, currency_to)
     url = "https://free.currencyconverterapi.com/api/v5/convert?compact=y&q="

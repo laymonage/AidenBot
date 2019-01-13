@@ -1,7 +1,8 @@
-'''
+"""
 Stalking helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 from html import unescape
 import json
@@ -14,11 +15,12 @@ from twitter.api import TwitterHTTPError
 
 
 def stalkig(username):
-    '''
-    Return a tuple that consists of image link and post link,
-    taken randomly from username's Instagram profile.
+    """
+    Return a tuple that consists of image link and post link.
+
+    Taken randomly from username's Instagram profile.
     username (str): username to stalk
-    '''
+    """
     url = 'https://www.instagram.com/{}'.format(username)
     req = requests.get(url)
     if req.status_code == 404:
@@ -43,10 +45,11 @@ def stalkig(username):
 
 
 def stalktwt(username):
-    '''
+    """
     Return a random tweet taken from username's Twitter profile.
+
     username (str): username to stalk
-    '''
+    """
     access_token = os.getenv('TWITTER_ACCESS_TOKEN', None)
     access_secret = os.getenv('TWITTER_ACCESS_SECRET', None)
     consumer_key = os.getenv('TWITTER_CONSUMER_KEY', None)

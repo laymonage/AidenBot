@@ -1,6 +1,4 @@
-'''
-Initialization
-'''
+"""Initialization."""
 # pylint: disable=unused-import
 # flake8: noqa
 

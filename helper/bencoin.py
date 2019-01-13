@@ -1,9 +1,10 @@
-'''
+"""
 BenCoin Manager.
+
 Programming Assignment 3 (modified)
 Foundations of Programming
 Fasilkom UI 2017
-'''
+"""
 
 import os
 from .dropson import dbx_dl, dbx_ul, to_json, get_json
@@ -14,9 +15,8 @@ EXCHRATE_PATH = os.getenv('EXCHANGE_RATE_PATH', None)
 
 
 class AkunBenCoin(object):
-    '''
-    Tipe objek berupa akun BenCoin.
-    '''
+    """Tipe objek berupa akun BenCoin."""
+
     intro = ("=======================================\n"
              "Selamat datang di administrasi BenCoin LINE!\n"
              "Berikut adalah perintah-perintah yang tersedia:\n"
@@ -91,6 +91,7 @@ class AkunBenCoin(object):
     valas = get_json(dbx_dl(EXCHRATE_PATH))
 
     def __init__(self, Nama, Jenis, saldo=0, riwayat=''):
+        """Membuat objek AkunBenCoin."""
         self.nama = Nama
         self.jenis = Jenis
         self.saldo = saldo
@@ -100,14 +101,15 @@ class AkunBenCoin(object):
         self.riwayat = riwayat
 
     def __str__(self):
-        '''
-        Mengembalikan info akun dengan format:
+        """
+        Mengembalikan info akun dengan format berikut.
+
         Nama: <nama>
         Jenis akun: <jenis>
         Jumlah BenCoin: <saldo>
         Transaksi:
         <riwayat transaksi>
-        '''
+        """
         info = ("Nama: {}\n"
                 "Jenis akun: {}\n"
                 "Jumlah BenCoin: {}\n"
@@ -120,15 +122,18 @@ class AkunBenCoin(object):
         return info
 
     def __repr__(self):
+        """Mengembalikan representasi string dari AkunBenCoin."""
         return str(self)
 
     def setor(self, nominal, mata_uang):
-        '''
-        nominal (int), mata_uang (str)
+        """
         Menambahkan saldo akun sebesar (nominal/kurs).
+
         Apabila saldo > batas tabungan, maka hanya
         tambahkan hingga saldo mencapai batas tabungan.
-        '''
+
+        nominal (int), mata_uang (str)
+        """
         if nominal <= 0:
             return "Nilai setor harus > 0."
 
@@ -154,14 +159,15 @@ class AkunBenCoin(object):
                 .format(ben_setor))
 
     def tarik(self, nominal, mata_uang):
-        '''
-        nominal (int), mata_uang (str)
-        Mengurangi saldo akun dengan jumlah * kurs
-        dengan biaya transaksi yang sudah ditentukan.
+        """
+        Mengurangi saldo akun dengan jumlah * kurs.
+
         Apabila sisa saldo < 0, maka hanya tarik
         sehingga saldo bernilai 0 setelah dikurangi
         dengan biaya transaksi.
-        '''
+
+        nominal (int), mata_uang (str)
+        """
         if nominal <= 0:
             return "Nilai tarik harus > 0."
 
@@ -189,18 +195,18 @@ class AkunBenCoin(object):
                 .format(mata_uang, kas_tarik))
 
     def transfer(self, akun_penerima, nominal):
-        '''
-        akun_penerima (AkunBenCoin), nominal (int)
-        Memindahkan saldo sebesar nominal dari saldo self
-        ke saldo penerima dengan biaya transaksi yang
-        sudah ditentukan.
+        """
+        Memindahkan saldo sebesar nominal dari saldo self ke saldo penerima.
+
         Apabila sisa saldo self < 0, maka hanya pindahkan
         sehingga saldo bernilai 0 setelah dikurangi
         dengan biaya transaksi.
         Apabila saldo penerima melebihi limit_tabungan,
         maka hanya pindahkan sehingga saldo penerima
         mencapai limit tabungan.
-        '''
+
+        akun_penerima (AkunBenCoin), nominal (int)
+        """
         if nominal <= 0:
             return "Nilai transfer harus > 0."
 
@@ -236,22 +242,19 @@ class AkunBenCoin(object):
                 .format(ben_transf, akun_penerima.nama))
 
     def to_json(self):
-        '''
-        Mengubah instance AkunBenCoin ke dalam bentuk dict yang
-        kompatibel dengan format JSON.
-        '''
+        """Mengubah instance AkunBenCoin ke dalam bentuk JSON dictionary."""
         return {'Nama': self.nama, 'Jenis': self.jenis,
                 'Saldo': self.saldo, 'Riwayat': self.riwayat}
 
 
 def daftar(user_id, nama, jenis):
-    '''
-    Mendaftarkan akun baru di BenCoin dengan nama nasabah
-    dan jenis tabungan yang telah ditentukan.
+    """
+    Mendaftarkan akun baru di BenCoin.
+
     user_id (str): identitas unik untuk setiap akun (gunakan LINE userID)
     nama (str): nama untuk akun yang akan didaftarkan
     jenis (str): jenis akun yang didaftarkan
-    '''
+    """
     nama = nama.title()
     jenis = jenis.title()
     if user_id in TAUTAN:
@@ -280,15 +283,14 @@ def daftar(user_id, nama, jenis):
 
 
 def perbarui_kurs(mata_uang, kurs, mode):
-    '''
-    Memperbarui daftar kurs valuta asing dengan menambah
-    atau mengubah nilai tukar suatu mata uang dengan kurs
-    yang ditentukan.
+    """
+    Memperbarui daftar kurs valuta asing.
+
     mata_uang (str): mata uang yang akan dioperasikan
     kurs (int): nilai baru untuk mata uang tersebut
     mode (str): 'ubah': memperbarui mata uang yang sudah ada
                 'tambah': menambah mata uang baru
-    '''
+    """
     if kurs <= 0:
         return "Rate mata uang harus > 0."
 
@@ -307,13 +309,9 @@ def perbarui_kurs(mata_uang, kurs, mode):
 
 
 def penangan_operasi(user_id, masukan):
-    '''
-    Mengandal semua operasi dan menangani apabila terjadi kesalahan.
-    '''
+    """Mengandal semua operasi dan menangani apabila terjadi kesalahan."""
     def pelaku_operasi():
-        '''
-        Melakukan operasi berdasarkan masukan yang diberikan.
-        '''
+        """Melakukan operasi berdasarkan masukan yang diberikan."""
         perintah = masukan.split()
         operasi = perintah[0].upper()
 

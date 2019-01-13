@@ -1,7 +1,8 @@
-'''
-Weather Underground helper module
+"""
+Weather Underground helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 from urllib.parse import quote
@@ -9,11 +10,12 @@ import requests
 
 
 def weather(keyword):
-    '''
-    Send current weather condition of a location, retrieved from
-    Weather Underground.
+    """
+    Send current weather condition of a location.
+
+    Retrieved from Weather Underground.
     keyword (str): location to look up in wunderground.com
-    '''
+    """
     # Weather Underground API key, obtained from wunderground.com/weather/api
     wunder_key = os.getenv('WUNDERGROUND_API_KEY', None)
 

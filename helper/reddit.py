@@ -1,18 +1,20 @@
-'''
+"""
 Reddit helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import requests
 
 
 def reddit_hot(subname, limit=5, splitted=False):
-    '''
+    """
     Return hot <limit> posts' titles in /r/subname.
+
     - subname (str): name of subreddit (case-insensitive)
     - limit (str or int): number of threads to be returned (max: 25)
     - splitted (bool): if True, split result every 2000 chars and make a list
-    '''
+    """
     try:
         limit = int(limit)
     except ValueError:

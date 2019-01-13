@@ -1,29 +1,24 @@
-'''
-Echo helper module
+"""
+Simple text functions.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import random
 
 
 def echo(text):
-    '''
-    Return echo function.
-    '''
+    """Return echo function."""
     return text
 
 
 def shout(text):
-    '''
-    Return text in uppercase.
-    '''
+    """Return text in uppercase."""
     return text.upper()
 
 
 def mock(text):
-    '''
-    rEtURn tExT iN raNdoMcASe.
-    '''
+    """Return tExT iN raNdoMcASe."""
     result = ''
     for char in text:
         mocked_char = random.choice([char.upper(), char.lower()])
@@ -36,16 +31,12 @@ def mock(text):
 
 
 def space(text):
-    '''
-    R e t u r n   t e x t.
-    '''
+    """R e t u r n   t e x t."""
     return ' '.join(text)
 
 
 def aesthetic(text):
-    '''
-    Return text in fullwidth unicode.
-    '''
+    """Return text in fullwidth unicode."""
     halfwidth_to_fullwidth = str.maketrans(
         ('0123456789 abcdefghijklmnopqrstuvwxyz'
          'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -57,15 +48,17 @@ def aesthetic(text):
 
 
 def bawl1(text):
-    '''
-    Return
+    """
+    Return text in the following format.
+
     t e x t .
     e
     x
     t
     .
+
     or boxed if text is a palindrome.
-    '''
+    """
     if text[0].lower() != text[-1].lower() or len(text) <= 2:
         return ' '.join(text) + '\n' + '\n'.join(text[1:])
     return (' '.join(text) + '\n' +
@@ -75,22 +68,21 @@ def bawl1(text):
 
 
 def bawl2(text):
-    '''
-    Return
+    """
+    Return text in the following format.
+
     t e x t .
     e e
     x   x
     t     t
     .       .
-    '''
+    """
     return ' '.join(text) + ''.join('\n' + char + ' '*(2*idx + 1) + char
                                     for idx, char in enumerate(text[1:]))
 
 
 def combine(text):
-    '''
-    Combine multiple functions.
-    '''
+    """Combine multiple functions."""
     funcs = {'shout': shout,
              'mock': mock,
              'spc': space,
@@ -122,11 +114,12 @@ def combine(text):
 
 
 def is_palindrome(text, perfect=False):
-    '''
-    Return a palindrome checking result of text
+    """
+    Return a palindrome checking result of text.
+
     (case-insensitive alphanumeric string).
     if perfect is True, then text must be a perfect palindrome.
-    '''
+    """
     if perfect:
         if text == text[::-1]:
             return text + " is a perfect palindrome!"
@@ -138,9 +131,7 @@ def is_palindrome(text, perfect=False):
 
 
 def rng(ceil, floor=1, frac=False):
-    '''
-    Return a random number from floor to ceil (inclusive).
-    '''
+    """Return a random number in interval from floor to ceil (inclusive)."""
     if frac:
         floor, ceil = float(floor), float(ceil)
     else:
@@ -161,14 +152,10 @@ def rng(ceil, floor=1, frac=False):
 
 
 def rpick(text):
-    '''
-    Pick a random item from a semicolon-separated list in a string.
-    '''
+    """Pick a random item from a semicolon-separated list in a string."""
     return "I pick {}.".format(random.choice(text.split(';')))
 
 
 def emote(name, action):
-    '''
-    Emote an action.
-    '''
+    """Emote an action."""
     return "{} {}".format(name, action)

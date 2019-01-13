@@ -1,7 +1,8 @@
-'''
-Wikipedia helper module
+"""
+Wikipedia helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 import wikipedia
@@ -12,13 +13,14 @@ WIKI_SETTINGS = get_json(dbx_dl(WIKI_SETTINGS_PATH))
 
 
 def wiki_get(keyword, set_id, trim=True):
-    '''
-    Return a summary of a wikipedia article with keyword as the title,
-    or return a list of titles in the disambiguation page.
+    """
+    Return a summary of a wikipedia article with keyword as the title.
+
+    May return a list of titles in the disambiguation page.
     keyword (str): keyword to look up in Wikipedia
     set_id (str): a unique ID to associate the user with the language settings
     trim (bool): if true, trim result to 2000 characters max
-    '''
+    """
     try:
         wikipedia.set_lang(WIKI_SETTINGS[set_id])
     except KeyError:
@@ -44,11 +46,12 @@ def wiki_get(keyword, set_id, trim=True):
 
 
 def wiki_lang(lang, set_id):
-    '''
+    """
     Change wikipedia language used by a user (identified by set_id).
+
     lang (str): language to be used
     set_id (str): a unique ID to associate the user with the settings
-    '''
+    """
     langs_dict = wikipedia.languages()
     if lang in langs_dict:
         WIKI_SETTINGS[set_id] = lang

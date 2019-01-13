@@ -1,6 +1,4 @@
-'''
-Command handler module for AidenBot.
-'''
+"""Command handler module for AidenBot."""
 
 from functools import partial as pt
 from . import (
@@ -321,9 +319,7 @@ CMD_HELP = {'about': "Usage: /about\n"
 
 
 def get_help(command=None):
-    '''
-    Return a command's help message.
-    '''
+    """Return a command's help message."""
     if not command:
         return HELP_MSG
     try:
@@ -333,9 +329,7 @@ def get_help(command=None):
 
 
 def predefined(key):
-    '''
-    Predefined strings.
-    '''
+    """Return a predefined string based on key."""
     strings = {'bencoin': AkunBenCoin.intro,
                'lenny': '( ͡° ͜ʖ ͡°)',
                'shrug': '¯\\_(ツ)_/¯',
@@ -345,9 +339,7 @@ def predefined(key):
 
 
 def command_handler(text, user, myself, set_id):
-    '''
-    Command handler for AidenBot.
-    '''
+    """Handle a command given by the user."""
     itsme = user.user_id == myself.user_id
     command = text.split(maxsplit=1)
     cmd = text.lower().split(maxsplit=1)

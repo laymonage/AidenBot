@@ -1,7 +1,8 @@
-'''
-AidenBot
-v0.97
-'''
+"""
+AidenBot: Multi-purpose bot for LINE messaging app.
+
+(c) 2017-2019 laymonage
+"""
 
 import errno
 import os
@@ -48,9 +49,7 @@ MYSELF = AIDEN.get_profile(MY_ID)
 
 
 def make_static_tmp_dir():
-    '''
-    Create temporary directory for download content
-    '''
+    """Create temporary directory for download content."""
     try:
         os.makedirs(STATIC_TMP_PATH)
     except OSError as exc:
@@ -62,9 +61,7 @@ def make_static_tmp_dir():
 
 @APP.route("/callback", methods=['POST'])
 def callback():
-    '''
-    Webhook callback function
-    '''
+    """Handle webhook callback."""
     # get X-Line-Signature header value
     signature = request.headers['X-Line-Signature']
 
@@ -83,9 +80,7 @@ def callback():
 
 @HANDLER.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
-    '''
-    Text message HANDLER
-    '''
+    """Handle a text message event."""
     text = event.message.text
     if isinstance(event.source, SourceGroup):
         subject = AIDEN.get_group_member_profile(event.source.group_id,
@@ -100,9 +95,7 @@ def handle_text_message(event):
         set_id = event.source.user_id
 
     def quickreply(*msgs, mode=('text',)*5):
-        '''
-        Reply a message with msgs as reply content.
-        '''
+        """Reply a message with msgs as reply content."""
         msgs = msgs[:5]
         content = []
         for idx, msg in enumerate(msgs):
@@ -134,9 +127,7 @@ def handle_text_message(event):
         )
 
     def bye():
-        '''
-        Leave a chat room.
-        '''
+        """Leave a chat room."""
         if isinstance(event.source, SourceGroup):
             quickreply("Leaving group...")
             AIDEN.leave_group(event.source.group_id)
@@ -149,9 +140,7 @@ def handle_text_message(event):
             quickreply("I can't leave a 1:1 chat.")
 
     def getprofile():
-        '''
-        Send display name and status message of a user.
-        '''
+        """Send display name and status message of a user."""
         result = ("Display name: " + subject.display_name + "\n"
                   "Profile picture: " + subject.picture_url)
         try:
@@ -188,9 +177,7 @@ def handle_text_message(event):
 
 @HANDLER.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
-    '''
-    File message HANDLER
-    '''
+    """Handle file message event."""
     message_content = AIDEN.get_message_content(event.message.id)
     if isinstance(event.source, SourceGroup):
         set_id = event.source.group_id
@@ -223,22 +210,17 @@ def handle_file_message(event):
 
 @HANDLER.add(UnfollowEvent)
 def handle_unfollow():
-    '''
-    Unfollow event HANDLER
-    '''
+    """Handle unfollow event."""
     APP.logger.info("Got Unfollow event")
 
 
 @HANDLER.add(LeaveEvent)
 def handle_leave():
-    '''
-    Leave event HANDLER
-    '''
+    """Handle leave event."""
     APP.logger.info("Got leave event")
 
 
 if __name__ == "__main__":
-    # Create temporary directory for download content
     make_static_tmp_dir()
 
     PORT = int(os.getenv('PORT', 5000))

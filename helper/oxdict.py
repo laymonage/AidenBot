@@ -1,7 +1,8 @@
-'''
+"""
 Oxford Dictionaries helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 from urllib.parse import quote
@@ -9,10 +10,11 @@ import requests
 
 
 def define(keyword):
-    '''
-    Return word definition from oxforddictionaries.com
+    """
+    Return word definition from oxforddictionaries.com.
+
     keyword (str): keyword to look up in the dictionary
-    '''
+    """
     # Oxford Dictionaries AppID and AppKey, obtained from
     # developer.oxforddictionaries.com
     oxdict_appid = os.getenv('OXFORD_DICT_APPID', None)

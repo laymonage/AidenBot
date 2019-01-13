@@ -1,7 +1,8 @@
-'''
-WolframAlpha helper module
+"""
+WolframAlpha helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 from urllib.parse import quote
@@ -9,11 +10,12 @@ import requests
 
 
 def wolfram(query, simple=False):
-    '''
+    """
     Get answer from WolframAlpha.
+
     query (str): string to be queried
     simple (bool): if true, return result as image link
-    '''
+    """
     # WolframAlpha AppID, obtained from developer.wolframalpha.com
     wolfram_appid = os.getenv('WOLFRAMALPHA_APPID', None)
 

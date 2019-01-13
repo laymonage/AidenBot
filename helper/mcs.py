@@ -1,17 +1,19 @@
-'''
+"""
 Magic Conch Shell helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import random
 
 
 def ask(question, id_=False):
-    '''
+    """
     Return something a magic conch shell would say.
+
     question (str): any question
     id_ (bool): if true, use Indonesian
-    '''
+    """
     kka = ["Ya.", "Tidak."]
     mcs = ["Yes.", "No."]
 

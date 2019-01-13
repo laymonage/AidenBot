@@ -1,18 +1,20 @@
-'''
-Slapping module for LINE bots
+"""
+Slapping module for LINE bots.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import random
 
 
 def slap(subject, target, myself):
-    '''
-    Return a message stating "Subject slapped target with a random object."
+    """
+    Return a message stating "Subject slapped target with a random object.".
+
     subject: an object returned by LineBotApi.get_profile method
     target (str): slapping target
     me: like subject, but for your own profile
-    '''
+    """
     slap_items = ["frying pan", "baseball bat", "cricket bat", "guitar",
                   "crowbar", "wooden stick", "nightstick", "golf club",
                   "katana", "hand", "laptop", "book", "drawing book",
@@ -22,9 +24,7 @@ def slap(subject, target, myself):
     has_my_name = not itsme and myself.display_name.title() in s_name.title()
 
     def impersonator():
-        '''
-        Used when the slap subject's name contains my name.
-        '''
+        """Slap the subject if the slap subject's name contains my name."""
         if myself.display_name.lower() == s_name.lower():
             temp_msg = ("IMPERSONATOR! >:(\n"
                         "I slapped you back and forth with a {} "
@@ -38,9 +38,7 @@ def slap(subject, target, myself):
         return temp_msg
 
     def aiden():
-        '''
-        Used when target name contains "Aiden".
-        '''
+        """Slap the subject if target name contains "Aiden"."""
         if itsme:
             temp_msg = ("{} gently slapped me.\n"
                         "Sorry, {} :("
@@ -53,9 +51,7 @@ def slap(subject, target, myself):
         return temp_msg
 
     def justme():
-        '''
-        Used when all alphabets taken from target name equals "me".
-        '''
+        """Slap the subject if target name's letters only consist of "me"."""
         if itsme:
             temp_msg = ("Sorry, {}, but I can't bring myself to "
                         "slap you :("
@@ -68,9 +64,7 @@ def slap(subject, target, myself):
         return temp_msg
 
     def own():
-        '''
-        Used when target name contains "Myself".
-        '''
+        """Slap the subject if target name contains "Myself"."""
         if itsme:
             temp_msg = ("Sorry, {}, but I can't let you slap yourself :("
                         .format(s_name))

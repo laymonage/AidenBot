@@ -1,15 +1,14 @@
-'''
+"""
 Google Translate helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 from googletrans import Translator
 
 
 def translate(text):
-    '''
-    Translate astr from src language to dest.
-    '''
+    """Translate a string from src language to dest."""
     text = text.split(maxsplit=2)
     gtrans = Translator()
     try:

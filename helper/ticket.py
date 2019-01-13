@@ -1,7 +1,8 @@
-'''
-Ticket helper module
+"""
+Ticket helper module.
+
 (c) 2018 - laymonage
-'''
+"""
 
 import os
 from .dropson import dbx_dl, dbx_ul, to_json, get_json
@@ -11,19 +12,18 @@ TICKETS_PATH = os.getenv('TICKETS_FILE_PATH', None)
 
 
 def about():
-    '''
-    Return about message retrieved from Dropbox.
-    '''
+    """Return about message retrieved from Dropbox."""
     about_file = os.getenv('ABOUT_FILE_PATH', None)
     return dbx_dl(about_file).decode('utf-8').strip()
 
 
 def ticket_add(item, trim=True):
-    '''
+    """
     Add a ticket.
+
     item (str): item to be added to the ticket list
     trim (bool): if true, prevent ticket list from exceeding 2000 chars
-    '''
+    """
     tickets = get_json(dbx_dl(TICKETS_PATH))
     if item in tickets:
         return "Ticket already exists."
@@ -37,10 +37,11 @@ def ticket_add(item, trim=True):
 
 
 def ticket_get(allowed=True):
-    '''
+    """
     Return current tickets.
+
     allowed (bool): if False, return None
-    '''
+    """
     if not allowed:
         return None
     tickets = get_json(dbx_dl(TICKETS_PATH))
@@ -53,11 +54,12 @@ def ticket_get(allowed=True):
 
 
 def ticket_rem(num, allowed=True):
-    '''
+    """
     Remove an item from the ticket list.
+
     num (int or str): remove the num-th item in the ticket list
     if num == 'all', then all items in the ticket list will be removed
-    '''
+    """
     if not allowed:
         return None
     tickets = get_json(dbx_dl(TICKETS_PATH))

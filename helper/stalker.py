@@ -32,7 +32,7 @@ def stalkig(username):
     data_json = json.loads(data_json)
     user = data_json['entry_data']['ProfilePage'][0]['graphql']['user']
     if user['is_private']:
-        return (False, "@{} is a private account.".format(username))
+        return (None, "@{} is a private account.".format(username))
 
     nodes = user['edge_owner_to_timeline_media']['edges']
     anode = random.choice(nodes)['node']

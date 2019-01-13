@@ -49,7 +49,7 @@ def meme_wrap(keyword=''):
 def stalkig_wrap(username):
     '''
     Wrap stalkig command.
-    If result[0] == False then result is not found.
+    If result[0] == None then result is not found.
     '''
     result = stalkig(username)
     if result[0]:

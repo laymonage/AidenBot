@@ -1,5 +1,5 @@
 '''
-Google Translate helper module
+Google Translate helper module.
 (c) 2018 - laymonage
 '''
 

@@ -1,5 +1,5 @@
 '''
-isitup.org helper module
+isitup.org helper module.
 (c) 2018 - laymonage
 '''
 

@@ -1,5 +1,5 @@
 '''
-Dropbox and JSON helper module
+Dropbox and JSON helper module.
 (c) 2018 - laymonage
 '''
 

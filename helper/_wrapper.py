@@ -1,5 +1,5 @@
 '''
-Helper wrapper module
+Helper wrapper module.
 
 Wrap results from more complex helper modules
 into tuples suitable for use with quickreply

@@ -1,5 +1,5 @@
 '''
-Oxford Dictionaries helper module
+Oxford Dictionaries helper module.
 (c) 2018 - laymonage
 '''
 

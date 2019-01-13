@@ -1,5 +1,5 @@
 '''
-Mathjs.org helper module
+Mathjs.org helper module.
 (c) 2018 - laymonage
 '''
 

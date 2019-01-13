@@ -1,5 +1,5 @@
 '''
-Magic Conch Shell helper module
+Magic Conch Shell helper module.
 (c) 2018 - laymonage
 '''
 

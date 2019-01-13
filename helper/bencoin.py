@@ -1,5 +1,5 @@
 '''
-BenCoin Manager
+BenCoin Manager.
 Programming Assignment 3 (modified)
 Foundations of Programming
 Fasilkom UI 2017

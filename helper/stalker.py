@@ -1,5 +1,5 @@
 '''
-Stalking helper module
+Stalking helper module.
 (c) 2018 - laymonage
 '''
 

@@ -1,5 +1,5 @@
 '''
-TheCatAPI helper module
+TheCatAPI helper module.
 (c) 2018 - laymonage
 '''
 

@@ -1,5 +1,5 @@
 '''
-Command handler module for AidenBot
+Command handler module for AidenBot.
 '''
 
 from functools import partial as pt

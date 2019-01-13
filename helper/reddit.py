@@ -1,5 +1,5 @@
 '''
-Reddit helper module
+Reddit helper module.
 (c) 2018 - laymonage
 '''
 

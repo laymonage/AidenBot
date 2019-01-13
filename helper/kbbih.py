@@ -1,5 +1,5 @@
 '''
-KBBI helper module
+KBBI helper module.
 (c) 2018 - laymonage
 '''
 

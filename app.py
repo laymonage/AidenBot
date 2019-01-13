@@ -78,52 +78,70 @@ def callback():
     return 'OK'
 
 
+def get_profile_and_set_id(event):
+    """Return the profile and set_id (mid) of an event's source."""
+    if isinstance(event.source, SourceGroup):
+        profile = AIDEN.get_group_member_profile(event.source.group_id,
+                                                 event.source.user_id)
+        set_id = event.source.group_id
+    elif isinstance(event.source, SourceRoom):
+        profile = AIDEN.get_room_member_profile(event.source.room_id,
+                                                event.source.user_id)
+        set_id = event.source.room_id
+    else:
+        profile = AIDEN.get_profile(event.source.user_id)
+        set_id = event.source.user_id
+    return (profile, set_id)
+
+
+def compose_reply_content(*msgs, mode=('text',)*5):
+    """Compose a reply content with msgs."""
+    msgs = msgs[:5]
+    content = []
+    for idx, msg in enumerate(msgs):
+        if mode[idx] == 'text':
+            if isinstance(msg, (tuple, list)):
+                content = [TextSendMessage(text=item) for item in msg]
+            else:
+                content.append(TextSendMessage(text=msg))
+        elif mode[idx] == 'image':
+            if isinstance(msg, (tuple, list)):
+                content = [
+                    ImageSendMessage(
+                        original_content_url=item, preview_image_url=item
+                    )
+                    for item in msg
+                ]
+            else:
+                content.append(ImageSendMessage(
+                    original_content_url=msg,
+                    preview_image_url=msg))
+        elif mode[idx] == 'custimg':
+            if isinstance(msg, (tuple, list)):
+                content = [
+                    ImageSendMessage(
+                        original_content_url=item[0],
+                        preview_image_url=item[1]
+                    )
+                    for item in msg
+                ]
+            else:
+                content.append(ImageSendMessage(
+                    original_content_url=msg[0],
+                    preview_image_url=msg[1]))
+    return content
+
+
 @HANDLER.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     """Handle a text message event."""
     text = event.message.text
-    if isinstance(event.source, SourceGroup):
-        subject = AIDEN.get_group_member_profile(event.source.group_id,
-                                                 event.source.user_id)
-        set_id = event.source.group_id
-    elif isinstance(event.source, SourceRoom):
-        subject = AIDEN.get_room_member_profile(event.source.room_id,
-                                                event.source.user_id)
-        set_id = event.source.room_id
-    else:
-        subject = AIDEN.get_profile(event.source.user_id)
-        set_id = event.source.user_id
+    subject, set_id = get_profile_and_set_id(event)
 
     def quickreply(*msgs, mode=('text',)*5):
-        """Reply a message with msgs as reply content."""
-        msgs = msgs[:5]
-        content = []
-        for idx, msg in enumerate(msgs):
-            if mode[idx] == 'text':
-                if isinstance(msg, (tuple, list)):
-                    content = [TextSendMessage(text=item) for item in msg]
-                else:
-                    content.append(TextSendMessage(text=msg))
-            elif mode[idx] == 'image':
-                if isinstance(msg, (tuple, list)):
-                    content = [ImageSendMessage(original_content_url=item,
-                                                preview_image_url=item)
-                               for item in msg]
-                else:
-                    content.append(ImageSendMessage(
-                        original_content_url=msg,
-                        preview_image_url=msg))
-            elif mode[idx] == 'custimg':
-                if isinstance(msg, (tuple, list)):
-                    content = [ImageSendMessage(original_content_url=item[0],
-                                                preview_image_url=item[1])
-                               for item in msg]
-                else:
-                    content.append(ImageSendMessage(
-                        original_content_url=msg[0],
-                        preview_image_url=msg[1]))
+        """Reply the message with msgs."""
         AIDEN.reply_message(
-            event.reply_token, content
+            event.reply_token, compose_reply_content(msgs, mode=mode)
         )
 
     def bye():
@@ -223,5 +241,5 @@ def handle_leave():
 if __name__ == "__main__":
     make_static_tmp_dir()
 
-    PORT = int(os.getenv('PORT', 5000))
+    PORT = int(os.getenv('PORT', '5000'))
     APP.run(host='0.0.0.0', port=PORT)

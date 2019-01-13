@@ -141,7 +141,7 @@ def handle_text_message(event):
     def quickreply(*msgs, mode=('text',)*5):
         """Reply the message with msgs."""
         AIDEN.reply_message(
-            event.reply_token, compose_reply_content(msgs, mode=mode)
+            event.reply_token, compose_reply_content(*msgs, mode=mode)
         )
 
     def bye():

@@ -1,5 +1,5 @@
 # AidenBot
-### v0.97
+### v0.10.0
 ------------------
 
 **Multi-purpose LINE bot**  

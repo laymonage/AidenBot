@@ -9,4 +9,6 @@ install:
     - pip install pipenv
     - pipenv sync
 script:
-    - find -name *.py | xargs pipenv run pylint --max-line-length=79
+    - pipenv shell
+    - find -name *.py | xargs pylint --max-line-length=79
+    - pydocstyle

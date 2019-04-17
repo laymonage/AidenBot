@@ -40,9 +40,9 @@ def slap(subject, target, myself):
     def aiden():
         """Slap the subject if target name contains "Aiden"."""
         if itsme:
-            temp_msg = ("{} gently slapped me.\n"
-                        "Sorry, {} :("
-                        .format(s_name, s_name))
+            temp_msg = ("{s} gently slapped me.\n"
+                        "Sorry, {s} :("
+                        .format(s=s_name))
         elif has_my_name:
             temp_msg = slap_msg[:-1] + " AND trying to slap me."
         else:

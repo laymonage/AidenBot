@@ -14,7 +14,7 @@ ACCLINKS_PATH = os.getenv('ACCOUNT_LINKS_PATH', None)
 EXCHRATE_PATH = os.getenv('EXCHANGE_RATE_PATH', None)
 
 
-class AkunBenCoin(object):
+class AkunBenCoin:
     """Tipe objek berupa akun BenCoin."""
 
     intro = ("=======================================\n"

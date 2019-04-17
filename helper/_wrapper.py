@@ -13,24 +13,23 @@ Example:
            ('image', imagelink)))
 """
 
-from . import (
-    cat, convert, meme, stalkig, surprise, wolfram
-)
-
 
 def cat_wrap():
     """Wrap cat command."""
+    from .caturl import cat
     return ('image', cat())
 
 
 def curx_wrap(query):
     """Wrap curx command."""
+    from .currency import convert
     query = query.split()
     return ('text', convert(query[1], query[2], query[0]))
 
 
 def meme_wrap(keyword=''):
     """Wrap meme command."""
+    from .memes import meme
     keywords = keyword.split(';')[:5]
     if not keywords[0]:
         return ('image', meme())
@@ -42,6 +41,7 @@ def meme_wrap(keyword=''):
 
 def stalkig_wrap(username):
     """Wrap stalkig command."""
+    from .stalker import stalkig
     result = stalkig(username)
     if result[0]:
         return ('multi', (('image', result[0]),
@@ -51,6 +51,7 @@ def stalkig_wrap(username):
 
 def surprise_wrap(safe=False):
     """Wrap surprise command."""
+    from .trap import surprise
     if safe:
         return ('custimg', (surprise(safe=True),))
     return ('custimg', (surprise(),))
@@ -58,4 +59,5 @@ def surprise_wrap(safe=False):
 
 def wolfram_wrap(query):
     """Wrap wolfram (simple mode) command."""
+    from .wolframalpha import wolfram
     return ('image', wolfram(query, simple=True))

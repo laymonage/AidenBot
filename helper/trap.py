@@ -6,7 +6,6 @@ Surprise helper module.
 
 import os
 import random
-import requests
 from .caturl import cat
 from .dropson import dbx_dl, get_json
 

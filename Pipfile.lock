@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8323b7f94917f278b470f710ad6a17bf8509affafe5d1cd4b68cfd1415852828"
+            "sha256": "cf05182f54d28c354edda6c7d47745083f3ef5d44a97032fd966810264861f0d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -119,10 +119,11 @@
         },
         "kbbi": {
             "hashes": [
-                "sha256:a69a94da77cc5bad9f2daef237c66d50cf16c2f69a0e884ab353ffb482151418"
+                "sha256:54dda82ac8e6410fddba7d25cf07b261cc22dbcdc176aa89f6c062622ef343d7",
+                "sha256:b17c572dbb070e603ba8a9e91b663dcbead2c03416920416d59aaff4e0b37c70"
             ],
             "index": "pypi",
-            "version": "==0.2.1"
+            "version": "==0.3.1"
         },
         "lazy-object-proxy": {
             "hashes": [
@@ -246,10 +247,10 @@
         },
         "soupsieve": {
             "hashes": [
-                "sha256:3aef141566afd07201b525c17bfaadd07580a8066f82b57f7c9417f26adbd0a3",
-                "sha256:e41a65e99bd125972d84221022beb1e4b5cfc68fa12c170c39834ce32d1b294c"
+                "sha256:6898e82ecb03772a0d82bd0d0a10c0d6dcc342f77e0701d0ec4a8271be465ece",
+                "sha256:b20eff5e564529711544066d7dc0f7661df41232ae263619dede5059799cdfca"
             ],
-            "version": "==1.9"
+            "version": "==1.9.1"
         },
         "twitter": {
             "hashes": [

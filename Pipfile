@@ -9,7 +9,7 @@ verify_ssl = true
 line-bot-sdk = "==1.5.0"
 dropbox = "==9.3.0"
 googletrans = "==2.4.0"
-kbbi = "==0.3.1"
+kbbi = "==0.3.2"
 pylint = "==2.3.1"
 twitter = "==1.18.0"
 urbandictionary-top = "==0.3"

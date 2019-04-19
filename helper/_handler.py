@@ -7,7 +7,7 @@ from . import (
     translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes,
     mirror_toggle, define, reddit_hot, roast, slap, stalkig_wrap, stalktwt,
     ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get,
-    wiki_lang, wolfram, wolfram_wrap, weather
+    wiki_lang, wolfram, wolfram_wrap, weather, get_election_data
 )
 
 HELP_MSG = ("Available commands:\n"
@@ -349,6 +349,7 @@ def command_handler(text, user, myself, set_id):
                'bencoin': pt(predefined, 'bencoin'),
                'lenny': pt(predefined, 'lenny'),
                'mirror': pt(mirror_toggle, set_id=set_id),
+               'election': get_election_data,
                'shrug': pt(predefined, 'shrug'),
                'stalk': pt(predefined, 'stalk'),
                'text': pt(predefined, 'text'),

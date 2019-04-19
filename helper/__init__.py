@@ -6,6 +6,7 @@ from .bencoin import AkunBenCoin
 from .caturl import cat
 from .currency import convert
 from .dropson import dbx_dl, dbx_ul, to_json, get_json
+from .election import get_election_data
 from .file import mirror_toggle, mirror
 from .gtrans import translate
 from .isitup import isup

@@ -9,6 +9,7 @@ import os
 import sys
 
 from flask import Flask, request, abort
+from flask.logging import create_logger
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -27,6 +28,7 @@ from helper.file import mirror
 
 
 APP = Flask(__name__)
+LOG = create_logger(APP)
 
 # Get CHANNEL_SECRET and CHANNEL_ACCESS_TOKEN from environment variable
 CHANNEL_SECRET = os.getenv('LINE_CHANNEL_SECRET', None)
@@ -67,7 +69,7 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    APP.logger.info(("Request body: ", body))
+    LOG.info(("Request body: ", body))
 
     # handle webhook body
     try:
@@ -229,13 +231,13 @@ def handle_file_message(event):
 @HANDLER.add(UnfollowEvent)
 def handle_unfollow():
     """Handle unfollow event."""
-    APP.logger.info("Got Unfollow event")
+    LOG.info("Got Unfollow event")
 
 
 @HANDLER.add(LeaveEvent)
 def handle_leave():
     """Handle leave event."""
-    APP.logger.info("Got leave event")
+    LOG.info("Got leave event")
 
 
 if __name__ == "__main__":

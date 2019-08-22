@@ -288,8 +288,14 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'weather': "Usage: /weather <location>\n"
                        "Obtain current weather data in <location>, retrieved "
-                       "from wunderground.com.\n"
+                       "from openweathermap.org.\n"
+                       "Location can be a city name, city ID, "
+                       "geographic coordinates (lat;lon), or "
+                       "ZIP code (zipcode,countrycode)."
+                       "Use /weatheri for data in imperial units."
                        "Example: /weather Jakarta",
+
+            'weatheri': "Like /weather, but in imperial units.",
 
             'wiki': "Usage: /wiki <title>\n"
                     "Summarize a Wikipedia article titled <title>, or get "
@@ -384,6 +390,7 @@ def command_handler(text, user, myself, set_id):
                    'urban': urban,
                    'urbanx': pt(urban, ex=True),
                    'weather': weather,
+                   'weatheri': pt(weather, metric=False),
                    'wiki': pt(wiki_get, set_id=set_id),
                    'wikilang': pt(wiki_lang, set_id=set_id),
                    'wolframs': wolfram}

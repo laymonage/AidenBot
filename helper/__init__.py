@@ -27,7 +27,7 @@ from .trap import surprise
 from .urban import urban
 from .wiki import wiki_get, wiki_lang
 from .wolframalpha import wolfram
-from .wunderground import weather
+from .weather import weather
 from ._wrapper import (
     cat_wrap, curx_wrap, meme_wrap, stalkig_wrap, surprise_wrap, wolfram_wrap
 )

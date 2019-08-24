@@ -27,6 +27,12 @@ def curx_wrap(query):
     return ('text', convert(query[1], query[2], query[0]))
 
 
+def define_wrap(query):
+    """Wrap define command."""
+    from .dictionary import define
+    return ('text', define(*query.split(';', maxsplit=2)))
+
+
 def meme_wrap(keyword=''):
     """Wrap meme command."""
     from .memes import meme

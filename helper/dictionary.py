@@ -23,7 +23,8 @@ def define(keyword, lang='en'):
     req = requests.get(url)
     if "No definitions found" in req.text:
         return (
-            'No entry available for "{}" in "{}" language.'.format(word, lang)
+            'No entry available for "{}" in "{}" language.'
+            .format(keyword, lang)
         )
 
     data = req.json()
@@ -54,3 +55,8 @@ def define(keyword, lang='en'):
         result += '\n'
     result = result.strip()
     return result
+
+
+def _define(query):
+    """Pass lang argument to define using semicolon-separated string."""
+    return define(*query.split(';', maxsplit=2))

@@ -2,10 +2,10 @@
 
 from functools import partial as pt
 from . import (
-    about, AkunBenCoin, cat_wrap, convert, curx_wrap, combine, echo, shout,
-    mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng, rpick, emote,
-    translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap, updmemes,
-    mirror_toggle, define, reddit_hot, roast, slap, stalkig_wrap, stalktwt,
+    about, AkunBenCoin, cat_wrap, convert, curx_wrap, define_wrap, combine,
+    echo, shout, mock, space, aesthetic, bawl1, bawl2, is_palindrome, rng,
+    rpick, emote, translate, isup, kbbi_def, calc, ask, getmemes, meme_wrap,
+    updmemes, mirror_toggle, reddit_hot, roast, slap, stalkig_wrap, stalktwt,
     ticket_add, ticket_rem, ticket_get, surprise_wrap, urban, wiki_get,
     wiki_lang, wolfram, wolfram_wrap, weather
 )
@@ -109,7 +109,8 @@ CMD_HELP = {'about': "Usage: /about\n"
 
             'define': "Usage: /define <something>\n"
                       "Define <something>, retrieved from "
-                      "oxforddictionaries.com\n"
+                      "Google Dictionary\n"
+                      "Add ;<language> to define in other languages\n"
                       "Example: /define onomatopoeia",
 
             'echo': "Usage: /echo <something>\n"
@@ -367,7 +368,7 @@ def command_handler(text, user, myself, set_id):
                    'bawl2': bawl2,
                    'calc': calc,
                    'cmb': combine,
-                   'define': define,
+                   'define': define_wrap,
                    'echo': echo,
                    'isup': isup,
                    'isupd': pt(isup, detailed=True),
